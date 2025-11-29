@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import React from 'react'
+import ToastProvider from '@/provider/ToastProvider'
 
 export const metadata: Metadata = {
   title: 'EC Admin | 이커머스 관리 콘솔',
@@ -13,11 +14,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body>
-        <header className="bg-cyan-600">헤더입니다.</header>
         {children}
-        <footer className="flex items-center justify-center gap-4">풋터</footer>
+        <ToastProvider />
       </body>
     </html>
   )
