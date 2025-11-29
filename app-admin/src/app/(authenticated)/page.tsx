@@ -1,7 +1,7 @@
 import React from 'react'
 
-const Page = () => {
+const DashboardPage = () => {
   return <div>여기가 홈?</div>
 }
 
-export default Page
+export default DashboardPage
