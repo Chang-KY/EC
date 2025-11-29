@@ -1,0 +1,81 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+::-webkit-scrollbar {
+  @apply h-[10px] w-[10px];
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-800;
+  border-radius: 8px;
+  border: 2px solid transparent; /* 여백 느낌 */
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-900;
+}
+
+button {
+  @apply cursor-pointer disabled:cursor-default;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin; /* auto | thin | none */
+  scrollbar-color: #374151 transparent; /* thumb 색  track 색 */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  sans-serif;
+}
+
+/* tailwind base/components/utilities import 아래 어딘가 */
+@layer utilities {
+  /* 가로/세로 공통: 스크롤은 유지, 막대만 숨김 */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE/Edge(레거시) */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/WebKit */
+  }
+}
+
+.rd3t-link:hover {
+  stroke-width: 2px;
+  opacity: 1;
+}
+
+/* Chrome / Edge 등 WebKit 계열에서 datetime-local 기본 아이콘 숨기기 */
+input[type='datetime-local']::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}

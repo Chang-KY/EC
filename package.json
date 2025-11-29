@@ -1,0 +1,30 @@
+{
+  "name": "ec",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "app-admin",
+    "app-customer"
+  ],
+  "description": "EC monorepo (customer app + admin app + supabase)",
+  "scripts": {
+    "customer": "npm run dev --prefix app-customer",
+    "admin": "npm run dev --prefix app-admin",
+    "dev:all": "npm run dev:customer && npm run dev:admin",
+    "supa:start": "supabase start",
+    "supa:stop": "supabase stop",
+    "supa:login": "npx supabase login",
+    "supa:types": "npx supabase gen types typescript --project-id wpbwmdpwrmnucbkhtfnq --schema ec > app-admin/src/supabase.types.ts && npx supabase gen types typescript --project-id wpbwmdpwrmnucbkhtfnq --schema ec > app-customer/src/supabase.types.ts",
+    "supa:link": "npx supabase link --project-ref wpbwmdpwrmnucbkhtfnq",
+    "supa:init": "supabase init",
+    "supa:push": "supabase db push",
+    "supa:push:origin": "supabase db push --linked",
+    "supa:reset": "supabase db reset"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "supabase": "^2.63.1"
+  }
+}
