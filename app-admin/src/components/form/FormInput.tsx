@@ -19,7 +19,7 @@ const FormInput = (props: FormInputProps) => {
   const { label, errorMessage, required, name, inputClassName, outerClassName, ...rest } = props
 
   return (
-    <div className={clsx(outerClassName)}>
+    <div className={clsx('flex flex-col gap-1', outerClassName)}>
       {label && (
         <div className="flex items-center gap-2">
           <Label name={name} label={label} />

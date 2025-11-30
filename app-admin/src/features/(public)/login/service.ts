@@ -1,30 +1,29 @@
-import { LoginInput } from '@/features/(public)/login/schema'
-import { findUserByEmail } from '@/features/(public)/login/repository'
+import { supabaseServer } from '@/utils/supabase/server'
 
-export async function loginService(input: LoginInput) {
-  const user = await findUserByEmail(input.email)
+export async function loginWithEmailPassword(email: string, password: string) {
+  const supabase = await supabaseServer()
 
-  if (!user) {
-    return {
-      ok: false as const,
-      message: '이메일 또는 비밀번호가 올바르지 않습니다.',
-    }
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (error) {
+    throw error
   }
+}
 
-  const isValid = true // 예시
+export async function signOut() {
+  const supabase = await supabaseServer()
+  const { error } = await supabase.auth.signOut()
+  if (error) throw error
+}
 
-  if (!isValid) {
-    return {
-      ok: false as const,
-      message: '이메일 또는 비밀번호가 올바르지 않습니다.',
-    }
-  }
+export async function getCurrentUser() {
+  const supabase = await supabaseServer()
+  const { data, error } = await supabase.auth.getUser()
 
-  // TODO: 여기서 세션 생성 / 쿠키 설정 로직 호출
-  // 예: await createSession({ userId: user.id, role: user.role })
-
-  return {
-    ok: true as const,
-    user,
-  }
+  // 세션 없으면 user가 null 이라서 여기서 로그인 안 된 상태로 간주
+  if (error || !data.user) return null
+  return data.user
 }

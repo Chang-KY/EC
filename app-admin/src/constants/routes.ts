@@ -1,7 +1,7 @@
 export const ROUTES = {
   LOGIN: '/login',
   DASHBOARD: '/',
-  ADMIN: '/admin',
+  ADMIN: '/admins',
   ANALYTICS: '/analytics',
   CATEGORIES: '/categories',
   COUPONS: '/coupons',
