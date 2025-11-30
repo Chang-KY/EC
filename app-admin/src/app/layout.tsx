@@ -1,7 +1,7 @@
-import type { Metadata } from 'next'
-import './globals.css'
 import React from 'react'
+import '@/app/globals.css'
 import ToastProvider from '@/provider/ToastProvider'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'EC Admin | 이커머스 관리 콘솔',

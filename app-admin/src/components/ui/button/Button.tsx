@@ -1,4 +1,7 @@
+'use client'
+
 import React from 'react'
+import './Button.css'
 
 type ButtonProps = {
   children: React.ReactNode
@@ -7,7 +10,11 @@ type ButtonProps = {
 const Button = (props: ButtonProps) => {
   const { children, ...rest } = props
 
-  return <button>{children}</button>
+  return (
+    <button {...rest} className="btn-primary">
+      {children}
+    </button>
+  )
 }
 
 export default Button

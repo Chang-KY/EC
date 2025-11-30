@@ -18,22 +18,29 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { ROUTES } from '@/constants/routes'
-import React, { useState } from 'react'
+import React from 'react'
 
 const navigation = [
-  { name: '대시보드', href: ROUTES.DASHBOARD, icon: LayoutDashboardIcon },
-  { name: '어드민', href: ROUTES.ADMIN, icon: ShieldCheck },
-  { name: '분석', href: ROUTES.ANALYTICS, icon: BarChart3Icon },
-  { name: '카테고리', href: ROUTES.CATEGORIES, icon: Tags },
-  { name: '쿠폰', href: ROUTES.COUPONS, icon: TicketIcon },
-  { name: '파일 관리', href: ROUTES.FILES, icon: FolderIcon },
-  { name: '알림', href: ROUTES.NOTIFICATIONS, icon: BellIcon },
-  { name: '주문 관리', href: ROUTES.ORDERS, icon: ShoppingCartIcon },
-  { name: '상품 관리', href: ROUTES.PRODUCTS, icon: PackageIcon },
-  { name: '리뷰 관리', href: ROUTES.REVIEWS, icon: MessageSquareIcon },
-  { name: '설정', href: ROUTES.SETTINGS, icon: SettingsIcon },
-  { name: '사용자 관리', href: ROUTES.USERS, icon: UserCogIcon },
-]
+  // Overview
+  { name: '대시보드', href: ROUTES.DASHBOARD, icon: LayoutDashboardIcon, section: 'overview' },
+  { name: '분석', href: ROUTES.ANALYTICS, icon: BarChart3Icon, section: 'overview' },
+
+  // Commerce / 운영
+  { name: '주문 관리', href: ROUTES.ORDERS, icon: ShoppingCartIcon, section: 'commerce' },
+  { name: '상품 관리', href: ROUTES.PRODUCTS, icon: PackageIcon, section: 'commerce' },
+  { name: '카테고리', href: ROUTES.CATEGORIES, icon: Tags, section: 'commerce' },
+  { name: '쿠폰', href: ROUTES.COUPONS, icon: TicketIcon, section: 'commerce' },
+  { name: '리뷰 관리', href: ROUTES.REVIEWS, icon: MessageSquareIcon, section: 'commerce' },
+  { name: '사용자 관리', href: ROUTES.USERS, icon: UserCogIcon, section: 'commerce' },
+
+  // 기타 운영
+  { name: '알림', href: ROUTES.NOTIFICATIONS, icon: BellIcon, section: 'etc' },
+  { name: '파일 관리', href: ROUTES.FILES, icon: FolderIcon, section: 'etc' },
+
+  // 시스템 영역
+  { name: '어드민', href: ROUTES.ADMIN, icon: ShieldCheck, section: 'system' },
+  { name: '설정', href: ROUTES.SETTINGS, icon: SettingsIcon, section: 'system' },
+] as const
 
 const Navigator = () => {
   const pathname = usePathname()
@@ -49,13 +56,15 @@ const Navigator = () => {
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
-      {navigation.map((item) => {
+      {navigation.map((item, index) => {
         const active =
           pathname === item.href ||
           (pathname.startsWith(item.href + '/') && item.href !== ROUTES.ADMIN)
 
         const baseItemClass =
           'h-9 min-w-[37.45px] pl-[8.725px] rounded-md text-sm transition-colors flex items-center'
+
+        const showDivider = index > 0 && navigation[index - 1].section !== item.section
 
         const content = (
           <>
@@ -74,25 +83,29 @@ const Navigator = () => {
 
         if (active) {
           return (
-            <div
-              key={item.href}
-              className={clsx(baseItemClass, 'cursor-default bg-gray-900 text-white')}
-              aria-current="page"
-            >
-              {content}
-            </div>
+            <React.Fragment key={item.href}>
+              {showDivider && <div className="my-1 h-px rounded-full bg-gray-800" />}
+              <div
+                className={clsx(baseItemClass, 'cursor-default bg-gray-900 text-white')}
+                aria-current="page"
+              >
+                {content}
+              </div>
+            </React.Fragment>
           )
         }
 
         return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={clsx(baseItemClass, 'text-gray-400 hover:bg-gray-900 hover:text-gray-100')}
-            aria-current={undefined}
-          >
-            {content}
-          </Link>
+          <React.Fragment key={item.href}>
+            {showDivider && <div className="my-1 h-px rounded-full bg-gray-800" />}
+            <Link
+              href={item.href}
+              className={clsx(baseItemClass, 'text-gray-400 hover:bg-gray-900 hover:text-gray-100')}
+              aria-current={undefined}
+            >
+              {content}
+            </Link>
+          </React.Fragment>
         )
       })}
     </nav>
