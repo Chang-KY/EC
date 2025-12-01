@@ -2,6 +2,7 @@ import React from 'react'
 import PageTitle from '@/components/layout/PageTitle'
 import Button from '@/components/ui/button/Button'
 import { Metadata } from 'next'
+import { ROUTES } from '@/constants/routes'
 
 export const metadata: Metadata = {
   title: '설정 | Admin',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 const SettingsPage = () => {
   return (
     <section>
-      <PageTitle pathName="/admins">
+      <PageTitle pathName={ROUTES.SETTINGS}>
         <Button>sdf</Button>
       </PageTitle>
     </section>

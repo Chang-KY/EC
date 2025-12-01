@@ -2,6 +2,7 @@ import React from 'react'
 import PageTitle from '@/components/layout/PageTitle'
 import Button from '@/components/ui/button/Button'
 import { Metadata } from 'next'
+import { ROUTES } from '@/constants/routes'
 
 export const metadata: Metadata = {
   title: '리뷰 관리 | Admin',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 const ReviewsPage = () => {
   return (
     <section>
-      <PageTitle pathName="/admins">
+      <PageTitle pathName={ROUTES.REVIEWS}>
         <Button>sdf</Button>
       </PageTitle>
     </section>

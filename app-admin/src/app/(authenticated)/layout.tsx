@@ -4,7 +4,7 @@ import Main from '@/components/layout/Main'
 import { getCurrentUser } from '@/features/(public)/login/service'
 import { redirect } from 'next/navigation'
 import { ROUTES } from '@/constants/routes'
-import Header from '@/components/layout/Header'
+import Header from '@/components/layout/header/Header'
 
 const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getCurrentUser()

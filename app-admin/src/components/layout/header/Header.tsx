@@ -2,6 +2,9 @@ import React from 'react'
 import { Bell } from 'lucide-react'
 import Image from 'next/image'
 import Breadcrumb from '@/components/ui/Breadcrumb'
+import AsideMenuButton from '@/components/layout/header/AsideMenuButton'
+import NotificationButton from '@/components/layout/header/NotificationButton'
+import ProfileButton from '@/components/layout/header/ProfileButton'
 
 const Header = () => {
   return (
@@ -17,20 +20,16 @@ const Header = () => {
         />
       </div>
 
-      <div className="flex items-center gap-4 px-5">
+      <div className="px-5 md:hidden">
+        <AsideMenuButton />
+      </div>
+
+      <div className="hidden items-center gap-4 px-5 md:flex">
         <Breadcrumb />
 
-        <button className="hidden rounded-full p-2 hover:bg-white/5 sm:inline-flex">
-          <Bell className="size-4" />
-        </button>
+        <NotificationButton />
 
-        <button
-          type="button"
-          className="flex size-6 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-xs shadow-md hover:brightness-110"
-        >
-          <span className="sr-only">Your profile</span>
-          AD
-        </button>
+        <ProfileButton />
       </div>
     </header>
   )
