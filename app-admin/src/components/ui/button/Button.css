@@ -2,17 +2,16 @@
 
 @layer components {
 
-  .btn-primary {
+  .btn-add {
     @apply inline-flex items-center gap-1.5
     rounded-md
-    bg-emerald-500 text-black
-    px-3.5 py-1.5 text-xs font-medium
-    shadow-sm
+    bg-emerald-500/60 text-black
+    px-3.5 py-1.5 text-xs
     hover:bg-emerald-400
+    border border-emerald-500 dark:bg-emerald-400
     focus-visible:outline-none focus-visible:ring-2
     focus-visible:ring-emerald-500/70
     focus-visible:ring-offset-2 focus-visible:ring-offset-black
     disabled:cursor-not-allowed disabled:opacity-60;
   }
-
 }

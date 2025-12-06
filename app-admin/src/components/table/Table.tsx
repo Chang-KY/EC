@@ -35,6 +35,8 @@ type Props<TData> = {
   manualPagination?: boolean // 서버 페이징일 때 true
 }
 
+const ROW_HEIGHT = 40 //rem
+
 export default function Table<TData>({
   columns,
   data,
@@ -65,14 +67,15 @@ export default function Table<TData>({
     getSortedRowModel: getSortedRowModel(),
     pageCount: Math.max(1, Math.ceil(total / pageSize)),
   })
+  const height = `${ROW_HEIGHT * pageSize}px`
+  const divineHeaderHeight = `${ROW_HEIGHT * pageSize - 34}px`
 
   return (
-    <div
-      className={clsx('w-full overflow-auto', data.length === 0 ? 'h-full' : 'h-auto max-h-full')}
-    >
-      <table className="relative h-full w-max min-w-full border-separate border-spacing-0 divide-y divide-gray-300">
+    <div className="w-full rounded border border-gray-300 dark:border-gray-800" style={{ height }}>
+      <table className="relative w-max min-w-full border-separate border-spacing-0 divide-y divide-gray-300">
         <THead table={table} />
         <TBody
+          height={divineHeaderHeight}
           table={table}
           data={data}
           loading={loading}

@@ -1,8 +1,8 @@
 import React from 'react'
 import PageTitle from '@/components/layout/PageTitle'
-import Button from '@/components/ui/button/Button'
 import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
+import TableContainer from '@/features/(authenticated)/system/admins/list/components/TableContainer'
 
 export const metadata: Metadata = {
   title: '관리자 계정 관리 | Admin',
@@ -12,9 +12,10 @@ export const metadata: Metadata = {
 const AdminsPage = () => {
   return (
     <section>
-      <PageTitle pathName={ROUTES.ADMINS}>
-        <Button>sdf</Button>
-      </PageTitle>
+      <PageTitle pathName={ROUTES.ADMINS} />
+      <div className="px-20">
+        <TableContainer />
+      </div>
     </section>
   )
 }

@@ -72,10 +72,18 @@ export function useOrderSortParam<TRow extends object>(
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString())
 
+    const currentOrderBy = params.get(orderByKey)
+    const currentOrder = params.get(orderKey)
+
+    // 🔒 이미 URL이 우리가 가진 정렬 상태와 같으면 아무 것도 안 함
+    if (currentOrderBy === orderBy && currentOrder === order) {
+      return
+    }
+
     params.set(orderByKey, orderBy)
     params.set(orderKey, order)
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }, [orderBy, order, router, searchParams, orderByKey, orderKey])
 
   return core // sorting, setSorting, orderBy, order, sortParam, setOrder 그대로 노출

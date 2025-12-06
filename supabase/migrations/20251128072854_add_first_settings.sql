@@ -22,6 +22,9 @@ CREATE SCHEMA IF NOT EXISTS "ec";
 ALTER
 SCHEMA "ec" OWNER TO "postgres";
 
+-- 스키마 권한 부여
+grant usage on schema ec to anon, authenticated;
+
 -- ltree 구비
     CREATE
 EXTENSION IF NOT EXISTS ltree WITH SCHEMA public;

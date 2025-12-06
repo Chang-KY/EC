@@ -40,11 +40,11 @@
 예: `ec.create_coupon` 함수/테이블을 수정하거나 추가하고 싶을 때.
 
 ```bash
-supabase migration new 20251129_add_coupon_function
+supabase migration new add_coupon_function
 ```
 위 명령을 실행하면:
 
-supabase/migrations/20251129xxxx_add_coupon_function.sql
+supabase/migrations/xxxx_add_coupon_function.sql
 형태의 파일이 생성된다.
 
 이 파일 안에 직접 SQL을 작성한다:
@@ -82,7 +82,7 @@ Next.js admin-app, customer-app을 로컬에서 띄워
 ### 3단계) Git에 커밋
 마이그레이션이 정상 작동하는 것이 확인되면, 해당 파일을 Git에 커밋한다.
 ```bash
-git add supabase/migrations/20251129xxxx_add_coupon_function.sql
+git add supabase/migrations/xxxx_add_coupon_function.sql
 git commit -m "feat(db): add ec.create_coupon function"
 ```
 이제 이 마이그레이션 파일은:
@@ -114,6 +114,10 @@ Git에 있는 동일한 마이그레이션 세트를 기준으로 동작한다.
 > 나중에 문제 발생 시
 “어느 마이그레이션 버전에서 깨졌는지”를 기준으로 추적할 수 있다.
 
+```bash
+supabase migration repair [버전] --status applied
+```
+
 
 # Supabase Studio 사용 시 원칙
 Studio(SQL Editor, Table Editor 등)는 **“실험용/초안 작성용”**으로만 사용.
@@ -130,3 +134,13 @@ supabase db push로 본 서버 적용
 
 DB 스키마가 커져도,
 변경 이력을 마이그레이션 파일 + Git 로그로 깔끔하게 추적 가능.
+
+# 스파베이스 이력 저장 하기 
+현재 local / remote migration 상태 확인
+```bash
+supabase migration list --linked
+```
+```bash
+supabase migration repair 20251129190555 --status applied
+```
+와 같은 이력을 저장 하면 저장이 된다.

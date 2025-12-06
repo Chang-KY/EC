@@ -21,7 +21,7 @@ const Breadcrumb = () => {
               {isCurrent || !b.href ? (
                 <span
                   aria-current={b.ariaCurrent}
-                  className={isCurrent ? 'font-medium text-white' : undefined}
+                  className={isCurrent ? 'font-medium text-black dark:text-white' : undefined}
                 >
                   {b.label}
                 </span>

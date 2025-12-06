@@ -3,19 +3,30 @@ import React from 'react'
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   inputClassName?: string
+  icon?: React.ReactNode
 }
 
 const Input = (props: InputProps) => {
-  const { inputClassName, ...rest } = props
+  const { inputClassName, icon, ...rest } = props
 
   return (
-    <input
-      {...rest}
-      className={clsx(
-        'h-10 max-h-10 min-h-10 w-full rounded border border-gray-800 bg-gray-900 py-2 pl-3 text-sm ring-2 ring-transparent outline-none focus:border-gray-500',
-        inputClassName,
+    <div className="relative">
+      <input
+        {...rest}
+        className={clsx(
+          'rounded border py-1 pr-3 text-xs ring-2 ring-transparent outline-none',
+          'dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:focus:border-gray-500',
+          'border-gray-300 bg-white text-gray-700',
+          icon ? 'pl-8' : 'pl-3',
+          inputClassName,
+        )}
+      />
+      {icon && (
+        <div className="absolute inset-y-0 left-2 flex items-center justify-center text-gray-600">
+          {icon}
+        </div>
       )}
-    />
+    </div>
   )
 }
 

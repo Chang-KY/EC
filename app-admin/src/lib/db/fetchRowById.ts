@@ -1,4 +1,4 @@
-import { supabaseServer } from '@/utils/supabase/server'
+import { supabase } from '@/utils/supabase/supabase'
 import { Database } from '@/supabase.types'
 
 type DB = Database['ec']['Tables']
@@ -23,10 +23,10 @@ export async function fetchRowByColumn<
 ): Promise<Pick<DB[T]['Row'], K> | null> {
   if (!columns.length) throw new Error('columns must not be empty')
 
-  const supabase = await supabaseServer()
+  const sb = await supabase()
   const projection = columns.join(',')
 
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .schema('ec')
     .from(table)
     .select(projection)
