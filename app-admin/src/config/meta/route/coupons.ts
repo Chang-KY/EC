@@ -1,9 +1,12 @@
 import { PageMeta, RouteMetaConfig } from '@/config/meta/types'
 import { popLast } from '@/utils/popLast'
+import { SECTION_NAME } from '@/constants/navigator/section/SectionName'
+import { SECTION_STATE } from '@/constants/navigator/section/SectionState'
 
 export const couponsRouteMeta: RouteMetaConfig[] = [
   {
-    test: (p: string) => p === '/coupons',
+    id: `${SECTION_NAME.COUPONS}_${SECTION_STATE.LIST}`,
+    test: (p: string) => p === '/commerce/coupons',
     meta: (): PageMeta => ({
       title: '쿠폰 목록',
       subtitle: '프로모션 및 할인 쿠폰을 관리합니다.',
@@ -15,8 +18,9 @@ export const couponsRouteMeta: RouteMetaConfig[] = [
   },
 
   {
-    // /coupons/[id] 상세
-    test: (p: string) => p.startsWith('/coupons/') && !['create', 'update'].includes(popLast(p)),
+    id: `${SECTION_NAME.COUPONS}_${SECTION_STATE.DETAIL}`,
+    test: (p: string) =>
+      p.startsWith('/commerce/coupons/') && !['create', 'update'].includes(popLast(p)),
     meta: (p: string): PageMeta => ({
       title: '쿠폰 상세',
       subtitle: `쿠폰 ID: ${popLast(p)}`,
@@ -29,7 +33,8 @@ export const couponsRouteMeta: RouteMetaConfig[] = [
   },
 
   {
-    test: (p: string) => p === '/coupons/create',
+    id: `${SECTION_NAME.COUPONS}_${SECTION_STATE.CREATE}`,
+    test: (p: string) => p === '/commerce/coupons/create',
     meta: (p: string): PageMeta => ({
       title: '쿠폰 생성',
       subtitle: '새 쿠폰을 생성합니다.',
@@ -42,7 +47,8 @@ export const couponsRouteMeta: RouteMetaConfig[] = [
   },
 
   {
-    test: (p: string) => p === '/coupons/update',
+    id: `${SECTION_NAME.COUPONS}_${SECTION_STATE.UPDATE}`,
+    test: (p: string) => p === '/commerce/coupons/update',
     meta: (p: string): PageMeta => ({
       title: '쿠폰 수정',
       subtitle: '쿠폰 정보를 수정합니다.',

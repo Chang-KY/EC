@@ -13,6 +13,7 @@ export type breadcrumb = {
 }[]
 
 export type RouteMetaConfig = {
+  id: string
   test: (p: string) => boolean
   meta: (p: string) => PageMeta
 }

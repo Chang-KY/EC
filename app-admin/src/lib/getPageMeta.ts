@@ -1,4 +1,3 @@
-// lib/getPageMeta.ts
 import { defaultMeta, routeMeta } from '@/config/meta/routeMeta'
 
 export function getPageMeta(pathname: string) {

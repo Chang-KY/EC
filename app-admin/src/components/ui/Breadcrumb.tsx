@@ -10,7 +10,7 @@ const Breadcrumb = () => {
   const { breadcrumb } = getPageMeta(pathname)
 
   return (
-    <nav className="flex items-center text-[10px] text-gray-500">
+    <nav className="flex items-center text-[10px] text-gray-700 dark:text-gray-500">
       <ol className="flex flex-wrap items-center">
         {breadcrumb?.map((b, i) => {
           const isCurrent = b.ariaCurrent === 'page'

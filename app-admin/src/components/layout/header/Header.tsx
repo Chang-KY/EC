@@ -8,7 +8,7 @@ import ProfileButton from '@/components/layout/header/ProfileButton'
 
 const Header = () => {
   return (
-    <header className="fixed inset-x-0 top-0 z-40 flex h-10 items-center justify-between border-b border-gray-800 bg-black/90 text-white backdrop-blur">
+    <header className="fixed inset-x-0 top-0 z-40 flex h-10 items-center justify-between border-b border-gray-300 backdrop-blur dark:border-gray-800 dark:bg-black dark:text-white">
       <div className="flex min-w-0 items-center">
         <Image
           src="/ec-logo.svg"
