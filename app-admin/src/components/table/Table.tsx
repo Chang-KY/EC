@@ -35,7 +35,7 @@ type Props<TData> = {
   manualPagination?: boolean // 서버 페이징일 때 true
 }
 
-const ROW_HEIGHT = 40 //rem
+const ROW_HEIGHT = 40 // px
 
 export default function Table<TData>({
   columns,

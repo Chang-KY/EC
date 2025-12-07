@@ -74,44 +74,39 @@ type SectionKey = 'overview' | 'commerce' | 'etc' | 'system'
 
 export default async function SectionNavigator({
   sn,
-  children,
 }: {
   sn: 'overview' | 'commerce' | 'etc' | 'system'
-  children: React.ReactNode
 }) {
   const menus = navigationBySection[sn]
   const title = sectionTitle[sn]
 
   return (
-    <section className="flex size-full">
-      <div className="h-full w-60 border-r border-gray-300 bg-white dark:border-gray-800 dark:bg-black">
-        <h2 className="flex h-12 items-center border-b border-gray-300 px-6 py-2.5 text-base leading-none font-semibold dark:border-gray-800">
-          {title}
-        </h2>
-        <div className="py-5">
-          <h3 className="pl-6 text-[10px] text-gray-500">CONFIGURATION</h3>
-          <nav className="mt-3 px-3 text-black dark:text-white">
-            <ul className="space-y-1">
-              {menus.map((item) => {
-                return (
-                  <li key={item.href}>
-                    <Selected currentPath={item.href}>
-                      <Link
-                        href={item.href}
-                        className="group flex items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors duration-150 hover:bg-gray-100 hover:dark:bg-gray-900"
-                      >
-                        {/*<item.icon size={14} className="text-gray-700 transition-colors" />*/}
-                        <span>{item.name}</span>
-                      </Link>
-                    </Selected>
-                  </li>
-                )
-              })}
-            </ul>
-          </nav>
-        </div>
+    <aside className="fixed h-full w-60 border-r border-gray-300 bg-white dark:border-gray-800 dark:bg-black">
+      <h2 className="flex h-12 items-center border-b border-gray-300 px-6 py-2.5 text-base leading-none font-semibold dark:border-gray-800">
+        {title}
+      </h2>
+      <div className="py-5">
+        <h3 className="pl-6 text-[10px] text-gray-500">CONFIGURATION</h3>
+        <nav className="mt-3 px-3 text-black dark:text-white">
+          <ul className="space-y-1">
+            {menus.map((item) => {
+              return (
+                <li key={item.href}>
+                  <Selected currentPath={item.href}>
+                    <Link
+                      href={item.href}
+                      className="group flex items-center gap-2 rounded-md px-3 py-2 text-xs transition-colors duration-150 hover:bg-gray-100 hover:dark:bg-gray-900"
+                    >
+                      {/*<item.icon size={14} className="text-gray-700 transition-colors" />*/}
+                      <span>{item.name}</span>
+                    </Link>
+                  </Selected>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
       </div>
-      <div className="w-full">{children}</div>
-    </section>
+    </aside>
   )
 }

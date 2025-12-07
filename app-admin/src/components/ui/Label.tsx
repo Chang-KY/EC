@@ -9,7 +9,7 @@ const Label = (props: LabelProps) => {
   const { name, label } = props
 
   return (
-    <label htmlFor={name} className="ml-0.5 text-xs font-bold">
+    <label htmlFor={name} className="font-base ml-0.5 text-xs text-gray-700">
       {label}
     </label>
   )

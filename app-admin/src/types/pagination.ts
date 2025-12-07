@@ -1,7 +1,7 @@
-export type paginationOptions<Row> = {
+export type paginationOptions<T> = {
   page: number
   size: number
   keyword: string
-  orderBy: keyof Row
+  orderBy: keyof T
   order: 'asc' | 'desc'
 }

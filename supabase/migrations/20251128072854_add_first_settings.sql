@@ -23,7 +23,8 @@ ALTER
 SCHEMA "ec" OWNER TO "postgres";
 
 -- 스키마 권한 부여
-grant usage on schema ec to anon, authenticated;
+grant usage on schema
+ec to anon, authenticated;
 
 -- ltree 구비
     CREATE
@@ -101,7 +102,7 @@ ON TYPE "ec"."product_image_role" IS
 CREATE TYPE "ec"."product_status" AS ENUM (
   'active',
   'hidden',
-  'sold-out'
+  'sold_out'
 );
 ALTER TYPE "ec"."product_status" OWNER TO "postgres";
 COMMENT
@@ -111,8 +112,6 @@ ON TYPE "ec"."product_status" IS
 -- 유저 롤
 CREATE TYPE "ec"."user_role" AS ENUM (
   'admin',
-  'user',
-  'guest',
   'super_admin',
   'viewer',
   'manager'
@@ -120,7 +119,7 @@ CREATE TYPE "ec"."user_role" AS ENUM (
 ALTER TYPE "ec"."user_role" OWNER TO "postgres";
 COMMENT
 ON TYPE "ec"."user_role" IS
-  '유저의 권한 및 역할을 나타내는 ENUM이다. admin: 관리자, user: 일반 사용자, guest: 비회원/게스트, super_admin: 최상위 관리자, viewer: 조회 전용 사용자, manager: 운영/관리 담당자를 의미한다.';
+  '유저의 권한 및 역할을 나타내는 ENUM이다. admin: 관리자, super_admin: 최상위 관리자, viewer: 조회 전용 사용자, manager: 운영/관리 담당자를 의미한다.';
 
 -- 주문 상태
 CREATE TYPE "ec"."order_status" AS ENUM (

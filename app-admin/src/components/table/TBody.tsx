@@ -36,7 +36,6 @@ function TBodyInner<TData>({
   return (
     <tbody>
       {rows.map((r, i) => {
-        console.log(rows.length === i + 1)
         const original = r.original as TData
         const href = getRowHref?.(original)
 

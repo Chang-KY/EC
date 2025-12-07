@@ -4,16 +4,25 @@ import React from 'react'
 import './Button.css'
 import clsx from 'clsx'
 
+type ButtonVariant = 'add' | 'delete' | 'update' | 'cancel'
+
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode
   icon?: React.ReactNode
+  variant?: ButtonVariant
 }
 
 const Button = (props: ButtonProps) => {
-  const { children, className, icon, ...rest } = props
+  const { children, className, variant = 'add', icon, ...rest } = props
+  const variantClass = {
+    add: 'btn-add',
+    delete: 'btn-delete',
+    update: 'btn-update',
+    cancel: 'btn-cancel',
+  }[variant]
 
   return (
-    <button {...rest} className={clsx('btn-add')}>
+    <button {...rest} className={clsx('btn-basic', variantClass, className)}>
       {icon && <div>{icon}</div>}
       <span>{children}</span>
     </button>

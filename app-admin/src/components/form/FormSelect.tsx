@@ -1,20 +1,21 @@
 import React from 'react'
+import clsx from 'clsx'
 import Label from '@/components/ui/Label'
 import Required from '@/components/ui/Required'
-import Input from '@/components/ui/Input'
 import ErrorMessage from '@/components/ui/ErrorMessage'
-import clsx from 'clsx'
+import Select from '@/components/ui/Select'
 
-type FormInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type BaseSelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   label: string
-  errorMessage?: string
   name: string
-  inputClassName?: string
+  options: { label: React.ReactNode; value: string }[]
+  errorMessage?: string
+  className?: string
   outerClassName?: string
 }
 
-const FormInput = (props: FormInputProps) => {
-  const { label, errorMessage, required, name, inputClassName, outerClassName, ...rest } = props
+export default function FormSelect(props: BaseSelectProps) {
+  const { label, errorMessage, required, name, options, className, outerClassName, ...rest } = props
 
   return (
     <div className={clsx('flex flex-col gap-1', outerClassName)}>
@@ -24,17 +25,16 @@ const FormInput = (props: FormInputProps) => {
           {required && <Required />}
         </div>
       )}
-      <Input
+      <Select
         required={required}
         name={name}
         aria-label={label}
         aria-labelledby={label}
-        inputClassName={inputClassName}
+        className={className}
+        options={options}
         {...rest}
       />
       {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
     </div>
   )
 }
-
-export default FormInput

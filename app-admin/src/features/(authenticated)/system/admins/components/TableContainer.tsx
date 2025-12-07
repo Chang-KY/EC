@@ -12,10 +12,11 @@ import { useAdmins } from '@/features/(authenticated)/system/admins/list/useAdmi
 import Input from '@/components/ui/Input'
 import { CirclePlus, Search } from 'lucide-react'
 import Button from '@/components/ui/button/Button'
+import Link from 'next/link'
 
 export default function TableContainer() {
   const { keyword, setKeyword, debouncedSearchTerm, isDebouncing, flush } = useKeywordSetParam(700)
-  const { page, setPage, pageSize, setPageSize, sizes } = usePageSetParam(10)
+  const { page, setPage, pageSize, setPageSize, sizes } = usePageSetParam(7)
   const { sorting, setSorting, orderBy, order, sortParam, setOrder } = useOrderSortParam<
     ADMINS_TABLE['Row']
   >({
@@ -53,7 +54,9 @@ export default function TableContainer() {
           }}
           onChange={(e) => setKeyword(e.target.value)}
         />
-        <Button icon={<CirclePlus size={14} className="text-gray-700" />}>관리자 추가</Button>
+        <Link href="/system/admins/create">
+          <Button icon={<CirclePlus size={14} className="text-gray-700" />}>관리자 추가</Button>
+        </Link>
       </div>
       <Table<ADMINS_TABLE['Row']>
         data={items}
@@ -73,9 +76,14 @@ export default function TableContainer() {
       <Pagination
         page={page}
         pageSize={pageSize}
+        sizes={sizes}
         total={total}
-        onChange={(p) => {}}
-        onPageSizeChange={() => {}}
+        onChange={(p) => setPage(p)}
+        onPageSizeChange={(s) => {
+          setPage(1)
+          console.log(s)
+          setPageSize(s)
+        }}
         itemsType="Admins"
       />
     </div>

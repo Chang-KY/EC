@@ -2,7 +2,7 @@ import React from 'react'
 import PageTitle from '@/components/layout/PageTitle'
 import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
-import TableContainer from '@/features/(authenticated)/system/admins/list/components/TableContainer'
+import TableContainer from '@/features/(authenticated)/system/admins/components/TableContainer'
 
 export const metadata: Metadata = {
   title: '관리자 계정 관리 | Admin',

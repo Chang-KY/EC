@@ -14,7 +14,7 @@ export default function Select(props: SelectProps) {
     <select
       {...rest}
       className={clsx(
-        'rounded border border-gray-300 px-2 py-1 text-xs dark:border-gray-800',
+        'h-10 rounded border border-gray-300 px-2 py-1 text-xs dark:border-gray-800',
         className,
       )}
     >

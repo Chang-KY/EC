@@ -1,17 +1,45 @@
 @reference "../../../app/globals.css";
 
 @layer components {
+  .btn-basic {
+    @apply inline-flex items-center gap-1.5
+    rounded px-3.5 py-1.5
+    text-xs font-medium
+    transition-colors
+    focus-visible:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-offset-2
+    focus-visible:ring-offset-black
+    disabled:cursor-not-allowed
+    disabled:opacity-60;
+  }
 
   .btn-add {
-    @apply inline-flex items-center gap-1.5
-    rounded-md
+    @apply
     bg-emerald-500/60 text-black
-    px-3.5 py-1.5 text-xs
+    border border-emerald-500
     hover:bg-emerald-400
-    border border-emerald-500 dark:bg-emerald-400
-    focus-visible:outline-none focus-visible:ring-2
-    focus-visible:ring-emerald-500/70
-    focus-visible:ring-offset-2 focus-visible:ring-offset-black
-    disabled:cursor-not-allowed disabled:opacity-60;
+    dark:bg-emerald-400
+    focus-visible:ring-emerald-500/70;
   }
+
+  .btn-cancel {
+    @apply
+    text-gray-700
+    border border-gray-400
+    hover:bg-gray-100
+    dark:bg-zinc-900
+    dark:border-zinc-700
+    focus-visible:ring-zinc-500/70;
+  }
+
+  .btn-update {
+    @apply
+    bg-sky-500/80 text-white
+    border border-sky-500
+    hover:bg-sky-400
+    dark:bg-sky-500
+    focus-visible:ring-sky-500/70;
+  }
+
 }

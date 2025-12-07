@@ -14,9 +14,9 @@ const Input = (props: InputProps) => {
       <input
         {...rest}
         className={clsx(
-          'rounded border py-1 pr-3 text-xs ring-2 ring-transparent outline-none',
+          'h-10 w-full rounded border py-2 pr-3 text-sm ring-0 outline-none',
           'dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:focus:border-gray-500',
-          'border-gray-300 bg-white text-gray-700',
+          'border-gray-300 bg-white text-gray-700 focus:border-indigo-200 focus:ring-1 focus:ring-indigo-200',
           icon ? 'pl-8' : 'pl-3',
           inputClassName,
         )}
