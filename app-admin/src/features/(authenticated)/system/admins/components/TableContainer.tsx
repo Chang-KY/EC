@@ -13,13 +13,18 @@ import Input from '@/components/ui/Input'
 import { CirclePlus, Search } from 'lucide-react'
 import Button from '@/components/ui/button/Button'
 import Link from 'next/link'
+import type { paginationOptions } from '@/types/pagination'
 
-export default function TableContainer() {
+export default function TableContainer({
+  page,
+  size,
+  orderBy,
+  order,
+  sizeTotal,
+}: paginationOptions<ADMINS_TABLE['Row']> & { sizeTotal: number[] }) {
   const { keyword, setKeyword, debouncedSearchTerm, isDebouncing, flush } = useKeywordSetParam(700)
-  const { page, setPage, pageSize, setPageSize, sizes } = usePageSetParam(7)
-  const { sorting, setSorting, orderBy, order, sortParam, setOrder } = useOrderSortParam<
-    ADMINS_TABLE['Row']
-  >({
+  const { setPage, pageSize, setPageSize } = usePageSetParam()
+  const { sorting, setSorting, sortParam, setOrder } = useOrderSortParam<ADMINS_TABLE['Row']>({
     defaultId: 'id',
     defaultDesc: true,
     allowedKeys: ['id', 'email', 'name', 'status', 'permissions', 'last_login', 'role'],
@@ -76,12 +81,11 @@ export default function TableContainer() {
       <Pagination
         page={page}
         pageSize={pageSize}
-        sizes={sizes}
+        sizes={sizeTotal}
         total={total}
         onChange={(p) => setPage(p)}
         onPageSizeChange={(s) => {
           setPage(1)
-          console.log(s)
           setPageSize(s)
         }}
         itemsType="Admins"

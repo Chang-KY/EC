@@ -8,7 +8,7 @@ type ArticleProps = {
   className?: string
 } & React.HTMLAttributes<HTMLElement>
 
-export default async function Article(props: ArticleProps) {
+export default function Article(props: ArticleProps) {
   const { title, subtitle, children, className, ...rest } = props
 
   return (

@@ -1,9 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
 
 export const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+  process.env.NEXT_PUBLIC_SUPABASE_URL!, // URL
+  process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY!, // Service role key
   {
-    auth: { persistSession: false },
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
   },
 )

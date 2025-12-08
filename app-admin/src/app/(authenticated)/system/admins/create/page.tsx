@@ -2,7 +2,7 @@ import React from 'react'
 import { Metadata } from 'next'
 import PageTitle from '@/components/layout/PageTitle'
 import { ROUTES } from '@/constants/routes'
-import AdminsForm from '@/features/(authenticated)/system/admins/components/AdminsForm'
+import AdminCreateForm from '@/features/(authenticated)/system/admins/components/AdminCreateForm'
 
 export const metadata: Metadata = {
   title: '관리자 계정 생성 | Admin',
@@ -16,7 +16,7 @@ const AdminCreatePage = () => {
       <PageTitle pathName={`${ROUTES.ADMINS}/create`} />
 
       <div className="px-20">
-        <AdminsForm />
+        <AdminCreateForm />
       </div>
     </section>
   )

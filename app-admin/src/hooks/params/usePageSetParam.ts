@@ -4,15 +4,14 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { usePagination } from '@/hooks/usePagination'
 
-export function usePageSetParam(defaultPageSize = 20) {
+export function usePageSetParam() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   // URL에서 초기값 읽기
   const initialPage = Number(searchParams.get('page') ?? 1)
-  const initialSize = Number(defaultPageSize)
 
-  const { page, setPage, pageSize, setPageSize, sizes } = usePagination(initialPage, initialSize)
+  const { page, setPage, pageSize, setPageSize } = usePagination(initialPage)
 
   // URL 업데이트 함수
   const updateURL = useCallback(
@@ -48,8 +47,6 @@ export function usePageSetParam(defaultPageSize = 20) {
   return {
     page,
     pageSize,
-    sizes,
-    // URL과 동기화된 Setter
     setPage: changePage,
     setPageSize: changePageSize,
   }
