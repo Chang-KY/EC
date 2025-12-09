@@ -3,6 +3,7 @@ import '@/app/globals.css'
 import ToastProvider from '@/provider/ToastProvider'
 import type { Metadata } from 'next'
 import TanStackProviders from '@/provider/TanStackProviders'
+import { suit } from '@/font/suit/font'
 
 export const metadata: Metadata = {
   title: 'EC Admin | 이커머스 관리 콘솔',
@@ -15,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={suit.className}>
       <body>
         <TanStackProviders>
           {children}
