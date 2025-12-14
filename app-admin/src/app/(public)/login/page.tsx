@@ -1,8 +1,5 @@
 import React from 'react'
 import LoginForm from '@/features/(public)/login/components/LoginForm'
-import { getCurrentUser } from '@/features/(public)/login/service'
-import { redirect } from 'next/navigation'
-import { ROUTES } from '@/constants/routes'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -12,9 +9,6 @@ export const metadata: Metadata = {
 }
 
 const LoginPage = async () => {
-  const user = await getCurrentUser()
-
-  if (user) redirect(ROUTES.DASHBOARD)
   return (
     <div className="flex size-full min-h-dvh items-center justify-center">
       <div className="m-auto min-w-96">
