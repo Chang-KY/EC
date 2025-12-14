@@ -8,7 +8,7 @@ import { FormState } from '@/types/FormState'
 import Article from '@/components/layout/Article'
 import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
-import Button from '@/components/ui/button/Button'
+import Button from '@/components/ui/Button'
 import FormPasswordInput from '@/components/form/FormPasswordInput'
 
 const initialAdminState: FormState<AdminCreateFormValues> = {

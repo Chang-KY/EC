@@ -11,7 +11,7 @@ import { useOrderSortParam } from '@/hooks/params/useOrderSortParams'
 import { useAdmins } from '@/features/(authenticated)/system/admins/list/useAdmins'
 import Input from '@/components/ui/Input'
 import { CirclePlus, Search } from 'lucide-react'
-import Button from '@/components/ui/button/Button'
+import Button from '@/components/ui/Button'
 import Link from 'next/link'
 import type { paginationOptions } from '@/types/pagination'
 
