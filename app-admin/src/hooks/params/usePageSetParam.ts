@@ -4,14 +4,15 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { usePagination } from '@/hooks/usePagination'
 
-export function usePageSetParam() {
+export function usePageSetParam(defaultPageSize = 7) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   // URL에서 초기값 읽기
   const initialPage = Number(searchParams.get('page') ?? 1)
+  const initialSize = Number(searchParams.get('size') ?? defaultPageSize)
 
-  const { page, setPage, pageSize, setPageSize } = usePagination(initialPage)
+  const { page, setPage, pageSize, setPageSize } = usePagination(initialPage, initialSize)
 
   // URL 업데이트 함수
   const updateURL = useCallback(
@@ -19,7 +20,7 @@ export function usePageSetParam() {
       const params = new URLSearchParams(searchParams.toString())
 
       params.set('page', String(nextPage))
-      // params.set('size', String(nextSize)) 사용자가 지정을 할 수 없게 하는게 좋을 듯
+      params.set('size', String(nextSize))
 
       router.replace(`?${params.toString()}`)
     },

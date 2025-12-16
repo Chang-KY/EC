@@ -76,6 +76,7 @@ const Pagination = ({
               label: `${s} / page`,
               value: String(s),
             }))}
+            className="h-7"
             onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
           />
         )}

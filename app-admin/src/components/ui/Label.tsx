@@ -5,14 +5,11 @@ type LabelProps = {
   label: string
 }
 
-const Label = (props: LabelProps) => {
+export default function Label(props: LabelProps) {
   const { name, label } = props
-
   return (
     <label htmlFor={name} className="font-base ml-0.5 text-xs text-gray-700">
       {label}
     </label>
   )
 }
-
-export default Label

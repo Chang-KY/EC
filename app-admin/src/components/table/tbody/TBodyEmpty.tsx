@@ -17,7 +17,9 @@ const TBodyEmpty = ({
           className="min-h-screen w-full py-10 text-center text-xs text-gray-700 dark:text-white"
           colSpan={colSpan}
         >
-          {emptyText}
+          <span className="border-b border-gray-300 px-5.5 py-1.5 dark:border-gray-800">
+            {emptyText}
+          </span>
         </td>
       </tr>
     </tbody>

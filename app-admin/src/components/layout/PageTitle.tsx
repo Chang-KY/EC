@@ -1,9 +1,14 @@
 import React from 'react'
 import { getPageMeta } from '@/lib/getPageMeta'
 
-const PageTitle = ({ pathName, children }: { pathName: string; children?: React.ReactNode }) => {
+export default async function PageTitle({
+  pathName,
+  children,
+}: {
+  pathName: string
+  children?: React.ReactNode
+}) {
   const { title, subtitle } = getPageMeta(pathName)
-
   return (
     <div className="flex h-28 items-center justify-between px-20 leading-none">
       <div className="flex flex-col gap-3">
@@ -15,5 +20,3 @@ const PageTitle = ({ pathName, children }: { pathName: string; children?: React.
     </div>
   )
 }
-
-export default PageTitle

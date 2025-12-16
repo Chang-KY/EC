@@ -50,13 +50,13 @@ WITH CHECK (
 );
 
 CREATE
-POLICY "read admins"
+POLICY "read only admins"
 ON ec.admins
 FOR
 SELECT
-    TO public
+    TO authenticated
     USING (
-    id = auth.uid()
+    true
     );
 
 CREATE

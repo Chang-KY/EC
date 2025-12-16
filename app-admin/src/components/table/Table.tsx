@@ -9,7 +9,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import TBody from '@/components/table/TBody'
-import clsx from 'clsx'
 
 export type TableChange = {
   page?: number
@@ -28,7 +27,6 @@ type Props<TData> = {
   onChange: (next: TableChange) => void
   loading?: boolean
   emptyText?: string
-  className?: string
   rowKey?: (row: TData) => string // 고유 키
   getRowHref?: (row: TData) => string | undefined
   manualSorting?: boolean // 서버 정렬일 때 true
@@ -47,7 +45,6 @@ export default function Table<TData>({
   onChange,
   loading,
   emptyText = '데이터가 없습니다.',
-  className,
   rowKey,
   getRowHref,
   manualSorting = true,
@@ -67,11 +64,14 @@ export default function Table<TData>({
     getSortedRowModel: getSortedRowModel(),
     pageCount: Math.max(1, Math.ceil(total / pageSize)),
   })
-  const height = `${ROW_HEIGHT * pageSize}px`
-  const divineHeaderHeight = `${ROW_HEIGHT * pageSize - 34}px`
+  const height = `${ROW_HEIGHT * pageSize + 36}px`
+  const divineHeaderHeight = `${ROW_HEIGHT * pageSize - 38}px`
 
   return (
-    <div className="w-full rounded border border-gray-300 dark:border-gray-800" style={{ height }}>
+    <div
+      className="z-10 w-full overflow-hidden rounded border border-gray-300 dark:border-gray-800"
+      style={{ height }}
+    >
       <table className="relative w-max min-w-full border-separate border-spacing-0 divide-y divide-gray-300">
         <THead table={table} />
         <TBody

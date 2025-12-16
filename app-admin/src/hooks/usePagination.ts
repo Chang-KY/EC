@@ -4,11 +4,14 @@ import { useCallback, useState } from 'react'
 
 export function usePagination(
   initialPage = 1,
+  initialPageSize = 7,
   opts?: { minPageSize?: number; maxPageSize?: number },
 ) {
   const { minPageSize = 1, maxPageSize = 100 } = opts ?? {}
   const [page, setPage] = useState(Math.max(1, initialPage))
-  const [pageSize, _setPageSize] = useState(Math.min(Math.max(minPageSize), maxPageSize))
+  const [pageSize, _setPageSize] = useState(
+    Math.min(Math.max(initialPageSize, minPageSize), maxPageSize),
+  )
 
   const setPageSafe = useCallback((p: number) => {
     setPage(Math.max(1, Math.floor(p || 1)))
@@ -22,6 +25,5 @@ export function usePagination(
     },
     [minPageSize, maxPageSize],
   )
-
   return { page, setPage: setPageSafe, pageSize, setPageSize }
 }

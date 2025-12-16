@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { redirect } from 'next/navigation'
 import { ROUTES } from '@/constants/routes'
 import { createAdminWithAuth } from '@/features/(authenticated)/system/admins/create/service'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 export async function adminCreateAction(
   prev: FormState<AdminCreateFormValues>,

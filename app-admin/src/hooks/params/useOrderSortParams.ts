@@ -51,7 +51,6 @@ export function useOrderSortParam<TRow extends object>(
     if (urlOrder === 'desc') initialDesc = true
 
     return { initialId, initialDesc }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, orderByKey, orderKey, defaultId, defaultDesc, allowedKeys])
 
   /* -------------------------------

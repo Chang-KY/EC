@@ -8,12 +8,13 @@ import { ADMINS_TABLE } from '@/types/db'
 import { useKeywordSetParam } from '@/hooks/params/useKeywordSetParam'
 import { usePageSetParam } from '@/hooks/params/usePageSetParam'
 import { useOrderSortParam } from '@/hooks/params/useOrderSortParams'
-import { useAdmins } from '@/features/(authenticated)/system/admins/list/useAdmins'
 import Input from '@/components/ui/Input'
 import { CirclePlus, Search } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
 import type { paginationOptions } from '@/types/pagination'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { getAdmins } from '@/features/(authenticated)/system/admins/list/getAdmins'
 
 export default function TableContainer({
   page,
@@ -29,13 +30,17 @@ export default function TableContainer({
     defaultDesc: true,
     allowedKeys: ['id', 'email', 'name', 'status', 'permissions', 'last_login', 'role'],
   })
-
-  const { data, isFetching } = useAdmins({
-    page,
-    size: pageSize,
-    orderBy,
-    order,
-    keyword: debouncedSearchTerm,
+  const currentOrderBy = (sorting?.[0]?.id ?? orderBy ?? 'id') as keyof ADMINS_TABLE['Row']
+  const currentOrder: 'asc' | 'desc' = sorting?.[0]?.desc ? 'desc' : 'asc'
+  const { data, isFetching } = useQuery({
+    ...getAdmins({
+      page,
+      size: pageSize,
+      keyword: debouncedSearchTerm,
+      order: currentOrder,
+      orderBy: currentOrderBy,
+    }),
+    placeholderData: keepPreviousData,
   })
   const items = data?.items ?? []
   const total = data?.total ?? 0
@@ -51,6 +56,7 @@ export default function TableContainer({
         <Input
           type="text"
           name="search"
+          className="h-7"
           value={keyword}
           placeholder="어드민 검색..."
           icon={<Search size={16} />}
@@ -73,7 +79,7 @@ export default function TableContainer({
         onChange={handleTableChange}
         loading={isFetching}
         rowKey={(r) => String(r.id)}
-        getRowHref={(r) => `/admin/coupons/detail/${r.id}`}
+        getRowHref={(r) => `/system/admins/${r.id}`}
         manualSorting
         manualPagination
         columns={adminColumns}

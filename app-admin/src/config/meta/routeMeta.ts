@@ -11,6 +11,7 @@ import { reviewsRouteMeta } from '@/config/meta/route/reviews'
 import { settingsRouteMeta } from '@/config/meta/route/settings'
 import { usersRouteMeta } from '@/config/meta/route/users'
 import { dashboardRouteMeta } from '@/config/meta/route/dashboard'
+import { noDataRouteMeta } from '@/config/meta/route/_noData'
 
 export const defaultMeta: PageMeta = {
   title: '에러 페이지',
@@ -33,4 +34,6 @@ export const routeMeta: {
   ...reviewsRouteMeta,
   ...settingsRouteMeta,
   ...usersRouteMeta,
+
+  ...noDataRouteMeta,
 ]

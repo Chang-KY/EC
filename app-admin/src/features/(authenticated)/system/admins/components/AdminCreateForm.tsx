@@ -10,6 +10,14 @@ import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
 import Button from '@/components/ui/Button'
 import FormPasswordInput from '@/components/form/FormPasswordInput'
+import {
+  ADMIN_STATUS_META,
+  AdminStatusKey,
+  LEVEL_META,
+  LEVELS,
+  USER_ROLE_META,
+} from '@/features/(authenticated)/system/admins/schema'
+import { useRouter } from 'next/navigation'
 
 const initialAdminState: FormState<AdminCreateFormValues> = {
   values: {},
@@ -18,6 +26,7 @@ const initialAdminState: FormState<AdminCreateFormValues> = {
 }
 
 export default function AdminCreateForm() {
+  const router = useRouter()
   return (
     <ServerForm<FormState<AdminCreateFormValues>>
       action={adminCreateAction}
@@ -85,37 +94,37 @@ export default function AdminCreateForm() {
               <div className="grid gap-3">
                 <FormSelect
                   label="역할"
+                  className="h-10"
                   name="role"
-                  options={[
-                    { value: 'admin', label: '관리자' },
-                    { value: 'manager', label: '매니저 (기본)' },
-                    { value: 'guest', label: '게스트 (조회 전용)' },
-                  ]}
+                  options={Object.entries(USER_ROLE_META)
+                    .filter(([value]) => value !== 'super_admin')
+                    .map(([value, meta]) => ({
+                      value: value as Exclude<keyof typeof USER_ROLE_META, 'super_admin'>,
+                      label: meta.label,
+                    }))}
                   defaultValue={state.values.role ?? 'manager'}
                   errorMessage={state.fieldErrors.role?.[0]}
                 />
                 <FormSelect
                   label="상태"
+                  className="h-10"
                   name="status"
-                  options={[
-                    { value: 'active', label: '활성' },
-                    { value: 'suspended', label: '비활성' },
-                    { value: 'revoked', label: '정지' },
-                  ]}
+                  options={Object.entries(ADMIN_STATUS_META).map(([value, meta]) => ({
+                    value: value as AdminStatusKey,
+                    label: meta.label,
+                    icon: meta.icon,
+                  }))}
                   defaultValue={state.values.status ?? 'active'}
                   errorMessage={state.fieldErrors.status?.[0]}
                 />
                 <FormSelect
                   label="레벨"
+                  className="h-10"
                   name="level"
-                  options={[
-                    { value: '1', label: 'Lv.1 (기본)' },
-                    { value: '2', label: 'Lv.2' },
-                    { value: '3', label: 'Lv.3' },
-                    { value: '4', label: 'Lv.4' },
-                    { value: '5', label: 'Lv.5' },
-                    { value: '6', label: 'Lv.6 (최고)' },
-                  ]}
+                  options={LEVELS.map((value) => ({
+                    value: String(value),
+                    label: LEVEL_META[value].label,
+                  }))}
                   defaultValue={String(state.values.level ?? 1)}
                   errorMessage={state.fieldErrors.level?.[0]}
                 />
@@ -124,7 +133,12 @@ export default function AdminCreateForm() {
 
             <Article>
               <div className="flex items-center justify-end gap-2.5">
-                <Button variant="cancel" type="button">
+                <Button
+                  variant="cancel"
+                  type="button"
+                  onClick={() => router.back()}
+                  disabled={isPending}
+                >
                   취소
                 </Button>
                 <Button variant="add" type="submit" disabled={isPending}>

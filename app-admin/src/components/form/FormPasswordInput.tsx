@@ -39,7 +39,7 @@ const FormPasswordInput = (props: FormInputProps) => {
           name={name}
           aria-label={label}
           aria-labelledby={label}
-          inputClassName={clsx(inputClassName, isPassword && 'pr-8')}
+          className={clsx(inputClassName, isPassword && 'pr-8')}
           type={inputType}
           {...rest}
         />
