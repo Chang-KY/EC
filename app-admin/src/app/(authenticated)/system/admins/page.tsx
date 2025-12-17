@@ -19,10 +19,11 @@ export const metadata: Metadata = {
 export default async function AdminsPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams
   const page = Number(sp.page ?? '1')
-  const size = pageSize[0]
+  const size = Number(sp.size ?? String(pageSize[0]))
   const orderBy = (sp.orderBy ?? 'name') as keyof ADMINS_TABLE['Row']
   const order = (sp.order ?? 'asc') as 'asc' | 'desc'
   const keyword = ''
+
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery(
     getAdmins({

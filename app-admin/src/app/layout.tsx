@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={suit.className}>
+    <html lang="ko" className={`${suit.className} ${suit.variable}`}>
       <body>
         <TanStackProviders>
           {children}
