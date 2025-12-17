@@ -19,11 +19,8 @@ export function useKeywordSetParam(delay = 700) {
   // debounced가 변경될 때만 URL 업데이트
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString())
-
-    console.log(debounced)
     if (debounced) params.set('keyword', encodeURIComponent(debounced))
     else params.delete('keyword')
-
     router.replace(`?${params.toString()}`)
   }, [debounced])
 

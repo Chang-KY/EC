@@ -23,7 +23,7 @@ type Props<TData> = {
   total: number // 전체 건수
   page: number // 페이지는 1
   pageSize: number
-  sorting?: SortingState
+  sorting: SortingState
   onChange: (next: TableChange) => void
   loading?: boolean
   emptyText?: string
@@ -69,7 +69,7 @@ export default function Table<TData>({
 
   return (
     <div
-      className="z-10 w-full overflow-hidden rounded border border-gray-300 dark:border-gray-800"
+      className="z-10 w-full overflow-x-auto overflow-y-hidden rounded border border-gray-300 dark:border-gray-800"
       style={{ height }}
     >
       <table className="relative w-max min-w-full border-separate border-spacing-0 divide-y divide-gray-300">
