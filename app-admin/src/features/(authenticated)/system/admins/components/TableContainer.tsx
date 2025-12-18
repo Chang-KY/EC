@@ -26,12 +26,10 @@ export default function TableContainer({
 }: paginationOptions<ADMINS_TABLE['Row']> & { sizeTotal: number[] }) {
   const { keyword, setKeyword, debouncedSearchTerm, isDebouncing, flush } = useKeywordSetParam(700)
   const { page, setPage } = usePagination(currentPage)
-  const { sorting, setSorting, sortParam, setOrder, orderBy, order } = useOrderSort<
-    ADMINS_TABLE['Row']
-  >({
+  const { sorting, setSorting } = useOrderSort<ADMINS_TABLE['Row']>({
     defaultId: 'id',
     defaultDesc: true,
-    allowedKeys: ['id', 'email', 'name', 'status', 'permissions', 'last_login', 'role'],
+    allowedKeys: ['id', 'email', 'name', 'status', 'level', 'role', 'last_login'],
   })
   const { setQuery } = useSetQuery()
   const { data, isFetching } = useQuery({
@@ -59,6 +57,7 @@ export default function TableContainer({
       patch.page = next.page
     }
 
+    console.log(next)
     if (next.sorting) {
       setSorting(next.sorting)
 
@@ -128,7 +127,7 @@ export default function TableContainer({
         }}
         onPageSizeChange={(s) => {
           setPage(1)
-          setQuery({ size: s })
+          setQuery({ size: s, page: 1 })
         }}
         itemsType="Admins"
       />
