@@ -3,7 +3,7 @@ import { fetchRowByColumn } from '@/lib/db/fetchRowById'
 import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
 import { getAdminDetail } from '@/features/(authenticated)/system/admins/detail/getAdminDetail'
-import Article from '@/components/layout/Article'
+import Article from '@/components/layout/article/Article'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
 import Section from '@/components/layout/Section'
@@ -17,6 +17,8 @@ import {
 } from '@/features/(authenticated)/system/admins/schema'
 import InfoRow from '@/components/ui/InfoRow'
 import MetaChip from '@/components/ui/MetaChip'
+import ArticleButton from '@/components/layout/article/ArticleButton'
+import AdminBasicInfoUpdate from '@/features/(authenticated)/system/admins/components/AdminBasicInfoUpdate'
 
 export async function generateMetadata({
   params,
@@ -76,7 +78,17 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
             </div>
           </Article>
 
-          <Article title="기본 정보" subtitle="관리자 프로필 정보">
+          <Article
+            id="basic-info"
+            title="기본 정보"
+            subtitle="관리자 프로필 정보"
+            menu={[
+              { id: 'Edit', element: <ArticleButton targetId="basic-info-edit" label="Edit" /> },
+            ]}
+            boardContent={{
+              'basic-info-edit': <AdminBasicInfoUpdate />,
+            }}
+          >
             <div className="grid gap-3 md:grid-cols-2">
               <InfoRow label="이름" value={admin.name ?? '-'} />
               <InfoRow label="전화번호" value={admin.phone ?? '-'} />
@@ -84,7 +96,7 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
           </Article>
 
           <Article title="활동" subtitle="계정 사용 기록">
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3">
               <InfoRow label="마지막 로그인" value={admin.last_login ?? '-'} />
               <InfoRow
                 label="생성일"

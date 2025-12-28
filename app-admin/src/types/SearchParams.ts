@@ -3,4 +3,5 @@ export type SearchParams = Promise<{
   size?: string
   orderBy?: string
   order?: string
+  keyword?: string
 }>

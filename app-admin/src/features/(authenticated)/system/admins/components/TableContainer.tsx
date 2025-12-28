@@ -16,34 +16,38 @@ import { getAdmins } from '@/features/(authenticated)/system/admins/list/getAdmi
 import { usePagination } from '@/hooks/usePagination'
 import { useOrderSort } from '@/hooks/useOrderSort'
 import { useSetQuery } from '@/hooks/useSetQuery'
+import { usePageSize } from '@/hooks/usePageSize'
 
 export default function TableContainer({
-  page: currentPage,
-  size,
-  orderBy: currentOrderBy,
-  order: currentOrder,
-  sizeTotal,
-}: paginationOptions<ADMINS_TABLE['Row']> & { sizeTotal: number[] }) {
-  const { keyword, setKeyword, debouncedSearchTerm, isDebouncing, flush } = useKeywordSetParam(700)
-  const { page, setPage } = usePagination(currentPage)
-  const { sorting, setSorting, sortParam, setOrder, orderBy, order } = useOrderSort<
-    ADMINS_TABLE['Row']
-  >({
-    defaultId: 'id',
-    defaultDesc: true,
-    allowedKeys: ['id', 'email', 'name', 'status', 'permissions', 'last_login', 'role'],
+  page: initialPage,
+  size: initialSize,
+  orderBy: initialOrderBy,
+  order: initialOrder,
+  keyword: initialKeyword,
+}: paginationOptions<ADMINS_TABLE['Row']>) {
+  const { keyword, setKeyword, debouncedSearchTerm, isDebouncing, flush } = useKeywordSetParam(
+    700,
+    initialKeyword,
+  )
+  const { page, setPage } = usePagination(initialPage)
+  const { sorting, setSorting, order, orderBy } = useOrderSort<ADMINS_TABLE['Row']>({
+    defaultId: initialOrderBy ?? 'id',
+    defaultDesc: initialOrder === 'desc',
+    allowedKeys: ['id', 'email', 'name', 'status', 'level', 'role', 'last_login'],
   })
+  const { size, setSize, sizeList } = usePageSize(initialSize)
   const { setQuery } = useSetQuery()
   const { data, isFetching } = useQuery({
     ...getAdmins({
       page,
       size,
       keyword: debouncedSearchTerm,
-      order: currentOrder,
-      orderBy: currentOrderBy,
+      order,
+      orderBy,
     }),
     placeholderData: keepPreviousData,
   })
+
   const items = data?.items ?? []
   const total = data?.total ?? 0
   const isSearchTyping = keyword !== debouncedSearchTerm
@@ -69,7 +73,7 @@ export default function TableContainer({
       } else {
         patch.orderBy = first.id
         patch.order = first.desc ? 'desc' : 'asc'
-        patch.page = 1 // 정렬 바뀌면 보통 1페이지로 리셋
+        patch.page = 1
         setPage(1)
       }
     }
@@ -106,7 +110,7 @@ export default function TableContainer({
         data={items}
         total={total}
         page={page}
-        pageSize={size}
+        pageSize={size ?? sizeList[0]}
         sorting={sorting}
         emptyText={`[${debouncedSearchTerm}] Admins Data가 없습니다.`}
         onChange={handleTableChange}
@@ -119,8 +123,8 @@ export default function TableContainer({
       />
       <Pagination
         page={page}
-        pageSize={size}
-        sizes={sizeTotal}
+        pageSize={size ?? sizeList[0]}
+        sizes={sizeList}
         total={total}
         onChange={(p) => {
           setPage(p)
@@ -128,7 +132,8 @@ export default function TableContainer({
         }}
         onPageSizeChange={(s) => {
           setPage(1)
-          setQuery({ size: s })
+          setSize(s)
+          setQuery({ size: s, page: 1 })
         }}
         itemsType="Admins"
       />

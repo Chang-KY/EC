@@ -2,8 +2,9 @@ import React from 'react'
 import '@/app/globals.css'
 import ToastProvider from '@/provider/ToastProvider'
 import type { Metadata } from 'next'
-import TanStackProviders from '@/provider/TanStackProviders'
+import TanStackProvider from '@/provider/TanStackProvider'
 import { suit } from '@/font/suit/font'
+import JotaiProvider from '@/provider/JotaiProvider'
 
 export const metadata: Metadata = {
   title: 'EC Admin | 이커머스 관리 콘솔',
@@ -18,10 +19,10 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${suit.className} ${suit.variable}`}>
       <body>
-        <TanStackProviders>
-          {children}
-          <ToastProvider />
-        </TanStackProviders>
+        <TanStackProvider>
+          <JotaiProvider>{children}</JotaiProvider>
+        </TanStackProvider>
+        <ToastProvider />
       </body>
     </html>
   )

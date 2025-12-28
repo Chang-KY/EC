@@ -4,7 +4,7 @@ import { ROUTES } from '@/constants/routes'
 import Section from '@/components/layout/Section'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import TableContainer from '@/features/(authenticated)/system/admins/components/TableContainer'
-import { pageSize } from '@/constants/page/pageSize'
+import { pageSizeList } from '@/constants/page/pageSizeList'
 
 export const metadata: Metadata = {
   title: '상품 관리 | Admin',

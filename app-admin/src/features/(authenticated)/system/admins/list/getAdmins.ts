@@ -11,18 +11,16 @@ export const getAdmins = (params: paginationOptions<ADMINS_TABLE['Row']>) =>
       sp.set('page', String(params.page))
       sp.set('size', String(params.size))
       if (params.keyword) sp.set('keyword', params.keyword)
-      sp.set('order', params.order)
-      sp.set('orderBy', String(params.orderBy))
-
+      if (params.order) sp.set('order', params.order)
+      if (params.orderBy) sp.set('orderBy', params.orderBy)
       const res = await fetch(`/api/system/admins?${sp.toString()}`, {
         credentials: 'include',
       })
-
       if (!res.ok) {
         throw new Error('Failed to fetch admins')
       }
-
       return res.json()
     },
     retry: 2,
+    staleTime: 300_000,
   })

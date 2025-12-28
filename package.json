@@ -22,7 +22,6 @@
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "supabase": "^2.63.1"
   }

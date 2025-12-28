@@ -5,7 +5,7 @@ import { AdminCreateFormValues } from '@/features/(authenticated)/system/admins/
 import { adminCreateAction } from '@/features/(authenticated)/system/admins/create/actions'
 import ServerForm from '@/components/form/ServerForm'
 import { FormState } from '@/types/FormState'
-import Article from '@/components/layout/Article'
+import Article from '@/components/layout/article/Article'
 import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
 import Button from '@/components/ui/Button'

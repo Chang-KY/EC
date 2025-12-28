@@ -1,23 +1,40 @@
 import React from 'react'
 import clsx from 'clsx'
+import { Ellipsis } from 'lucide-react'
+import DropdownMenu from '@/components/ui/DropdownMenu/DropdownMenu'
+import ArticleBoard from '@/components/layout/article/ArticleBoard'
 
 type ArticleProps = {
   title?: string
   subtitle?: string
   actions?: React.ReactNode
+  boardContent?: Record<string, React.ReactNode>
+  menu?: DropdownMenuState[]
 } & React.HTMLAttributes<HTMLElement>
 
 export default function Article(props: ArticleProps) {
-  const { title, subtitle, children, className, actions, ...rest } = props
+  const { id, title, subtitle, children, className, actions, boardContent, menu, ...rest } = props
 
   return (
     <article
+      id={`${id}-article`}
       {...rest}
       className={clsx(
-        'rounded border border-gray-300 bg-white p-5 dark:border-gray-800 dark:bg-black',
+        'relative rounded border border-gray-300 bg-white p-5 dark:border-gray-800 dark:bg-black',
         className,
       )}
     >
+      <ArticleBoard id={id} boardContent={boardContent} />
+      <div className="absolute top-3 right-3">
+        {menu && (
+          <DropdownMenu
+            align="end"
+            triggerButton={<Ellipsis className="size-6 rounded-full p-1" />}
+            label="Option"
+            menuElement={menu}
+          />
+        )}
+      </div>
       {title && (
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>

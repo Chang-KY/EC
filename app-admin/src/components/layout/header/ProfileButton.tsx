@@ -2,15 +2,16 @@
 
 import React from 'react'
 import {
-  DropdownMenu,
+  DropdownElement,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu'
+} from '@/components/ui/DropdownMenu/DropdownElement'
 import { Avatar } from '@/components/ui/Avatar'
 import { logoutAction } from '@/features/layout/auth/logout/actions'
+import DropdownMenu from '@/components/ui/DropdownMenu/DropdownMenu'
 
 const ProfileButton = () => {
   const handleLogOut = async () => {
@@ -19,24 +20,23 @@ const ProfileButton = () => {
       alert('성공적으로 로그아웃 되었습니다.')
     }
   }
+
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center justify-center">
-          <Avatar size="xs" ring="default" src="" alt="장권영" fallback="권영" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Setting</DropdownMenuItem>
-          <DropdownMenuItem>
+    <DropdownMenu
+      label="My Account"
+      triggerButton={<Avatar size="xs" ring="default" src="" alt="장권영" fallback="권영" />}
+      menuElement={[
+        { id: 'setting', element: <p>Setting</p> },
+        {
+          id: 'logout',
+          element: (
             <button type="button" className="w-full text-left" onClick={handleLogOut}>
               Logout
             </button>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+          ),
+        },
+      ]}
+    />
   )
 }
 

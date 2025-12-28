@@ -4,11 +4,9 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useDebouncedState } from '@/hooks/useDebouncedKeyword'
 
-export function useKeywordSetParam(delay = 700) {
+export function useKeywordSetParam(delay = 700, initialKeyword?: string) {
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  const initialKeyword = searchParams.get('keyword') ?? ''
 
   const { value, setValue, debounced, isDebouncing, cancel, flush } = useDebouncedState(
     initialKeyword,
