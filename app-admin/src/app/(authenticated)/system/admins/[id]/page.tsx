@@ -9,16 +9,23 @@ import Link from 'next/link'
 import Section from '@/components/layout/Section'
 import {
   ADMIN_STATUS_META,
-  AdminStatusKey,
+  AdminStatus,
+  Level,
   LEVEL_META,
-  LevelKey,
   USER_ROLE_META,
-  UserRoleKey,
+  UserRole,
 } from '@/features/(authenticated)/system/admins/schema'
 import InfoRow from '@/components/ui/InfoRow'
 import MetaChip from '@/components/ui/MetaChip'
-import ArticleButton from '@/components/layout/article/ArticleButton'
-import AdminBasicInfoUpdate from '@/features/(authenticated)/system/admins/components/AdminBasicInfoUpdate'
+import InfoRowInputUpdate from '@/components/ui/InfoRowInputUpdate'
+import {
+  adminUpdateLevelAction,
+  adminUpdateNameAction,
+  adminUpdatePhoneAction,
+  adminUpdateRoleAction,
+  adminUpdateStatusAction,
+} from '@/features/(authenticated)/system/admins/update/basicInfoActions'
+import InfoRowSelectUpdate from '@/components/ui/InfoRowSelectUpdate'
 
 export async function generateMetadata({
   params,
@@ -60,9 +67,10 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
       </Section>
     )
   }
-  const statusKey = admin.status as AdminStatusKey
-  const roleKey = admin.role as UserRoleKey
-  const levelKey = Number(admin.level) as LevelKey
+
+  const statusKey = admin.status as AdminStatus
+  const roleKey = admin.role as UserRole
+  const levelKey = Number(admin.level) as Level
 
   const statusMeta = ADMIN_STATUS_META[statusKey]
   const roleMeta = USER_ROLE_META[roleKey]
@@ -78,20 +86,34 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
             </div>
           </Article>
 
-          <Article
-            id="basic-info"
-            title="기본 정보"
-            subtitle="관리자 프로필 정보"
-            menu={[
-              { id: 'Edit', element: <ArticleButton targetId="basic-info-edit" label="Edit" /> },
-            ]}
-            boardContent={{
-              'basic-info-edit': <AdminBasicInfoUpdate />,
-            }}
-          >
+          <Article title="기본 정보" subtitle="관리자 프로필 정보">
             <div className="grid gap-3 md:grid-cols-2">
-              <InfoRow label="이름" value={admin.name ?? '-'} />
-              <InfoRow label="전화번호" value={admin.phone ?? '-'} />
+              <InfoRow
+                label="이름"
+                value={admin.name ?? '-'}
+                action={
+                  <InfoRowInputUpdate
+                    targetId="basic-info-name"
+                    adminId={id}
+                    initialValue={admin.name ?? ''}
+                    field="name"
+                    action={adminUpdateNameAction}
+                  />
+                }
+              />
+              <InfoRow
+                label="전화번호"
+                value={admin.phone ?? '-'}
+                action={
+                  <InfoRowInputUpdate
+                    targetId="basic-info-phone"
+                    adminId={id}
+                    initialValue={admin.phone ?? ''}
+                    field="phone"
+                    action={adminUpdatePhoneAction}
+                  />
+                }
+              />
             </div>
           </Article>
 
@@ -117,6 +139,19 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                       label={roleMeta.label}
                       icon={roleMeta.icon}
                       className={roleMeta.className}
+                      menuElement={Object.entries(USER_ROLE_META).map(([key, meta]) => ({
+                        id: key,
+                        element: (
+                          <InfoRowSelectUpdate
+                            adminId={id}
+                            field="role"
+                            label={meta.label}
+                            disabled={roleKey === (key as UserRole)}
+                            value={key}
+                            action={adminUpdateRoleAction}
+                          />
+                        ),
+                      }))}
                     />
                   ) : (
                     (admin.role ?? '-')
@@ -132,6 +167,19 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                       label={statusMeta.label}
                       icon={statusMeta.icon}
                       className={statusMeta.className}
+                      menuElement={Object.entries(ADMIN_STATUS_META).map(([key, meta]) => ({
+                        id: key,
+                        element: (
+                          <InfoRowSelectUpdate
+                            adminId={id}
+                            field="status"
+                            label={meta.label}
+                            disabled={statusKey === (key as AdminStatus)}
+                            value={key}
+                            action={adminUpdateStatusAction}
+                          />
+                        ),
+                      }))}
                     />
                   ) : (
                     (admin.status ?? '-')
@@ -143,7 +191,23 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                 label="레벨"
                 value={
                   levelMeta ? (
-                    <MetaChip label={levelMeta.label} icon={levelMeta.icon} />
+                    <MetaChip
+                      label={levelMeta.label}
+                      icon={levelMeta.icon}
+                      menuElement={Object.entries(LEVEL_META).map(([key, meta]) => ({
+                        id: key,
+                        element: (
+                          <InfoRowSelectUpdate
+                            adminId={id}
+                            field="level"
+                            label={meta.label}
+                            disabled={levelKey === (Number(key) as Level)}
+                            value={key}
+                            action={adminUpdateLevelAction}
+                          />
+                        ),
+                      }))}
+                    />
                   ) : admin.level != null ? (
                     `Lv.${admin.level}`
                   ) : (

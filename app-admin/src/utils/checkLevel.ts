@@ -1,4 +1,4 @@
-import { UserRole } from '@/types/userRole'
+import { UserRole } from '@/types/enum'
 
 export function canManageAdmins(role: UserRole, level: number) {
   if (role === 'super_admin') return true

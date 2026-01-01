@@ -12,9 +12,8 @@ import Button from '@/components/ui/Button'
 import FormPasswordInput from '@/components/form/FormPasswordInput'
 import {
   ADMIN_STATUS_META,
-  AdminStatusKey,
+  AdminStatus,
   LEVEL_META,
-  LEVELS,
   USER_ROLE_META,
 } from '@/features/(authenticated)/system/admins/schema'
 import { useRouter } from 'next/navigation'
@@ -110,7 +109,7 @@ export default function AdminCreateForm() {
                   className="h-10"
                   name="status"
                   options={Object.entries(ADMIN_STATUS_META).map(([value, meta]) => ({
-                    value: value as AdminStatusKey,
+                    value: value as AdminStatus,
                     label: meta.label,
                     icon: meta.icon,
                   }))}
@@ -121,9 +120,9 @@ export default function AdminCreateForm() {
                   label="레벨"
                   className="h-10"
                   name="level"
-                  options={LEVELS.map((value) => ({
-                    value: String(value),
-                    label: LEVEL_META[value].label,
+                  options={Object.entries(LEVEL_META).map(([value, meta]) => ({
+                    label: meta.label,
+                    value: value,
                   }))}
                   defaultValue={String(state.values.level ?? 1)}
                   errorMessage={state.fieldErrors.level?.[0]}
@@ -142,7 +141,7 @@ export default function AdminCreateForm() {
                   취소
                 </Button>
                 <Button variant="add" type="submit" disabled={isPending}>
-                  {isPending ? '추가 중…' : '관리자 추가'}
+                  {isPending ? '추가 중…' : '관리자 생성'}
                 </Button>
               </div>
             </Article>

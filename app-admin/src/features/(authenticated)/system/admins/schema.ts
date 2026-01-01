@@ -1,22 +1,36 @@
 import { z } from 'zod'
-import { Briefcase, Eye, LucideIcon, Shield, User } from 'lucide-react'
-import { BadgeCheck, CheckCircle2, Crown, PauseCircle, XCircle } from 'lucide-react'
+import {
+  type LucideIcon,
+  BadgeCheck,
+  Briefcase,
+  CheckCircle2,
+  Crown,
+  Eye,
+  PauseCircle,
+  Shield,
+  User,
+  XCircle,
+} from 'lucide-react'
 
-export const adminStatusSchema = z.enum(['active', 'suspended', 'revoked']).default('active')
-export type AdminStatus = z.infer<typeof adminStatusSchema>
+export const ADMIN_STATUSES = ['active', 'suspended', 'revoked'] as const
+export type AdminStatus = (typeof ADMIN_STATUSES)[number]
+export const adminStatusSchema = z.enum(ADMIN_STATUSES).default('active')
 
-export const userRoleSchema = z
-  .enum(['admin', 'super_admin', 'viewer', 'manager'])
-  .default('manager')
-export type UserRole = z.infer<typeof userRoleSchema>
+export const USER_ROLES = ['admin', 'super_admin', 'viewer', 'manager'] as const
+export type UserRole = (typeof USER_ROLES)[number]
+export const userRoleSchema = z.enum(USER_ROLES).default('manager')
 
+export const LEVELS = [1, 2, 3, 4, 5, 6] as const
+export type Level = (typeof LEVELS)[number]
 export const levelSchema = z.coerce
   .number()
   .int('레벨은 정수여야 합니다.')
   .min(1, '레벨은 1 이상이어야 합니다.')
   .max(6, '레벨은 6 이하로만 설정할 수 있습니다.')
   .default(1)
-export type Level = z.infer<typeof levelSchema>
+
+/** 2) META 타입은 satisfies로 “값 누락/오타”만 컴파일 단계에서 잡기 */
+type Meta = { label: string; icon?: LucideIcon; className?: string }
 
 export const ADMIN_STATUS_META = {
   active: {
@@ -26,17 +40,7 @@ export const ADMIN_STATUS_META = {
   },
   suspended: { label: '정지', icon: PauseCircle, className: 'text-amber-600 dark:text-amber-300' },
   revoked: { label: '회수', icon: XCircle, className: 'text-rose-600 dark:text-rose-300' },
-} as const satisfies Record<string, { label: string; icon?: LucideIcon; className: string }>
-
-export type AdminStatusKey = keyof typeof ADMIN_STATUS_META
-
-export const adminStatusOptions = (Object.keys(ADMIN_STATUS_META) as AdminStatusKey[]).map(
-  (value) => ({
-    value,
-    label: ADMIN_STATUS_META[value].label,
-    icon: ADMIN_STATUS_META[value].icon,
-  }),
-)
+} as const satisfies Record<AdminStatus, Required<Pick<Meta, 'label' | 'icon' | 'className'>>>
 
 export const USER_ROLE_META = {
   super_admin: {
@@ -51,17 +55,7 @@ export const USER_ROLE_META = {
     className: 'text-zinc-700 dark:text-zinc-300',
   },
   viewer: { label: '뷰어 (조회 전용)', icon: Eye, className: 'text-zinc-600 dark:text-zinc-300' },
-} as const satisfies Record<string, { label: string; icon?: LucideIcon; className?: string }>
-
-export type UserRoleKey = keyof typeof USER_ROLE_META
-
-export const userRoleOptions = (Object.keys(USER_ROLE_META) as UserRoleKey[]).map((value) => ({
-  value,
-  label: USER_ROLE_META[value].label,
-}))
-
-export const LEVELS = [1, 2, 3, 4, 5, 6] as const
-export type LevelKey = (typeof LEVELS)[number]
+} as const satisfies Record<UserRole, Required<Pick<Meta, 'label' | 'icon' | 'className'>>>
 
 export const LEVEL_META = {
   1: { label: '레벨 1', icon: BadgeCheck },
@@ -70,9 +64,4 @@ export const LEVEL_META = {
   4: { label: '레벨 4', icon: BadgeCheck },
   5: { label: '레벨 5', icon: BadgeCheck },
   6: { label: '레벨 6', icon: Crown },
-} as const satisfies Record<number, { label: string; icon?: LucideIcon }>
-
-export const levelOptions = LEVELS.map((value) => ({
-  value,
-  label: LEVEL_META[value].label,
-}))
+} as const satisfies Record<Level, { label: string; icon?: LucideIcon }>

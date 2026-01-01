@@ -1,7 +1,5 @@
-import React from 'react'
+import ListLoading from '@/components/layout/ListLoading'
 
-const Loading = () => {
-  return <div></div>
+export default async function Loading() {
+  return <ListLoading />
 }
-
-export default Loading

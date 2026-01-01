@@ -19,3 +19,7 @@ supabase db pull : 원격 DB 스키마를 로컬로 끌어와서 마이그레이
 supabase migration repair --status reverted <버전> : 마이그레이션 히스토리 수동 정정
 
 net stop winnat : 로컬 포트 충돌 심할 때 Windows NAT 서비스 중지 (⚠ 정말 필요할 때만)
+
+supabase gen types typescript --local > app-admin/src/supabase.types.ts
+
+supabase migration up

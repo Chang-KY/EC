@@ -1,7 +1,8 @@
 import React from 'react'
-import PageTitle from '@/components/layout/PageTitle'
-import Button from '@/components/ui/Button'
 import { Metadata } from 'next'
+import Section from '@/components/layout/Section'
+import { ROUTES } from '@/constants/routes'
+import ProductCreateForm from '@/features/(authenticated)/commerce/products/components/ProductCreateForm'
 
 export const metadata: Metadata = {
   title: '상품 등록 | Admin',
@@ -10,11 +11,9 @@ export const metadata: Metadata = {
 
 const ProductCreatePage = () => {
   return (
-    <section>
-      <PageTitle pathName="/admins">
-        <Button>sdf</Button>
-      </PageTitle>
-    </section>
+    <Section pathTitle={`${ROUTES.PRODUCTS}/create`}>
+      <ProductCreateForm />
+    </Section>
   )
 }
 

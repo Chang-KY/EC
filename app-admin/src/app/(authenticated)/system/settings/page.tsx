@@ -1,6 +1,4 @@
 import React from 'react'
-import PageTitle from '@/components/layout/PageTitle'
-import Button from '@/components/ui/Button'
 import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
 import Section from '@/components/layout/Section'

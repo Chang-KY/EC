@@ -38,9 +38,9 @@ export default function Article(props: ArticleProps) {
       {title && (
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold tracking-tight text-black dark:text-white">
+            <h2 className="text-sm font-semibold tracking-tight text-black dark:text-white">
               {title}
-            </p>
+            </h2>
             {subtitle && <p className="mt-1 text-xs text-gray-400">{subtitle}</p>}
           </div>
 

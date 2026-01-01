@@ -1,7 +1,7 @@
 import React from 'react'
 import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
-import TableContainer from '@/features/(authenticated)/system/admins/components/TableContainer'
+import AdminTableContainer from '@/features/(authenticated)/system/admins/components/AdminTableContainer'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { SearchParams } from '@/types/SearchParams'
 import { ADMINS_TABLE } from '@/types/db'
@@ -33,12 +33,17 @@ export default async function AdminsPage({ searchParams }: { searchParams: Searc
       orderBy,
     }),
   )
-  console.log('AdminsPage rendered with searchParams:', sp)
 
   return (
     <Section pathTitle={ROUTES.ADMINS}>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <TableContainer page={page} size={size} orderBy={orderBy} order={order} keyword={keyword} />
+        <AdminTableContainer
+          page={page}
+          size={size}
+          orderBy={orderBy}
+          order={order}
+          keyword={keyword}
+        />
       </HydrationBoundary>
     </Section>
   )

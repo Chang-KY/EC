@@ -10,7 +10,7 @@ export default function Input(props: InputProps) {
   const { className, icon, ...rest } = props
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <input
         {...rest}
         className={clsx(

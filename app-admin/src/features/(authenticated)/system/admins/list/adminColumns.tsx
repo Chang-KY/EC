@@ -3,8 +3,8 @@ import { ADMINS_TABLE } from '@/types/db'
 import { LucideIcon } from 'lucide-react'
 import {
   ADMIN_STATUS_META,
+  Level,
   LEVEL_META,
-  LevelKey,
   USER_ROLE_META,
 } from '@/features/(authenticated)/system/admins/schema'
 import clsx from 'clsx'
@@ -39,7 +39,7 @@ export const adminColumns = [
     accessorKey: 'level',
     meta: { width: '15%' },
     cell: ({ row }) => {
-      const lv = Number(row.original.level) as LevelKey
+      const lv = Number(row.original.level) as Level
       const meta = LEVEL_META[lv]
       return meta ? meta.label : row.original.role
     },

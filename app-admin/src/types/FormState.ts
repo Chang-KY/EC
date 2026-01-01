@@ -1,5 +1,5 @@
 export type FormState<T> = {
   values: Partial<T>
-  fieldErrors: Partial<Record<keyof T, string[]>>
+  fieldErrors: Record<string, string[]> & { _form?: string[] }
   success: boolean
 }
