@@ -47,7 +47,7 @@ export default function Article(props: ArticleProps) {
           {actions ? <div className="shrink-0">{actions}</div> : null}
         </div>
       )}
-      <div className="space-y-4 text-sm">{children}</div>
+      <div className="space-y-3 text-sm">{children}</div>
     </article>
   )
 }

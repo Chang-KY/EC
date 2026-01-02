@@ -3,7 +3,7 @@ import Skeleton from '@/components/ui/Skeleton'
 import { cn } from '@/lib/cn'
 import clsx from 'clsx'
 
-export default async function ListLoading() {
+export default async function TableLoading() {
   return (
     <section className="px-20">
       <div className="flex h-28 flex-col justify-center space-y-3">
@@ -11,7 +11,7 @@ export default async function ListLoading() {
         <Skeleton className="h-4 w-52" />
       </div>
       <div className="flex h-7 items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <Skeleton className="h-7 w-64" />
         </div>
         <Skeleton className="h-7 w-28" />
@@ -52,7 +52,7 @@ export default async function ListLoading() {
           <Skeleton className="h-4 w-28" />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <Skeleton className="size-7" />
           <Skeleton className="size-7" />
           <Skeleton className="size-7" />

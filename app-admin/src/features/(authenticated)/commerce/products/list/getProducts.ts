@@ -1,4 +1,4 @@
-import type { paginationOptions } from '@/types/pagination'
+import type { paginationOptions } from '@/types/PaginationOptions'
 import { PRODUCTS_TABLE } from '@/types/db'
 import { queryOptions } from '@tanstack/react-query'
 import { getProductsService } from '@/features/(authenticated)/commerce/products/list/getProducts.service'

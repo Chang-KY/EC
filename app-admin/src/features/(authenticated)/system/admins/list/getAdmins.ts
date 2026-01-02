@@ -1,4 +1,4 @@
-import type { paginationOptions } from '@/types/pagination'
+import type { paginationOptions } from '@/types/PaginationOptions'
 import type { ADMINS_TABLE } from '@/types/db'
 import { queryOptions } from '@tanstack/react-query'
 import { getAdminsService } from '@/features/(authenticated)/system/admins/list/getAdmins.service'

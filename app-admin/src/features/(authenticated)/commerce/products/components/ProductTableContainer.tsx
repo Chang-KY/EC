@@ -9,7 +9,7 @@ import Input from '@/components/ui/Input'
 import { CirclePlus, Search, Loader2 } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
-import type { paginationOptions } from '@/types/pagination'
+import type { paginationOptions } from '@/types/PaginationOptions'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { usePagination } from '@/hooks/usePagination'
 import { useOrderSort } from '@/hooks/useOrderSort'
@@ -33,7 +33,7 @@ export default function ProductTableContainer({
   const { sorting, setSorting, order, orderBy } = useOrderSort<PRODUCTS_TABLE['Row']>({
     defaultId: initialOrderBy ?? 'id',
     defaultDesc: initialOrder === 'desc',
-    allowedKeys: ['id', 'name', 'status', 'price', 'sale_rate', 'sale_price', 'stock', 'likes'],
+    allowedKeys: ['id', 'name', 'status', 'price', 'sale_rate', 'sale_price', 'stock'],
   })
   const { size, setSize, sizeList } = usePageSize(initialSize)
   const { setQuery } = useSetQuery()
@@ -116,7 +116,7 @@ export default function ProductTableContainer({
         onChange={handleTableChange}
         loading={isFetching}
         rowKey={(r) => String(r.id)}
-        getRowHref={(r) => `/system/products/${r.id}`}
+        getRowHref={(r) => `/commerce/products/${r.id}`}
         manualSorting
         manualPagination
         columns={productColumns}

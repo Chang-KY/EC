@@ -36,7 +36,7 @@ export default function AdminCreateForm() {
           {/* 왼쪽: 기본 정보 */}
           <div className="space-y-5">
             <Article title="로그인 정보">
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <FormInput
                   placeholder="admin@example.com"
                   label="이메일"
@@ -46,7 +46,7 @@ export default function AdminCreateForm() {
                   errorMessage={state.fieldErrors.email?.[0]}
                 />
 
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-3 md:grid-cols-2">
                   <FormPasswordInput
                     placeholder="8자 이상"
                     label="비밀번호"
@@ -67,7 +67,7 @@ export default function AdminCreateForm() {
             </Article>
 
             <Article title="기본 정보">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-3 md:grid-cols-2">
                 <FormInput
                   placeholder="장권영"
                   label="이름"
@@ -88,7 +88,7 @@ export default function AdminCreateForm() {
           </div>
 
           {/* 오른쪽: 사이드바 */}
-          <aside className="space-y-4 lg:sticky lg:top-28">
+          <aside className="space-y-5 lg:sticky lg:top-28">
             <Article title="접근 권한 설정">
               <div className="grid gap-3">
                 <FormSelect

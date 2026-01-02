@@ -47,7 +47,7 @@ async function ensureBucket(bucket: string, options: EnsureBucketOptions = {}) {
 
 async function main() {
   const res = await ensureBucket(process.env.NEXT_PUBLIC_PRODUCT_BUCKET!, {
-    public: false,
+    public: true,
     allowedMimeTypes: ['image/*'],
     fileSizeLimit: '10MB',
   })

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const productImageRoleSchema = z.enum(['thumbnail', 'gallery', 'detail'] as const)
+export const productImageRoleSchema = z.enum(['thumbnail', 'gallery', 'description'] as const)
 
 export const productImageSchema = z.object({
   id: z.coerce.number().int().positive().optional(),

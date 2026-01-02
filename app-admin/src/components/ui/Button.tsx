@@ -23,6 +23,8 @@ const buttonVariants = cva(
         // btn-cancel
         cancel:
           'text-gray-700 border border-gray-400 hover:bg-gray-100 dark:bg-zinc-900 dark:border-zinc-700 focus-visible:ring-zinc-500/70',
+        confirm:
+          'bg-amber-500/85 text-black border border-amber-500 hover:bg-amber-400 dark:bg-amber-500 focus-visible:ring-amber-500/70',
       },
     },
     defaultVariants: {

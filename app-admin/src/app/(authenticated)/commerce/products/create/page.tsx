@@ -9,12 +9,10 @@ export const metadata: Metadata = {
   description: '새로운 상품의 기본 정보, 옵션, 가격, 재고와 노출 상태를 등록하는 페이지입니다.',
 }
 
-const ProductCreatePage = () => {
+export default async function ProductCreatePage() {
   return (
     <Section pathTitle={`${ROUTES.PRODUCTS}/create`}>
       <ProductCreateForm />
     </Section>
   )
 }
-
-export default ProductCreatePage

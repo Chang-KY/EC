@@ -11,6 +11,7 @@ import {
   User,
   XCircle,
 } from 'lucide-react'
+import { Meta } from '@/types/Meta'
 
 export const ADMIN_STATUSES = ['active', 'suspended', 'revoked'] as const
 export type AdminStatus = (typeof ADMIN_STATUSES)[number]
@@ -28,9 +29,6 @@ export const levelSchema = z.coerce
   .min(1, '레벨은 1 이상이어야 합니다.')
   .max(6, '레벨은 6 이하로만 설정할 수 있습니다.')
   .default(1)
-
-/** 2) META 타입은 satisfies로 “값 누락/오타”만 컴파일 단계에서 잡기 */
-type Meta = { label: string; icon?: LucideIcon; className?: string }
 
 export const ADMIN_STATUS_META = {
   active: {

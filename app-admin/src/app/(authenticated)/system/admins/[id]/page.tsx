@@ -78,12 +78,10 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
 
   return (
     <Section pathTitle={`${ROUTES.ADMINS}/${id}`}>
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="space-y-5">
           <Article title="로그인 정보" subtitle="계정 식별 및 보안 정보">
-            <div className="space-y-3">
-              <InfoRow label="이메일" value={admin.email ?? '-'} />
-            </div>
+            <InfoRow label="이메일" value={admin.email ?? '-'} />
           </Article>
 
           <Article title="기본 정보" subtitle="관리자 프로필 정보">
@@ -128,7 +126,7 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
           </Article>
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-28">
+        <aside className="space-y-5 lg:sticky lg:top-28">
           <Article title="접근 권한 설정" subtitle="역할/상태/레벨">
             <div className="space-y-3">
               <InfoRow

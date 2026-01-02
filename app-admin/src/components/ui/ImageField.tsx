@@ -2,59 +2,53 @@
 
 import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { X } from 'lucide-react'
-import { DialogCloseButton } from '@/components/ui/dialog/Digalog'
+import { Dialog } from '@/components/ui/dialog/Dialog'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Image from 'next/image'
+import clsx from 'clsx'
+import ErrorMessage from '@/components/ui/ErrorMessage'
 
 type ImageFieldProps = {
-  label?: string
   name: string
-  /** multiple이면 여러 장 선택 가능 */
   multiple?: boolean
-  /** multiple일 때 최대 장수 제한 */
   maxFiles?: number
-  required?: boolean
   accept?: string
   errorMessage?: string
-  hint?: string
   className?: string
-}
-
-type PreviewItem = {
-  file: File
-  url: string
-  alt?: string
+  value?: PreviewItem[]
+  onValueChange?: React.Dispatch<React.SetStateAction<PreviewItem[]>>
 }
 
 export default function ImageField({
   name,
   multiple = false,
   maxFiles = multiple ? 20 : 1,
-  required,
   accept = 'image/*',
   errorMessage,
   className = '',
+  value,
+  onValueChange,
 }: ImageFieldProps) {
   const inputId = useId()
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [items, setItems] = useState<PreviewItem[]>([])
+
+  const [innerItems, setInnerItems] = useState<PreviewItem[]>([])
+  const items = value ?? innerItems
+  const setItems = onValueChange ?? setInnerItems
+
   const [draftAlt, setDraftAlt] = useState<Record<number, string>>({})
+
+  const latestItemsRef = useRef<PreviewItem[]>(items)
+  useEffect(() => {
+    latestItemsRef.current = items
+  }, [items])
 
   useEffect(() => {
     return () => {
-      items.forEach((it) => URL.revokeObjectURL(it.url))
+      latestItemsRef.current.forEach((it) => URL.revokeObjectURL(it.url))
     }
-  }, [items])
-
-  useEffect(() => {
-    const el = inputRef.current
-    if (!el) return
-
-    const dt = new DataTransfer()
-    for (const it of items) dt.items.add(it.file)
-    el.files = dt.files
-  }, [items])
+  }, [])
 
   const openDialog = useCallback(() => {
     inputRef.current?.click()
@@ -71,6 +65,9 @@ export default function ImageField({
       if (incoming.length === 0) return
 
       setItems((prev) => {
+        // 단일 모드면 기존 URL 정리
+        if (!multiple) prev.forEach((it) => URL.revokeObjectURL(it.url))
+
         const next: PreviewItem[] = multiple ? [...prev] : []
         const remain = maxFiles - next.length
 
@@ -83,14 +80,18 @@ export default function ImageField({
         return [...next, ...sliced]
       })
 
+      // 같은 파일 다시 선택 가능하게
       if (inputRef.current) inputRef.current.value = ''
     },
-    [maxFiles, multiple],
+    [maxFiles, multiple, setItems],
   )
 
-  const setAltAt = useCallback((index: number, alt: string) => {
-    setItems((prev) => prev.map((it, i) => (i === index ? { ...it, alt } : it)))
-  }, [])
+  const setAltAt = useCallback(
+    (index: number, alt: string) => {
+      setItems((prev) => prev.map((it, i) => (i === index ? { ...it, alt } : it)))
+    },
+    [setItems],
+  )
 
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,24 +102,29 @@ export default function ImageField({
 
   const resolvedAlt = (it: PreviewItem) => (it.alt?.trim() ? it.alt : it.file.name)
 
-  const removeAt = useCallback((index: number) => {
-    setItems((prev) => {
-      const target = prev[index]
-      if (target) URL.revokeObjectURL(target.url)
-      const next = prev.filter((_, i) => i !== index)
-      return next
-    })
-  }, [])
+  const removeAt = useCallback(
+    (index: number) => {
+      setItems((prev) => {
+        const target = prev[index]
+        if (target) URL.revokeObjectURL(target.url)
+        return prev.filter((_, i) => i !== index)
+      })
+      setDraftAlt((prev) => ({ ...prev, [index]: '' }))
+    },
+    [setItems],
+  )
 
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={clsx('space-y-2', className)}>
       <button
         type="button"
         onClick={openDialog}
-        className="absolute top-7 right-7 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+        className="absolute top-5 right-5 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
       >
         파일 선택
       </button>
+
+      {/* input은 트리거 역할(보여지는 “파일이 들어있나”는 신경 X) */}
       <input
         id={inputId}
         ref={inputRef}
@@ -126,11 +132,11 @@ export default function ImageField({
         type="file"
         accept={accept}
         multiple={multiple}
-        required={required}
         className="sr-only"
         onChange={onChange}
       />
 
+      {/* ALT hidden inputs */}
       {!multiple ? (
         <input type="hidden" name={`${name}.alt`} value={items[0]?.alt ?? ''} />
       ) : (
@@ -139,92 +145,87 @@ export default function ImageField({
         ))
       )}
 
-      {items.length > 0 ? (
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5">
-          {items.map((it, idx) => {
-            return (
-              <div key={`${it.file.name}-${it.file.size}-${idx}`} className="relative">
-                <div
-                  className="group relative aspect-square w-full overflow-hidden rounded-md ring-1 transition"
-                  title={`ALT - ${draftAlt[idx]}`}
-                >
-                  <Image
-                    src={it.url}
-                    alt={resolvedAlt(it)}
-                    width={640}
-                    height={640}
-                    className="h-full w-full object-cover transition group-hover:opacity-80"
-                  />
+      {items.length > 0 && (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((it, idx) => (
+            <div key={`${it.file.name}-${it.file.size}-${idx}`} className="relative">
+              <div
+                className="group relative aspect-square w-full overflow-hidden rounded-md ring-1 ring-gray-300 transition"
+                title={`ALT - ${draftAlt[idx] ?? '지정 안됨'}`}
+              >
+                <Image
+                  src={it.url}
+                  alt={resolvedAlt(it)}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition group-hover:opacity-80"
+                  fill
+                />
 
-                  <div className="pointer-events-none absolute inset-0">
-                    <div className="pointer-events-auto absolute top-2 right-2 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-                      {/* ALT 버튼 */}
-                      <DialogCloseButton
-                        title="ALT 입력 안내"
-                        subTitle="적절한 ALT 텍스트를 제공하면 웹 접근성이 향상되고 SEO에도 긍정적인 영향을 미칩니다."
-                        contents={
-                          <Input
-                            className="w-full"
-                            value={draftAlt[idx] ?? ''}
-                            onChange={(e) =>
-                              setDraftAlt((prev) => ({ ...prev, [idx]: e.target.value }))
-                            }
-                            placeholder="예: 흰색 배경 위의 검은색 운동화"
-                          />
-                        }
-                        onCancel={() => {
-                          // Cancel 누르면 alt 삭제
-                          setAltAt(idx, '')
-                          setDraftAlt((prev) => ({ ...prev, [idx]: '' }))
-                        }}
-                        action={({ close }) => (
-                          <Button
-                            variant="add"
-                            type="button"
-                            onClick={() => {
-                              setAltAt(idx, draftAlt[idx] ?? '')
-                              close()
-                            }}
-                          >
-                            저장
-                          </Button>
-                        )}
-                      >
-                        {/* trigger button */}
-                        <button
+                <div className="pointer-events-none absolute inset-0">
+                  <div className="pointer-events-auto absolute top-2 right-2 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+                    <Dialog
+                      title="ALT 입력 안내"
+                      subTitle="적절한 ALT 텍스트를 제공하면 웹 접근성이 향상되고 SEO에도 긍정적인 영향을 미칩니다."
+                      contents={
+                        <Input
+                          className="w-full"
+                          value={draftAlt[idx] ?? ''}
+                          onChange={(e) =>
+                            setDraftAlt((prev) => ({ ...prev, [idx]: e.target.value }))
+                          }
+                          placeholder="예: 흰색 배경 위의 검은색 운동화"
+                        />
+                      }
+                      onCancel={() => {
+                        setAltAt(idx, '')
+                        setDraftAlt((prev) => ({ ...prev, [idx]: '' }))
+                      }}
+                      action={({ close }) => (
+                        <Button
+                          variant="add"
                           type="button"
                           onClick={() => {
-                            setDraftAlt((prev) => ({ ...prev, [idx]: items[idx]?.alt ?? '' }))
+                            setAltAt(idx, draftAlt[idx] ?? '')
+                            close()
                           }}
-                          className="inline-flex size-7 items-center justify-center rounded-full bg-black/55 text-white hover:bg-black/65"
-                          title="ALT 입력"
                         >
-                          <span className="text-[11px] leading-none font-bold">ALT</span>
-                        </button>
-                      </DialogCloseButton>
-
-                      {/* 삭제 버튼 */}
+                          Save
+                        </Button>
+                      )}
+                    >
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          removeAt(idx)
-                        }}
+                        onClick={() =>
+                          setDraftAlt((prev) => ({ ...prev, [idx]: items[idx]?.alt ?? '' }))
+                        }
                         className="inline-flex size-7 items-center justify-center rounded-full bg-black/55 text-white hover:bg-black/65"
-                        title="삭제"
+                        title="ALT 입력"
                       >
-                        <X className="size-4" />
+                        <span className="text-[11px] leading-none font-bold">ALT</span>
                       </button>
-                    </div>
+                    </Dialog>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        removeAt(idx)
+                      }}
+                      className="inline-flex size-7 items-center justify-center rounded-full bg-black/55 text-white hover:bg-black/65"
+                      title="삭제"
+                    >
+                      <X className="size-4" />
+                    </button>
                   </div>
                 </div>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
-      ) : null}
-      {errorMessage ? <p className="text-sm text-rose-600">{errorMessage}</p> : null}
+      )}
+
+      {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
     </div>
   )
 }

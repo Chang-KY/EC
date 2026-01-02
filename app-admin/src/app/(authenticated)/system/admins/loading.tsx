@@ -1,5 +1,5 @@
-import ListLoading from '@/components/layout/ListLoading'
+import TableLoading from '@/components/loading/TableLoading'
 
 export default async function Loading() {
-  return <ListLoading />
+  return <TableLoading />
 }
