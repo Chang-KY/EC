@@ -90,9 +90,9 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                 label="이름"
                 value={admin.name ?? '-'}
                 action={
-                  <InfoRowInputUpdate
+                  <InfoRowInputUpdate<string>
                     targetId="basic-info-name"
-                    adminId={id}
+                    id={id}
                     initialValue={admin.name ?? ''}
                     field="name"
                     action={adminUpdateNameAction}
@@ -103,9 +103,9 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                 label="전화번호"
                 value={admin.phone ?? '-'}
                 action={
-                  <InfoRowInputUpdate
+                  <InfoRowInputUpdate<string>
                     targetId="basic-info-phone"
-                    adminId={id}
+                    id={id}
                     initialValue={admin.phone ?? ''}
                     field="phone"
                     action={adminUpdatePhoneAction}
@@ -141,7 +141,7 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                         id: key,
                         element: (
                           <InfoRowSelectUpdate
-                            adminId={id}
+                            id={id}
                             field="role"
                             label={meta.label}
                             disabled={roleKey === (key as UserRole)}
@@ -169,7 +169,7 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                         id: key,
                         element: (
                           <InfoRowSelectUpdate
-                            adminId={id}
+                            id={id}
                             field="status"
                             label={meta.label}
                             disabled={statusKey === (key as AdminStatus)}
@@ -196,7 +196,7 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
                         id: key,
                         element: (
                           <InfoRowSelectUpdate
-                            adminId={id}
+                            id={id}
                             field="level"
                             label={meta.label}
                             disabled={levelKey === (Number(key) as Level)}

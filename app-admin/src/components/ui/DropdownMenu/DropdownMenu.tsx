@@ -31,7 +31,7 @@ export default function DropdownMenu({
           </>
         )}
         {menuElement.map((element) => (
-          <DropdownMenuItem key={element.id} className="hover:bg-indigo-50">
+          <DropdownMenuItem key={element.id} className="p-0">
             {element.element}
           </DropdownMenuItem>
         ))}

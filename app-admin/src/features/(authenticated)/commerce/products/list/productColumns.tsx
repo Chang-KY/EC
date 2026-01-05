@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { PRODUCTS_TABLE } from '@/types/db'
 import { formatNumberWithComma } from '@/utils/formatNumberWithComma'
 import { ProductStatus } from '@/types/enum'
-import { PRODUCT_STATUS_META } from '@/features/(authenticated)/commerce/products/create/schema'
+import { PRODUCT_STATUS_META } from '@/features/(authenticated)/commerce/products/productsSchema'
 
 export const productColumns = [
   {

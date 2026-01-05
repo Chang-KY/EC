@@ -1,46 +1,9 @@
 import { z } from 'zod'
-import {
-  DiscountType,
-  discountTypeSchema,
-  ProductStatus,
-  productStatusSchema,
-} from '@/features/(authenticated)/commerce/products/productsSchema'
-import { BadgePercent, Eye, EyeOff, LucideIcon, PackageX, Tag } from 'lucide-react'
-import { productImageSchema } from '@/features/(authenticated)/commerce/products/productImageSchema'
+import { productObjectSchema } from '@/features/(authenticated)/commerce/products/productsSchema'
+import { productImagesCreateSchema } from '@/features/(authenticated)/commerce/products/productImageSchema'
 
-export const PRODUCT_STATUS_META = {
-  hidden: { label: '숨김', icon: EyeOff, className: 'text-zinc-600 dark:text-zinc-300' },
-  active: { label: '노출', icon: Eye, className: 'text-emerald-600 dark:text-emerald-300' },
-  sold_out: {
-    label: '매진',
-    icon: PackageX,
-    className: 'text-rose-600 dark:text-rose-300',
-  },
-} as const satisfies Record<ProductStatus, { label: string; icon: LucideIcon; className: string }>
-
-export const DISCOUNT_TYPE_META = {
-  none: { label: '할인 없음', icon: Tag },
-  fixed: { label: '가격 할인', icon: Tag },
-  rate: { label: '할인율', icon: BadgePercent },
-} as const satisfies Record<DiscountType, { label: string; icon: LucideIcon; className?: string }>
-
-export const productsSchema = z
-  .object({
-    id: z.coerce.number().int().positive().optional(),
-    name: z.string().trim().min(1, '상품명을 입력해 주세요.'),
-    description: z.string().trim().optional(),
-    price: z.coerce.number().int().nonnegative('0 이상이어야 합니다.'),
-    discount_type: discountTypeSchema,
-    sale_price: z.coerce.number().int().nonnegative().optional(),
-    sale_rate: z.coerce
-      .number()
-      .int()
-      .min(0, '1%보다 커야합니다.')
-      .max(100, '100% 보다 작아야합니다.')
-      .optional(),
-    stock: z.coerce.number().int().nonnegative().optional().default(0),
-    status: productStatusSchema,
-  })
+export type ProductCreateFormValues = z.infer<typeof productFormSchema>
+export const productsCreateSchema = productObjectSchema
   .superRefine((v, ctx) => {
     if (v.discount_type === 'fixed' && (v.sale_price == null || Number.isNaN(v.sale_price))) {
       ctx.addIssue({ code: 'custom', path: ['sale_price'], message: 'sale_price가 필요합니다.' })
@@ -63,40 +26,16 @@ export const productsSchema = z
       base.sale_price = undefined
       base.sale_rate = undefined
     }
-
     if (v.discount_type === 'fixed') {
       base.sale_rate = undefined
     }
-
     if (v.discount_type === 'rate') {
-      // sale_price는 서버에서 계산하거나 DB에서 계산하면 굳이 저장 안 해도 됨
       base.sale_price = undefined
     }
-
     return base
   })
 
-export type ProductInput = z.infer<typeof productsSchema>
-
-export const productImagesCreateSchema = z
-  .array(productImageSchema)
-  .default([])
-  .superRefine((imgs, ctx) => {
-    const hasThumb = imgs.some((img) => img.role === 'thumbnail')
-    if (!hasThumb) {
-      ctx.addIssue({
-        code: 'custom',
-        message: '썸네일 이미지는 최소 1개 필요합니다.',
-        path: [],
-      })
-    }
-  })
-
-export type ProductImagesInput = z.infer<typeof productsSchema>
-
 export const productFormSchema = z.object({
-  products: productsSchema,
-  images: productImagesCreateSchema, // (혹은 너의 productImagesCreateSchema)
+  products: productsCreateSchema,
+  images: productImagesCreateSchema,
 })
-
-export type ProductCreateFormValues = z.infer<typeof productFormSchema>

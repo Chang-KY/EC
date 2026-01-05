@@ -61,7 +61,6 @@ export default function InputNumber(props: CommaNumberInputProps) {
       <input
         {...rest}
         ref={inputRef}
-        // name은 hidden이 가져가야 해서 제거
         name={undefined}
         type="text"
         inputMode="numeric"

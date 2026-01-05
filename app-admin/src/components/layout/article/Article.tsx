@@ -8,12 +8,16 @@ type ArticleProps = {
   title?: string
   subtitle?: string
   actions?: React.ReactNode
-  boardContent?: Record<string, React.ReactNode>
   menu?: DropdownMenuState[]
 } & React.HTMLAttributes<HTMLElement>
 
 export default function Article(props: ArticleProps) {
-  const { id, title, subtitle, children, className, actions, boardContent, menu, ...rest } = props
+  const { id, title, subtitle, children, className, actions, menu, ...rest } = props
+
+  const boardContentMap = (menu ?? []).reduce<Record<string, React.ReactNode>>((acc, item) => {
+    if (item.boardContent) acc[item.id] = item.boardContent
+    return acc
+  }, {})
 
   return (
     <article
@@ -22,9 +26,10 @@ export default function Article(props: ArticleProps) {
       className={clsx(
         'relative rounded border border-gray-300 bg-white p-5 dark:border-gray-800 dark:bg-black',
         className,
+        'h-auto',
       )}
     >
-      <ArticleBoard id={id} boardContent={boardContent} />
+      <ArticleBoard id={id} boardContent={boardContentMap} />
       <div className="absolute top-3 right-3">
         {menu && (
           <DropdownMenu

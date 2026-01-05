@@ -1,6 +1,7 @@
 'use server'
 
 import { supabase } from '@/utils/supabase/supabase'
+import { DiscountType } from '@/types/enum'
 
 export async function getProductDetail(id: number) {
   const sb = await supabase()
@@ -21,7 +22,7 @@ export async function getProductDetail(id: number) {
       stock: number | null
       created_at: string | null
       status: string | null
-      discount_type: string
+      discount_type: DiscountType
     }
     images: Array<{
       id: number

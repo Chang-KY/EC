@@ -16,6 +16,22 @@ import InfoRow from '@/components/ui/InfoRow'
 import Image from 'next/image'
 import { getFileFullPath } from '@/utils/getFileFullPath'
 import { isLocalSupabase } from '@/lib/env'
+import InfoRowInputUpdate from '@/components/ui/InfoRowInputUpdate'
+import {
+  productUpdateDescriptionAction,
+  productUpdateNameAction,
+  productUpdatePriceAction,
+  productUpdateSalePriceAction,
+  productUpdateSaleRateAction,
+  productUpdateStatusAction,
+  productUpdateStockAction,
+} from '@/features/(authenticated)/commerce/products/update/basicInfoActions'
+import MetaChip from '@/components/ui/MetaChip'
+import InfoRowSelectUpdate from '@/components/ui/InfoRowSelectUpdate'
+import ArticleButton from '@/components/layout/article/ArticleButton'
+import ProductEditPriceForm from '@/features/(authenticated)/commerce/products/components/ProductEditPriceForm'
+import { getDiscountEffectText } from '@/features/(authenticated)/commerce/products/getDiscountEffectText'
+import ProductLikeUserConfirm from '@/features/(authenticated)/commerce/products/components/ProductLikeUserConfirm'
 
 export async function generateMetadata({
   params,
@@ -42,7 +58,9 @@ export async function generateMetadata({
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const p = await getProductDetail(Number(id))
+  const numericId = Number(id)
+
+  const p = await getProductDetail(Number(numericId))
 
   if (!p) {
     return (
@@ -70,9 +88,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const statusLabel = statusMeta.label
   const discountLabel = discountMeta.label
 
-  const StatusIcon = statusMeta.icon
-  const DiscountIcon = discountMeta.icon
-
   const product = p.product
   const images = p.images
   const like_count = p.like_count
@@ -88,38 +103,118 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <Article title="상품 정보" subtitle="상품 기본 정보">
             <div className="space-y-3">
               <InfoRow label="상품 ID" value={product.id ?? '-'} />
-              <InfoRow label="상품명" value={product.name ?? '-'} />
-              <InfoRow label="설명" value={product.description ?? '-'} />
+              <InfoRow
+                label="상품명"
+                value={product.name ?? '-'}
+                action={
+                  <InfoRowInputUpdate<number>
+                    targetId="basic-info-name"
+                    id={numericId}
+                    initialValue={product.name ?? ''}
+                    field="name"
+                    action={productUpdateNameAction}
+                  />
+                }
+              />
+              <InfoRow
+                label="설명"
+                value={product.description ?? '-'}
+                action={
+                  <InfoRowInputUpdate<number>
+                    targetId="basic-info-description"
+                    id={numericId}
+                    initialValue={product.description ?? ''}
+                    field="description"
+                    action={productUpdateDescriptionAction}
+                  />
+                }
+              />
             </div>
           </Article>
 
           {/* 가격 / 할인 */}
-          <Article title="가격 / 할인" subtitle="가격 및 할인 정책">
+          <Article
+            title="가격 / 할인"
+            subtitle="가격 및 할인 정책"
+            id="product-price"
+            menu={[
+              {
+                id: 'product-price-edit',
+                element: <ArticleButton targetId="product-price-edit" label="할인 가격 수정" />,
+                boardContent: (
+                  <ProductEditPriceForm
+                    price={product.price}
+                    sale_price={product.sale_price ?? undefined}
+                    sale_rate={product.sale_rate ?? undefined}
+                    discount_type={product.discount_type}
+                    id={Number(id)}
+                  />
+                ),
+              },
+            ]}
+          >
             <div className="grid gap-3 md:grid-cols-2">
               <InfoRow
                 label="정가"
                 value={product.price != null ? `${product.price.toLocaleString()}원` : '-'}
+                action={
+                  <InfoRowInputUpdate<number>
+                    inputTypeNumber={true}
+                    targetId="basic-info-price"
+                    id={numericId}
+                    initialValue={product.price ?? ''}
+                    field="price"
+                    action={productUpdatePriceAction}
+                  />
+                }
               />
               <InfoRow
                 label="할인 타입"
                 value={
-                  <span className="inline-flex items-center gap-2">
-                    <DiscountIcon size={14} />
-                    <span>{discountMeta.label}</span>
-                  </span>
+                  discountMeta ? (
+                    <MetaChip label={discountMeta.label} icon={discountMeta.icon} />
+                  ) : (
+                    (discountLabel ?? '-')
+                  )
                 }
               />
 
-              <InfoRow
-                label="할인가"
-                value={
-                  product.sale_price != null ? `${product.sale_price.toLocaleString()}원` : '-'
-                }
-              />
-              <InfoRow
-                label="할인율"
-                value={product.sale_rate != null ? `${product.sale_rate}%` : '-'}
-              />
+              {discountTypeKey === 'fixed' && (
+                <>
+                  <InfoRow
+                    label="할인가"
+                    value={
+                      product.sale_price != null ? `${product.sale_price.toLocaleString()}원` : '-'
+                    }
+                  />
+                  <InfoRow
+                    label="할인 효과"
+                    value={getDiscountEffectText({
+                      price: product.price,
+                      discountTypeKey,
+                      sale_price: product.sale_price,
+                      sale_rate: product.sale_rate,
+                    })}
+                  />
+                </>
+              )}
+              {discountTypeKey === 'rate' && (
+                <>
+                  <InfoRow
+                    label="할인율"
+                    value={product.sale_rate != null ? `${product.sale_rate}%` : '-'}
+                  />
+                  <InfoRow
+                    label="할인 효과"
+                    value={getDiscountEffectText({
+                      price: product.price,
+                      discountTypeKey,
+                      sale_price: product.sale_price,
+                      sale_rate: product.sale_rate,
+                    })}
+                  />
+                </>
+              )}
             </div>
           </Article>
 
@@ -128,6 +223,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <InfoRow
               label="재고"
               value={product.stock != null ? product.stock.toLocaleString() : '-'}
+              action={
+                <InfoRowInputUpdate<number>
+                  inputTypeNumber={true}
+                  targetId="basic-info-stock"
+                  id={numericId}
+                  initialValue={product.stock ?? ''}
+                  field="stock"
+                  action={productUpdateStockAction}
+                />
+              }
             />
           </Article>
 
@@ -191,10 +296,27 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <InfoRow
               label="상태"
               value={
-                <span className="inline-flex items-center gap-2">
-                  <StatusIcon size={14} />
-                  <span>{statusMeta.label}</span>
-                </span>
+                statusMeta ? (
+                  <MetaChip
+                    label={statusMeta.label}
+                    icon={statusMeta.icon}
+                    menuElement={Object.entries(PRODUCT_STATUS_META).map(([key, meta]) => ({
+                      id: key,
+                      element: (
+                        <InfoRowSelectUpdate<number>
+                          id={numericId}
+                          field="status"
+                          label={meta.label}
+                          disabled={productStatusKey === (key as ProductStatus)}
+                          value={key}
+                          action={productUpdateStatusAction}
+                        />
+                      ),
+                    }))}
+                  />
+                ) : (
+                  (statusLabel ?? '-')
+                )
               }
             />
           </Article>
@@ -204,7 +326,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="grid grid-cols-1 gap-3">
               <InfoRow
                 label="좋아요"
-                value={like_count != null ? `${like_count.toLocaleString()}개` : '0개'}
+                value={
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-gray-800">
+                      {like_count != null ? `${like_count.toLocaleString()}개` : '0개'}
+                    </span>
+
+                    <ProductLikeUserConfirm />
+                  </div>
+                }
               />
               <InfoRow
                 label="생성일"

@@ -8,22 +8,29 @@ import DropdownButton from '@/components/ui/DropdownButton'
 
 type ActionResult = { ok: true } | { ok: false; message: string }
 
-type UpdateAction = (data: { adminId: string } & Record<string, string>) => Promise<ActionResult>
+type UpdatePayload<TId extends string | number> = { id: TId } & Record<
+  string,
+  string | number | undefined
+>
 
-export default function InfoRowSelectUpdate({
-  adminId,
+export type UpdateAction<TId extends string | number> = (
+  data: UpdatePayload<TId>,
+) => Promise<ActionResult>
+
+export default function InfoRowSelectUpdate<TId extends string | number>({
+  id,
   field,
   value,
   label,
   disabled,
   action,
 }: {
-  adminId: string
+  id: TId
   field: string
   label: string
   disabled: boolean
   value: string
-  action: UpdateAction
+  action: UpdateAction<TId>
 }) {
   const [pending, startTransition] = useTransition()
   const router = useRouter()
@@ -33,9 +40,9 @@ export default function InfoRowSelectUpdate({
 
     startTransition(async () => {
       const payload = {
-        adminId,
+        id: id,
         [field]: value,
-      } as { adminId: string } & Record<string, string>
+      }
 
       const res = await action(payload)
       if (!res.ok) return

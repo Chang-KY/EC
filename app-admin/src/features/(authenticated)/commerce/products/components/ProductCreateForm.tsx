@@ -8,13 +8,11 @@ import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
 import Button from '@/components/ui/Button'
 import type { FormState } from '@/types/FormState'
+import { ProductCreateFormValues } from '@/features/(authenticated)/commerce/products/create/schema'
 import {
   DISCOUNT_TYPE_META,
-  PRODUCT_STATUS_META,
-  ProductCreateFormValues,
-} from '@/features/(authenticated)/commerce/products/create/schema'
-import {
   DiscountType,
+  PRODUCT_STATUS_META,
   ProductStatus,
 } from '@/features/(authenticated)/commerce/products/productsSchema'
 import { productCreateAction } from '@/features/(authenticated)/commerce/products/create/action'

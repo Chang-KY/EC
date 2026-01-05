@@ -12,6 +12,7 @@ import {
 import { Avatar } from '@/components/ui/Avatar'
 import { logoutAction } from '@/features/layout/auth/logout/actions'
 import DropdownMenu from '@/components/ui/DropdownMenu/DropdownMenu'
+import DropdownButton from '@/components/ui/DropdownButton'
 
 const ProfileButton = () => {
   const handleLogOut = async () => {
@@ -26,14 +27,10 @@ const ProfileButton = () => {
       label="My Account"
       triggerButton={<Avatar size="xs" ring="default" src="" alt="장권영" fallback="권영" />}
       menuElement={[
-        { id: 'setting', element: <p>Setting</p> },
+        { id: 'setting', element: <DropdownButton onClick={handleLogOut} label="Setting" /> },
         {
           id: 'logout',
-          element: (
-            <button type="button" className="w-full text-left" onClick={handleLogOut}>
-              Logout
-            </button>
-          ),
+          element: <DropdownButton onClick={handleLogOut} label="Logout" />,
         },
       ]}
     />

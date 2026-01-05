@@ -7,4 +7,5 @@ type DropdownMenuTypes = {
 type DropdownMenuState = {
   id: string
   element: React.ReactNode
+  boardContent?: React.ReactNode
 }

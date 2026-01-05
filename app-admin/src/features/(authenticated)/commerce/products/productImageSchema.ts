@@ -15,3 +15,17 @@ export const productImageSchema = z.object({
 })
 
 export type ProductImage = z.infer<typeof productImageSchema>
+
+export const productImagesCreateSchema = z
+  .array(productImageSchema)
+  .default([])
+  .superRefine((imgs, ctx) => {
+    const hasThumb = imgs.some((img) => img.role === 'thumbnail')
+    if (!hasThumb) {
+      ctx.addIssue({
+        code: 'custom',
+        message: '썸네일 이미지는 최소 1개 필요합니다.',
+        path: [],
+      })
+    }
+  })

@@ -1,33 +1,43 @@
 'use client'
+
 import React, { useState, useTransition } from 'react'
 import { Check, FilePenLine, X } from 'lucide-react'
 import { infoRowUpdateAtomsButtonAtom } from '@/store/infoRowUpdateAtoms'
 import { useAtom } from 'jotai'
 import Input from '@/components/ui/Input'
 import { useRouter } from 'next/navigation'
+import { InputNumberNotForm } from '@/components/ui/InputNumberNotForm'
 
 type ActionResult = { ok: true } | { ok: false; message: string }
-type UpdateAction = (data: { adminId: string } & Record<string, string>) => Promise<ActionResult>
 
-export default function InfoRowInputUpdate({
+type UpdatePayload<TId extends string | number> = { id: TId } & Record<
+  string,
+  string | number | undefined
+>
+
+export type UpdateAction<TId extends string | number> = (
+  data: UpdatePayload<TId>,
+) => Promise<ActionResult>
+
+export default function InfoRowInputUpdate<TId extends string | number>({
   targetId,
-  adminId,
+  id,
+  inputTypeNumber = false,
   initialValue,
   field,
   action,
   inputProps,
-  normalize = (v) => v,
 }: {
   targetId?: string
-  adminId: string
-  initialValue: string
+  id: TId
+  inputTypeNumber?: boolean
+  initialValue: string | number
   field: string
-  action: UpdateAction
+  action: UpdateAction<TId>
   inputProps?: Omit<React.ComponentProps<typeof Input>, 'value' | 'onChange' | 'disabled'>
-  normalize?: (v: string) => string
 }) {
   const [isUpdate, setIsUpdate] = useAtom(infoRowUpdateAtomsButtonAtom)
-  const [value, setValue] = useState(initialValue ?? '')
+  const [value, setValue] = useState<string | number>(initialValue ?? '')
   const [pending, startTransition] = useTransition()
   const router = useRouter()
 
@@ -36,9 +46,10 @@ export default function InfoRowInputUpdate({
   const save = () => {
     startTransition(async () => {
       const payload = {
-        adminId,
-        [field]: normalize(value),
-      } as { adminId: string } & Record<string, string>
+        id, // 숫자로 변환 가능하면 number, 아니면 string(uuid 그대로)
+        [field]: value,
+      }
+
       const res = await action(payload)
       if (!res.ok) return
       close()
@@ -56,12 +67,21 @@ export default function InfoRowInputUpdate({
       {isUpdate === targetId && (
         <div className="absolute inset-0 w-full bg-white">
           <div className="absolute inset-0 flex size-full items-center justify-between gap-3 bg-white">
-            <Input
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              disabled={pending}
-              {...inputProps}
-            />
+            {inputTypeNumber ? (
+              <InputNumberNotForm
+                value={value}
+                onValueChange={(raw) => setValue(raw)}
+                disabled={pending}
+                {...inputProps}
+              />
+            ) : (
+              <Input
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                disabled={pending}
+                {...inputProps}
+              />
+            )}
 
             <div className="flex justify-end gap-1">
               <button

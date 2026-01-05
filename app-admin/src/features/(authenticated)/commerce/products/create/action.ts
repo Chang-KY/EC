@@ -7,13 +7,13 @@ import type { FormState } from '@/types/FormState'
 import { z } from 'zod'
 import {
   ProductCreateFormValues,
-  productImagesCreateSchema,
-  productsSchema,
+  productsCreateSchema,
 } from '@/features/(authenticated)/commerce/products/create/schema'
 import { isFile } from '@/utils/isFile'
 import { uploadFile } from '@/utils/uploadFile'
 import { uploadRetry } from '@/utils/uploadRetry'
 import { ProductImageRole } from '@/types/enum'
+import { productImagesCreateSchema } from '@/features/(authenticated)/commerce/products/productImageSchema'
 
 export async function productCreateAction(
   prev: FormState<ProductCreateFormValues>,
@@ -30,7 +30,7 @@ export async function productCreateAction(
     status: formData.get('products.status') ?? 'hidden',
   }
 
-  const productsParsed = productsSchema.safeParse(productsDraft)
+  const productsParsed = productsCreateSchema.safeParse(productsDraft)
   if (!productsParsed.success) {
     const { fieldErrors, formErrors } = z.flattenError(productsParsed.error)
     const prefixed = Object.fromEntries(
