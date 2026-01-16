@@ -1,8 +1,8 @@
 import React from 'react'
-import PageTitle from '@/components/layout/PageTitle'
-import Button from '@/components/ui/Button'
 import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
+import Section from '@/components/layout/Section'
+import CategoryCreateForm from '@/features/(authenticated)/commerce/categories/components/CategoryCreateForm'
 
 export const metadata: Metadata = {
   title: '카테고리 생성 | Admin',
@@ -12,10 +12,9 @@ export const metadata: Metadata = {
 
 const CategoryCreatePage = () => {
   return (
-    <section>
-      <PageTitle pathName={ROUTES.CATEGORIES}></PageTitle>
-      <div className="px-20"></div>
-    </section>
+    <Section pathTitle={`${ROUTES.CATEGORIES}/create`}>
+      <CategoryCreateForm />
+    </Section>
   )
 }
 

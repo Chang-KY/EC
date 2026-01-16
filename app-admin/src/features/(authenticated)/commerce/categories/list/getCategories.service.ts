@@ -4,7 +4,7 @@ import 'server-only'
 import { supabase } from '@/utils/supabase/supabase'
 import { ListParams, listParamsSchema } from '@/types/ListParams'
 
-export async function getProductsService(params: ListParams) {
+export async function getCategoriesService(params: ListParams) {
   const { page, size, keyword, order, orderBy } = listParamsSchema.parse(params)
 
   const sb = await supabase()
@@ -13,7 +13,7 @@ export async function getProductsService(params: ListParams) {
 
   let q = sb
     .schema('ec')
-    .from('products')
+    .from('categories')
     .select('*', { count: 'exact' })
     .range(from, to)
     .order(orderBy, { ascending: order === 'asc' })
