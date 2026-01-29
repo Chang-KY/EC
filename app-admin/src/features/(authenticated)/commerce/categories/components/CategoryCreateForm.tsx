@@ -12,9 +12,10 @@ import { LoadingDialog } from '@/components/ui/dialog/LoadingDialog'
 import type { FormState } from '@/types/FormState'
 
 import type { CategoriesCreateFormValues } from '@/features/(authenticated)/commerce/categories/create/schema'
-import { categoryCreateAction } from '@/features/(authenticated)/commerce/categories/create/actions'
+import { categoryCreateAction } from '@/features/(authenticated)/commerce/categories/create/action'
 import Modal from '@/components/modal/Modal'
 import { X } from 'lucide-react'
+import SearchParentCategory from '@/features/(authenticated)/commerce/categories/components/SearchParentCategory'
 
 type ParentOption = {
   id: number
@@ -153,20 +154,7 @@ function CategoryCreateBody({
       </aside>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} closeOnEsc closeOnOutsideClick>
-        <div className="min-w-140 rounded border border-gray-300 bg-white px-4 py-3">
-          <header className="flex items-center justify-between text-sm text-gray-700">
-            <h2 className="font-semibold">1 계층 카테고리를 선택해주세요.</h2>
-            <X
-              size={20}
-              onClick={() => setIsOpen(false)}
-              className="cursor-pointer rounded-full p-0.5 hover:bg-indigo-100"
-            />
-          </header>
-          <div className="my-1 border border-gray-100" />
-          <main className="flex min-h-72 w-full flex-col gap-3">
-            <button className="w-full text-left">테스트</button>
-          </main>
-        </div>
+        <SearchParentCategory onClose={() => setIsOpen(false)} />
       </Modal>
 
       <Dialog

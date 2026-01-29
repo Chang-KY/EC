@@ -20,7 +20,11 @@ export const categoryColumns = [
     header: '뎁스',
     accessorKey: 'depth',
     meta: { width: '8%' },
-    cell: ({ row }) => <span className="tabular-nums">{row.original.depth ?? '-'}</span>,
+    cell: ({ row }) => (
+      <span className="tabular-nums">
+        {row.original.depth ? `${row.original.depth} 계층` : '-'}
+      </span>
+    ),
   } as ColumnDef<CATEGORIES_TABLE['Row'], unknown>,
 
   {

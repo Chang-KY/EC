@@ -8,6 +8,7 @@ import {
   CreateCategorySchema,
   type CategoriesCreateFormValues,
 } from '@/features/(authenticated)/commerce/categories/create/schema'
+import { z } from 'zod'
 
 function toStr(v: FormDataEntryValue | null) {
   return typeof v === 'string' ? v : ''
@@ -46,8 +47,7 @@ export async function categoryCreateAction(
   // 2) Zod 검증
   const parsed = CreateCategorySchema.safeParse(categoriesDraft)
   if (!parsed.success) {
-    // zod v3 기준: error.flatten()
-    const { fieldErrors, formErrors } = parsed.error.flatten()
+    const { fieldErrors, formErrors } = z.flattenError(parsed.error)
 
     return {
       ...prev,
@@ -56,10 +56,9 @@ export async function categoryCreateAction(
       success: false,
     }
   }
+  const sb = await supabase()
 
   try {
-    const sb = await supabase()
-
     const { data, error } = await sb
       .schema('ec')
       .from('categories')
@@ -107,9 +106,6 @@ export async function categoryCreateAction(
         success: false,
       }
     }
-
-    revalidatePath('/commerce/categories')
-    redirect('/commerce/categories')
   } catch (e) {
     return {
       ...prev,
@@ -120,4 +116,6 @@ export async function categoryCreateAction(
       success: false,
     }
   }
+  revalidatePath('/commerce/categories')
+  redirect('/commerce/categories')
 }
