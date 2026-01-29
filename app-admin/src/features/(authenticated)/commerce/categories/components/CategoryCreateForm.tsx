@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ServerForm from '@/components/form/ServerForm'
 import Article from '@/components/layout/article/Article'
@@ -13,6 +13,8 @@ import type { FormState } from '@/types/FormState'
 
 import type { CategoriesCreateFormValues } from '@/features/(authenticated)/commerce/categories/create/schema'
 import { categoryCreateAction } from '@/features/(authenticated)/commerce/categories/create/actions'
+import Modal from '@/components/modal/Modal'
+import { X } from 'lucide-react'
 
 type ParentOption = {
   id: number
@@ -58,6 +60,10 @@ function CategoryCreateBody({
   isPending: boolean
   parentOptions: ParentOption[]
 }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [previewFirstName, setPreviewFirstName] = useState('')
+  const [previewSecondName, setPreviewSecondName] = useState('')
+  const [previewName, setPreviewName] = useState(state.values.name ?? '')
   const router = useRouter()
 
   const parentSelectOptions = [
@@ -86,8 +92,8 @@ function CategoryCreateBody({
               placeholder="예: 상의"
               defaultValue={state.values.name ?? ''}
               errorMessage={state.fieldErrors?.['name']?.[0]}
+              onChange={(e) => setPreviewName(e.target.value)}
             />
-
             <FormInput
               label="슬러그"
               name="slug"
@@ -98,30 +104,35 @@ function CategoryCreateBody({
             />
           </div>
         </Article>
+
+        <Article title="분류 체계 설정" subtitle="카테고리의 위치(계층)를 단계별로 설정합니다.">
+          <div className="grid gap-3">
+            <CategorySelectButton type="first" openCategoryModal={() => setIsOpen(!isOpen)} />
+          </div>
+        </Article>
+
+        {previewName && (
+          <Article title="미리보기" subtitle="카테고리의 계층을 미리 보여줍니다.">
+            <div>
+              <span className="rounded-full bg-gray-200/90 px-3.5 py-1.5 text-xs">
+                {previewName}
+              </span>
+            </div>
+          </Article>
+        )}
       </div>
 
       {/* 오른쪽: 설정 */}
       <aside className="space-y-5 lg:sticky lg:top-28">
         <Article title="구조 설정">
-          <div className="space-y-3">
-            <FormSelect
-              label="부모 카테고리"
-              className="h-10"
-              name="parent_id"
-              options={parentSelectOptions}
-              defaultValue={state.values.parent_id == null ? '' : String(state.values.parent_id)}
-              errorMessage={state.fieldErrors?.['parent_id']?.[0]}
-            />
-
-            <FormSelect
-              label="상품 연결 가능(selectable)"
-              className="h-10"
-              name="selectable"
-              options={selectableOptions}
-              defaultValue={String(state.values.selectable ?? false)}
-              errorMessage={state.fieldErrors?.['selectable']?.[0]}
-            />
-          </div>
+          <FormSelect
+            label="상품 연결 가능(selectable)"
+            className="h-10"
+            name="selectable"
+            options={selectableOptions}
+            defaultValue={String(state.values.selectable ?? false)}
+            errorMessage={state.fieldErrors?.['selectable']?.[0]}
+          />
         </Article>
 
         <Article>
@@ -141,6 +152,23 @@ function CategoryCreateBody({
         </Article>
       </aside>
 
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} closeOnEsc closeOnOutsideClick>
+        <div className="min-w-140 rounded border border-gray-300 bg-white px-4 py-3">
+          <header className="flex items-center justify-between text-sm text-gray-700">
+            <h2 className="font-semibold">1 계층 카테고리를 선택해주세요.</h2>
+            <X
+              size={20}
+              onClick={() => setIsOpen(false)}
+              className="cursor-pointer rounded-full p-0.5 hover:bg-indigo-100"
+            />
+          </header>
+          <div className="my-1 border border-gray-100" />
+          <main className="flex min-h-72 w-full flex-col gap-3">
+            <button className="w-full text-left">테스트</button>
+          </main>
+        </div>
+      </Modal>
+
       <Dialog
         title="에러가 발생했습니다."
         subTitle={state.fieldErrors?._form?.[0] ?? ''}
@@ -153,5 +181,37 @@ function CategoryCreateBody({
         autoOpenKey={isPending}
       />
     </>
+  )
+}
+
+function CategorySelectButton({
+  type,
+  openCategoryModal,
+}: {
+  type: 'first' | 'second'
+  openCategoryModal: () => void
+}) {
+  const text = type === 'first' ? '1 계층' : '2 계층'
+  const text2 = type === 'first' ? '1 계층(루트)' : '2 계층'
+
+  return (
+    <button
+      type="button"
+      onClick={openCategoryModal}
+      className="flex h-10 w-full items-center justify-between rounded border border-gray-300 px-3"
+    >
+      <div className="flex min-w-0 items-center gap-0.5 text-left">
+        <span className="text-xs font-bold text-gray-900">{text}</span>
+        <span className="mx-1">-</span>
+        <span className="truncate text-xs text-gray-500">
+          선택 안 하면 이 카테고리는 <span className="font-semibold text-red-500">{text2}</span>
+          으로 등록됩니다.
+        </span>
+      </div>
+
+      <span className="ml-3 shrink-0 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-600 transition group-hover:border-gray-300">
+        선택
+      </span>
+    </button>
   )
 }

@@ -12,10 +12,23 @@ export type BaseSelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   errorMessage?: string
   className?: string
   outerClassName?: string
+  placeholder?: string
+  selectNoValue?: boolean
 }
 
 export default function FormSelect(props: BaseSelectProps) {
-  const { label, errorMessage, required, name, options, className, outerClassName, ...rest } = props
+  const {
+    label,
+    errorMessage,
+    required,
+    name,
+    options,
+    className,
+    outerClassName,
+    placeholder,
+    selectNoValue,
+    ...rest
+  } = props
 
   return (
     <div className={clsx('flex flex-col gap-1', outerClassName)}>
@@ -26,7 +39,9 @@ export default function FormSelect(props: BaseSelectProps) {
         </div>
       )}
       <Select
+        selectNoValue={selectNoValue}
         required={required}
+        placeholder={placeholder}
         name={name}
         aria-label={label}
         aria-labelledby={label}

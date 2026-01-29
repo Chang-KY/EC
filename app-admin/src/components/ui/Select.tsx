@@ -5,11 +5,13 @@ import clsx from 'clsx'
 
 type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   className?: string
+  placeholder?: string
+  selectNoValue?: boolean
   options: { label: React.ReactNode; value: string }[]
 }
 
 export default function Select(props: SelectProps) {
-  const { className, options, ...rest } = props
+  const { className, options, selectNoValue, placeholder, ...rest } = props
   return (
     <select
       {...rest}
@@ -18,8 +20,12 @@ export default function Select(props: SelectProps) {
         className,
       )}
     >
-      <option value="" disabled className="bg-gray-100 text-gray-400 dark:bg-gray-900">
-        선택하세요
+      <option
+        value=""
+        disabled={!selectNoValue}
+        className="bg-gray-100 text-gray-400 dark:bg-gray-900"
+      >
+        {placeholder ? placeholder : '선택하세요'}
       </option>
       {options.map((opt) => (
         <option

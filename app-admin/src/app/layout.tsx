@@ -23,6 +23,7 @@ export default function RootLayout({
           <JotaiProvider>{children}</JotaiProvider>
         </TanStackProvider>
         <ToastProvider />
+        <div id="modal-root" />
       </body>
     </html>
   )
