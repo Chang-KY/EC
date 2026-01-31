@@ -1,0 +1,23 @@
+-- ec schema grants (local/remote 공통)
+
+GRANT USAGE ON SCHEMA ec TO anon, authenticated, service_role;
+
+GRANT SELECT ON ALL TABLES IN SCHEMA ec TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ec TO authenticated;
+GRANT ALL ON ALL TABLES IN SCHEMA ec TO service_role;
+
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ec TO authenticated, service_role;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ec TO anon;
+
+-- 앞으로 생길 테이블/시퀀스에도 자동 적용(마이그레이션 실행 role 기준)
+ALTER DEFAULT PRIVILEGES IN SCHEMA ec
+GRANT SELECT ON TABLES TO anon, authenticated;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ec
+GRANT INSERT, UPDATE, DELETE ON TABLES TO authenticated;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ec
+GRANT ALL ON TABLES TO service_role;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ec
+GRANT USAGE, SELECT ON SEQUENCES TO anon, authenticated, service_role;
