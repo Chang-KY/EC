@@ -11,7 +11,8 @@ export async function proxy(request: NextRequest) {
   // Next 내부/정적 파일은 matcher에서 대부분 걸러지지만, 혹시 몰라 한 번 더 방어
   if (
     pathname.startsWith('/_next') ||
-    pathname === '/favicon.ico' ||
+    pathname === '/favicon-light.ico' ||
+    pathname === '/favicon-dark.ico' ||
     /\.(?:png|jpg|jpeg|gif|svg|ico|css|js|woff2?)$/.test(pathname)
   ) {
     return NextResponse.next()
@@ -51,5 +52,5 @@ export async function proxy(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\..*).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon-light.ico|favicon-dark.ico|robots.txt|sitemap.xml|.*\\..*).*)'],
 }

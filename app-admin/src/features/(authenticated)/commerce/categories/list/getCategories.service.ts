@@ -3,6 +3,7 @@
 import 'server-only'
 import { supabase } from '@/utils/supabase/supabase'
 import { ListParams, listParamsSchema } from '@/types/ListParams'
+import { CATEGORIES_TABLE_VIEW } from '@/types/db'
 
 export async function getCategoriesService(params: ListParams) {
   const { page, size, keyword, order, orderBy } = listParamsSchema.parse(params)
@@ -13,7 +14,7 @@ export async function getCategoriesService(params: ListParams) {
 
   let q = sb
     .schema('ec')
-    .from('categories')
+    .from('categories_with_breadcrumb')
     .select('*', { count: 'exact' })
     .range(from, to)
     .order(orderBy, { ascending: order === 'asc' })
@@ -23,10 +24,9 @@ export async function getCategoriesService(params: ListParams) {
     q = q.or(`name.ilike.%${k}%`)
   }
 
-  const { data, error, count } = await q
-  if (error) {
-    throw new Error(error.message)
-  }
+  const { data, error, count } = await q.overrideTypes<CATEGORIES_TABLE_VIEW[], { merge: false }>()
+
+  if (error) throw new Error(error.message)
 
   return {
     items: data ?? [],

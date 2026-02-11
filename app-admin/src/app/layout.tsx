@@ -9,6 +9,12 @@ import JotaiProvider from '@/provider/JotaiProvider'
 export const metadata: Metadata = {
   title: 'EC Admin | 이커머스 관리 콘솔',
   description: 'EC Admin에서 상품, 카테고리, 쿠폰, 주문을 한 곳에서 효율적으로 관리하세요.',
+  icons: {
+    icon: [
+      { url: '/favicon-light.ico', media: '(prefers-color-scheme: light)' },
+      { url: '/favicon-dark.ico', media: '(prefers-color-scheme: dark)' },
+    ],
+  },
 }
 
 export default function RootLayout({

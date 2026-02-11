@@ -3,11 +3,12 @@ import React from 'react'
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
+  information?: string
   icon?: React.ReactNode
 }
 
 export default function Input(props: InputProps) {
-  const { className, icon, ...rest } = props
+  const { className, icon, information, ...rest } = props
 
   return (
     <div className="relative w-full">
@@ -21,6 +22,7 @@ export default function Input(props: InputProps) {
           className,
         )}
       />
+      {information && <div className="absolute right-1 bottom-0 text-xs">{information}</div>}
       {icon && (
         <div className="absolute inset-y-0 left-2 flex items-center justify-center text-gray-600">
           {icon}

@@ -6,8 +6,8 @@ import { cn } from '@/lib/cn'
 
 const buttonVariants = cva(
   // btn-basic
-  'inline-flex items-center gap-1.5 h-7 rounded px-3.5 py-1.5 text-xs font-medium transition-colors ' +
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black ' +
+  'inline-flex items-center gap-1.5 h-7 rounded px-3.5 py-1.5 text-xs font-medium transition-colors' +
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black' +
     'disabled:cursor-not-allowed disabled:opacity-60',
   {
     variants: {
@@ -42,7 +42,7 @@ const Button = ({ className, variant, icon, children, ...rest }: ButtonProps) =>
   return (
     <button {...rest} className={cn(buttonVariants({ variant }), className)}>
       {icon && <div>{icon}</div>}
-      <span>{children}</span>
+      {children}
     </button>
   )
 }

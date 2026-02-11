@@ -84,6 +84,13 @@ export type Database = {
             referencedRelation: "categories"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories_with_breadcrumb"
+            referencedColumns: ["id"]
+          },
         ]
       }
       category_roles: {
@@ -123,6 +130,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories_with_breadcrumb"
             referencedColumns: ["id"]
           },
           {
@@ -368,6 +382,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories_with_breadcrumb"
             referencedColumns: ["id"]
           },
           {
@@ -775,9 +796,49 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      categories_with_breadcrumb: {
+        Row: {
+          breadcrumb: string | null
+          depth: number | null
+          id: number | null
+          name: string | null
+          parent_id: number | null
+          parent_name: string | null
+          path: unknown
+          selectable: boolean | null
+          slug: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories_with_breadcrumb"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      get_category_subtree: {
+        Args: { _id: number }
+        Returns: {
+          depth: number
+          id: number
+          name: string
+          parent_id: number
+          path: unknown
+          rel_depth: number
+          slug: string
+        }[]
+      }
       get_product_detail: { Args: { p_id: number }; Returns: Json }
     }
     Enums: {

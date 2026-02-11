@@ -60,7 +60,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const { id } = await params
   const numericId = Number(id)
 
-  const p = await getProductDetail(Number(numericId))
+  const p = await getProductDetail(numericId)
 
   if (!p) {
     return (

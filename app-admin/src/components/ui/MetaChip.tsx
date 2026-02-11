@@ -29,9 +29,10 @@ export default function MetaChip({
       <span
         className={clsx(
           'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold',
-          'border border-gray-300 bg-gray-50 text-gray-800',
-          'dark:bg-zinc-950 dark:text-zinc-100 dark:ring-zinc-800',
-          className,
+          'border',
+          '',
+          className ??
+            'text-gray-800 dark:bg-zinc-950 border-gray-300 bg-gray-50 dark:text-zinc-100 dark:ring-zinc-800',
         )}
       >
         {Icon ? <Icon className="size-3.5" /> : null}

@@ -10,7 +10,7 @@ type ActionResult = { ok: true } | { ok: false; message: string }
 
 type UpdatePayload<TId extends string | number> = { id: TId } & Record<
   string,
-  string | number | undefined
+  unknown
 >
 
 export type UpdateAction<TId extends string | number> = (
@@ -29,7 +29,7 @@ export default function InfoRowSelectUpdate<TId extends string | number>({
   field: string
   label: string
   disabled: boolean
-  value: string
+  value: unknown
   action: UpdateAction<TId>
 }) {
   const [pending, startTransition] = useTransition()

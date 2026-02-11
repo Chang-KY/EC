@@ -1,9 +1,9 @@
 import type { paginationOptions } from '@/types/PaginationOptions'
-import { CATEGORIES_TABLE } from '@/types/db'
+import { CATEGORIES_TABLE, CATEGORIES_TABLE_VIEW } from '@/types/db'
 import { queryOptions } from '@tanstack/react-query'
 import { getCategoriesService } from '@/features/(authenticated)/commerce/categories/list/getCategories.service'
 
-export const getCategories = (params: paginationOptions<CATEGORIES_TABLE['Row']>) =>
+export const getCategories = (params: paginationOptions<CATEGORIES_TABLE_VIEW>) =>
   queryOptions({
     queryKey: [
       'categories',

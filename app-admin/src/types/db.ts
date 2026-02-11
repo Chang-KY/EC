@@ -7,6 +7,10 @@ export type COUPONS_TABLE = EC['Tables']['coupons']
 export type ADMINS_TABLE = EC['Tables']['admins']
 
 export type CATEGORIES_TABLE = EC['Tables']['categories']
+export type CATEGORIES_TABLE_VIEW = CATEGORIES_TABLE['Row'] & {
+  parent_name: string | null
+  breadcrumb: string | null
+}
 
 export type CATEGORY_ROLES_TABLE = EC['Tables']['category_roles']
 

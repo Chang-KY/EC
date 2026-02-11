@@ -12,11 +12,21 @@ type FormInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   name: string
   inputClassName?: string
   outerClassName?: string
+  information?: string
 }
 
 const FormInput = (props: FormInputProps) => {
-  const { label, errorMessage, required, type, name, inputClassName, outerClassName, ...rest } =
-    props
+  const {
+    label,
+    errorMessage,
+    required,
+    type,
+    name,
+    inputClassName,
+    outerClassName,
+    information,
+    ...rest
+  } = props
 
   return (
     <div className={clsx('flex flex-col gap-1', outerClassName)}>
@@ -37,6 +47,7 @@ const FormInput = (props: FormInputProps) => {
         />
       ) : (
         <Input
+          information={information}
           required={required}
           name={name}
           aria-label={label}

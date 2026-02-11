@@ -3,7 +3,7 @@
 import React from 'react'
 import Table, { TableChange } from '@/components/table/Table'
 import Pagination from '@/components/pagination/Pagination'
-import { CATEGORIES_TABLE } from '@/types/db'
+import { CATEGORIES_TABLE_VIEW } from '@/types/db'
 import { useKeywordSetParam } from '@/hooks/params/useKeywordSetParam'
 import Input from '@/components/ui/Input'
 import { CirclePlus, Search, Loader2 } from 'lucide-react'
@@ -24,16 +24,16 @@ export default function CategoryTableContainer({
   orderBy: initialOrderBy,
   order: initialOrder,
   keyword: initialKeyword,
-}: paginationOptions<CATEGORIES_TABLE['Row']>) {
+}: paginationOptions<CATEGORIES_TABLE_VIEW>) {
   const { keyword, setKeyword, debouncedSearchTerm, isDebouncing, flush } = useKeywordSetParam(
     700,
     initialKeyword,
   )
   const { page, setPage } = usePagination(initialPage)
-  const { sorting, setSorting, order, orderBy } = useOrderSort<CATEGORIES_TABLE['Row']>({
+  const { sorting, setSorting, order, orderBy } = useOrderSort<CATEGORIES_TABLE_VIEW>({
     defaultId: initialOrderBy ?? 'id',
     defaultDesc: initialOrder === 'desc',
-    allowedKeys: ['id', 'name', 'slug', 'parent_id', 'path', 'depth', 'selectable'],
+    allowedKeys: ['id', 'name', 'slug', 'parent_id', 'depth', 'selectable', 'path'],
   })
   const { size, setSize, sizeList } = usePageSize(initialSize)
   const { setQuery } = useSetQuery()
@@ -106,7 +106,7 @@ export default function CategoryTableContainer({
         </Link>
       </div>
 
-      <Table<CATEGORIES_TABLE['Row']>
+      <Table<CATEGORIES_TABLE_VIEW>
         data={items}
         total={total}
         page={page}
