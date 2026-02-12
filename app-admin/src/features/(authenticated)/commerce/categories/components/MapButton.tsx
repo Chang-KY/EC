@@ -5,7 +5,7 @@ import { Map } from 'lucide-react'
 import Modal from '@/components/modal/Modal'
 import CategoryPyramidD3 from '@/features/(authenticated)/commerce/categories/components/tree/CategoryPyramid'
 
-export default function MapButton({ categoryId }: { categoryId: number }) {
+export default function MapButton({ categoryId , currentId}: { categoryId: number, currentId: number }) {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
@@ -16,7 +16,11 @@ export default function MapButton({ categoryId }: { categoryId: number }) {
         onClick={() => setIsOpen(true)}
       />
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <CategoryPyramidD3 categoryId={categoryId} onClose={() => setIsOpen(false)} />
+        <CategoryPyramidD3
+          categoryId={categoryId}
+          onClose={() => setIsOpen(false)}
+          currentId={currentId}
+        />
       </Modal>
     </>
   )

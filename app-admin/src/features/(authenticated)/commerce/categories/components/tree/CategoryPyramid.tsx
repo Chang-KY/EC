@@ -45,9 +45,11 @@ function toD3(root: CategoryNode): D3Node {
 
 export default function CategoryPyramidD3({
   categoryId,
+  currentId,
   onClose,
 }: {
   categoryId: number
+  currentId: number
   onClose: () => void
 }) {
   const { data, isLoading, isError, refetch } = useCategorySubtree(categoryId)
@@ -134,6 +136,7 @@ export default function CategoryPyramidD3({
           const level = levelOfDepth(depth + 1)
           const theme = LEVEL[level]
           const nodeDatum = rd3.nodeDatum as D3Node
+          const currentNode = currentId === nodeDatum.id
           const center = () => treeRef.current?.centerNode(h, 400)
           const href = `${ROUTES.CATEGORIES}/${nodeDatum.id}`
 
@@ -144,9 +147,10 @@ export default function CategoryPyramidD3({
               <foreignObject width={200} height={200} x={-100} y={-20}>
                 <div
                   className={clsx(
-                    'relative h-24 rounded border text-xs shadow-sm ring-1 ring-transparent',
+                    'relative h-24 rounded text-xs shadow-sm ring-1 ring-transparent',
                     'px-3 py-2',
                     theme.card,
+                    currentNode ? 'border-3 shadow-lg' : 'border',
                   )}
                   onClick={center}
                   title={`${nodeDatum.attributes?.slug ?? ''} 로 이동`}
@@ -160,7 +164,13 @@ export default function CategoryPyramidD3({
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <span className={clsx('inline-block h-2 w-2 rounded-full', theme.dot)} />
+                      <span
+                        className={clsx('relative inline-block h-2 w-2 rounded-full', theme.dot)}
+                      >
+                        {currentNode && (
+                          <span className="absolute inline-block h-2 w-2 animate-ping rounded-full bg-red-300" />
+                        )}
+                      </span>
                       <strong className="max-w-48 truncate text-[0.72rem] leading-4">
                         {nodeDatum.name}
                       </strong>

@@ -17,6 +17,7 @@ import { useSetQuery } from '@/hooks/useSetQuery'
 import { usePageSize } from '@/hooks/usePageSize'
 import { productColumns } from '@/features/(authenticated)/commerce/products/list/productColumns'
 import { getProducts } from '@/features/(authenticated)/commerce/products/list/getProducts'
+import SearchBar from '@/components/ui/SearchBar'
 
 export default function ProductTableContainer({
   page: initialPage,
@@ -84,23 +85,14 @@ export default function ProductTableContainer({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Input
-            type="text"
-            name="search"
-            className="h-7"
-            value={keyword}
-            placeholder="상품 검색..."
-            icon={
-              isSearching ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />
-            }
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') flush()
-            }}
-            onChange={(e) => setKeyword(e.target.value)}
-          />
-          {isSearching && <span className="text-xs text-gray-500">{searchLabel}</span>}
-        </div>
+        <SearchBar
+          isSearching={isSearching}
+          searchLabel={searchLabel}
+          setKeyword={setKeyword}
+          keyword={keyword}
+          flush={flush}
+          placeholder="상품 검색..."
+        />
         <Link href="/commerce/products/create">
           <Button icon={<CirclePlus size={14} className="text-gray-700" />}>상품 추가</Button>
         </Link>

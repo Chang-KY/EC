@@ -69,9 +69,7 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
       </Section>
     )
   }
-  console.log(category)
   const segments = makeBreadcrumbSegments(category)
-  console.log(segments)
   return (
     <Section pathTitle={`${ROUTES.CATEGORIES}/${id}`}>
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
@@ -249,7 +247,10 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
             />
           </Article>
           <Article title="카테고리 전체 맵 보기" subtitle="">
-            <InfoRow label="맵" value={<MapButton categoryId={Number(segments[0].id)} />} />
+            <InfoRow
+              label="맵"
+              value={<MapButton categoryId={Number(segments[0].id)} currentId={numericId} />}
+            />
           </Article>
           {/* 액션 */}
           <Article>
