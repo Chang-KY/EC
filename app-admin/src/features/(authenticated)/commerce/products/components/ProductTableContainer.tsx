@@ -5,7 +5,6 @@ import Table, { TableChange } from '@/components/table/Table'
 import Pagination from '@/components/pagination/Pagination'
 import { PRODUCTS_TABLE } from '@/types/db'
 import { useKeywordSetParam } from '@/hooks/params/useKeywordSetParam'
-import Input from '@/components/ui/Input'
 import { CirclePlus, Search, Loader2 } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
@@ -31,7 +30,9 @@ export default function ProductTableContainer({
     initialKeyword,
   )
   const { page, setPage } = usePagination(initialPage)
-  const { sorting, setSorting, order, orderBy } = useOrderSort<PRODUCTS_TABLE['Row']>({
+  const { sorting, setSorting, order, orderBy } = useOrderSort<
+    PRODUCTS_TABLE['Row'] & { final_price: number }
+  >({
     defaultId: initialOrderBy ?? 'id',
     defaultDesc: initialOrder === 'desc',
     allowedKeys: [
@@ -42,6 +43,7 @@ export default function ProductTableContainer({
       'discount_type',
       'discount_value',
       'stock',
+      'final_price',
     ],
   })
   const { size, setSize, sizeList } = usePageSize(initialSize)
