@@ -26,6 +26,7 @@ import {
   adminUpdateStatusAction,
 } from '@/features/(authenticated)/system/admins/update/basicInfoActions'
 import InfoRowSelectUpdate from '@/components/ui/InfoRowSelectUpdate'
+import { dateTimeFormat } from '@/utils/DateTimeFormat'
 
 export async function generateMetadata({
   params,
@@ -120,7 +121,7 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
               <InfoRow label="마지막 로그인" value={admin.last_login ?? '-'} />
               <InfoRow
                 label="생성일"
-                value={admin.created_at ? new Date(admin.created_at).toLocaleString('ko-KR') : '-'}
+                value={admin.created_at ? dateTimeFormat(admin.created_at, 'datetime') : '-'}
               />
             </div>
           </Article>

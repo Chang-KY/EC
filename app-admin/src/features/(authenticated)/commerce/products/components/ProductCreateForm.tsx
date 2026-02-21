@@ -106,9 +106,6 @@ function ProductCreateBody({
 
   const discountLabel = DISCOUNT_TYPE_META[discountType]?.label ?? '할인 없음'
 
-  const showSalePrice = discountType === 'fixed'
-  const showSaleRate = discountType === 'rate'
-
   return (
     <>
       <div className="mb-5 space-y-5">
@@ -159,27 +156,15 @@ function ProductCreateBody({
               errorMessage={state.fieldErrors?.['products.discount_type']?.[0]}
             />
           </div>
-          {showSalePrice && (
+          {discountType !== 'none' && (
             <FormInput
-              label="할인가 ( 원 )"
-              name="products.sale_price"
+              label={`할인${discountType === 'rate' ? '률 ( % )' : '가 ( ₩ )'}`}
+              name="products.discount_value"
               required
               type="number"
               placeholder="선택"
-              defaultValue={state.values.products?.sale_price ?? ''}
-              errorMessage={state.fieldErrors?.['products.sale_price']?.[0]}
-            />
-          )}
-
-          {showSaleRate && (
-            <FormInput
-              label="할인율 ( % )"
-              name="products.sale_rate"
-              required
-              type="number"
-              placeholder="0~100"
-              defaultValue={state.values.products?.sale_rate ?? ''}
-              errorMessage={state.fieldErrors?.['products.sale_rate']?.[0]}
+              defaultValue={state.values.products?.discount_value ?? ''}
+              errorMessage={state.fieldErrors?.['products.discount_value']?.[0]}
             />
           )}
         </Article>

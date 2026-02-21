@@ -6,10 +6,12 @@ export default function Loading({
   heightCN,
   widthCN,
   mention,
+  size = 34,
 }: {
   heightCN?: string
   widthCN?: string
   mention?: string
+  size?: number
 }) {
   return (
     <div
@@ -19,7 +21,7 @@ export default function Loading({
         heightCN ? heightCN : '',
       )}
     >
-      <LoaderCircle size={34} className="animate-spin" />
+      <LoaderCircle size={size} className="animate-spin" />
       {mention && <p className="text-xs">{mention}</p>}
     </div>
   )

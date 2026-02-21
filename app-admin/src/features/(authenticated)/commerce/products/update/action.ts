@@ -4,7 +4,7 @@ import 'server-only'
 import type { FormState } from '@/types/FormState'
 import {
   productsUpdateSchema,
-  ProductUpdateUpdateFormValue,
+  ProductUpdateFormValue,
 } from '@/features/(authenticated)/commerce/products/update/schema'
 import { z } from 'zod'
 import { supabase } from '@/utils/supabase/supabase'
@@ -13,14 +13,13 @@ import { ROUTES } from '@/constants/routes'
 
 export async function productUpdateAction(
   productId: number,
-  prev: FormState<ProductUpdateUpdateFormValue>,
+  prev: FormState<ProductUpdateFormValue>,
   formData: FormData,
-): Promise<FormState<ProductUpdateUpdateFormValue>> {
+): Promise<FormState<ProductUpdateFormValue>> {
   const productsDraft = {
     price: formData.get('products.price') ?? 0,
     discount_type: formData.get('products.discount_type') ?? 'none',
-    sale_price: formData.get('products.sale_price') ?? undefined,
-    sale_rate: formData.get('products.sale_rate') ?? undefined,
+    discount_value: formData.get('products.discount_value') ?? undefined,
   }
 
   const productsParsed = productsUpdateSchema.safeParse(productsDraft)
@@ -35,7 +34,7 @@ export async function productUpdateAction(
       values: {
         ...prev.values,
         products: productsDraft,
-      } as Partial<ProductUpdateUpdateFormValue>,
+      } as Partial<ProductUpdateFormValue>,
       fieldErrors: { ...prefixed, _form: formErrors },
       success: false,
     }
@@ -48,7 +47,7 @@ export async function productUpdateAction(
   if (error) {
     return {
       ...prev,
-      values: { ...prev.values, products: productsDraft } as Partial<ProductUpdateUpdateFormValue>,
+      values: { ...prev.values, products: productsDraft } as Partial<ProductUpdateFormValue>,
       fieldErrors: { _form: [error.message] },
       success: false,
     }
@@ -58,7 +57,7 @@ export async function productUpdateAction(
 
   return {
     ...prev,
-    values: { ...prev.values, products: patch } as Partial<ProductUpdateUpdateFormValue>,
+    values: { ...prev.values, products: patch } as Partial<ProductUpdateFormValue>,
     fieldErrors: {},
     success: true,
   }

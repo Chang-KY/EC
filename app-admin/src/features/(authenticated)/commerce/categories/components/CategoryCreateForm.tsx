@@ -173,6 +173,8 @@ function CategoryCreateBody({
         onClose={() => setIsOpen(undefined)}
         closeOnEsc
         closeOnOutsideClick
+        headerTitle={`${isOpen === 1 ? '1 계층' : '2 계층'}  카테고리 선택`}
+        subHeaderTitle="클릭하면 선택됩니다. 아래에서 “선택 완료”를 누르세요."
       >
         <SearchParentCategory
           onClose={() => setIsOpen(undefined)}

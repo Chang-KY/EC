@@ -24,7 +24,7 @@ dayjs.locale('ko')
  */
 export function dateTimeFormat(
   dateInput: string | Date | null | undefined,
-  formatType: 'default' | 'date' | 'datetime' | 'short' | 'relative' = 'default',
+  formatType: 'default' | 'date' | 'datetime' | 'short' | 'relative'
 ): string {
   // 1) null / undefined / 빈 문자열이면 바로 '-'
   if (dateInput == null || dateInput === '') return '-'
@@ -39,7 +39,7 @@ export function dateTimeFormat(
     case 'date':
       return date.format('YYYY.MM.DD')
     case 'datetime':
-      return date.format('YYYY-MM-DD HH:mm:ss')
+      return date.locale('ko').format('YYYY. M. D. A h:mm:ss')
     case 'short':
       return date.format('YY.MM.DD HH:mm')
     case 'relative':

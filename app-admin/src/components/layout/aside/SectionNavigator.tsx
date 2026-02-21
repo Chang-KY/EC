@@ -34,7 +34,7 @@ const commerceNavigation = [
   { name: '카테고리', href: ROUTES.CATEGORIES, icon: Tags },
   { name: '쿠폰', href: ROUTES.COUPONS, icon: TicketIcon },
   { name: '리뷰 관리', href: ROUTES.REVIEWS, icon: MessageSquareIcon },
-  { name: '사용자 관리', href: ROUTES.USERS, icon: UserCogIcon },
+  { name: '회원 관리', href: ROUTES.USERS, icon: UserCogIcon },
   { name: '배송 관리', href: ROUTES.SHIPPING, icon: TruckIcon },
   { name: '정산 / 환불', href: ROUTES.SETTLEMENTS, icon: ReceiptIcon },
   { name: '포인트 / 등급', href: ROUTES.MEMBERSHIP, icon: BadgePercentIcon },

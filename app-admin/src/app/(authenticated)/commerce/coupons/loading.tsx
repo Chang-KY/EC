@@ -1,7 +1,5 @@
-import React from 'react'
+import TableLoading from '@/components/loading/TableLoading'
 
-const Loading = () => {
-  return <div></div>
+export default async function Loading() {
+  return <TableLoading />
 }
-
-export default Loading

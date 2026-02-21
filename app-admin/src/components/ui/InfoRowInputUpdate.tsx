@@ -12,7 +12,7 @@ type ActionResult = { ok: true } | { ok: false; message: string }
 
 type UpdatePayload<TId extends string | number> = { id: TId } & Record<
   string,
-  string | number | undefined
+  string | number | boolean | null | undefined | unknown
 >
 
 export type UpdateAction<TId extends string | number> = (

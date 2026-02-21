@@ -48,6 +48,57 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          actor_type: string
+          changes: Json
+          created_at: string
+          entity_id: string
+          entity_label: string | null
+          entity_type: string
+          id: number
+          ip: unknown
+          reason: string | null
+          request_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          actor_type?: string
+          changes?: Json
+          created_at?: string
+          entity_id: string
+          entity_label?: string | null
+          entity_type: string
+          id?: number
+          ip?: unknown
+          reason?: string | null
+          request_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          actor_type?: string
+          changes?: Json
+          created_at?: string
+          entity_id?: string
+          entity_label?: string | null
+          entity_type?: string
+          id?: number
+          ip?: unknown
+          reason?: string | null
+          request_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           depth: number | null
@@ -640,11 +691,10 @@ export type Database = {
           created_at: string | null
           description: string | null
           discount_type: Database["ec"]["Enums"]["discount_type"]
+          discount_value: number | null
           id: number
           name: string
           price: number
-          sale_price: number | null
-          sale_rate: number | null
           status: Database["ec"]["Enums"]["product_status"] | null
           stock: number | null
         }
@@ -652,11 +702,10 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           discount_type?: Database["ec"]["Enums"]["discount_type"]
+          discount_value?: number | null
           id?: number
           name: string
           price: number
-          sale_price?: number | null
-          sale_rate?: number | null
           status?: Database["ec"]["Enums"]["product_status"] | null
           stock?: number | null
         }
@@ -664,15 +713,68 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           discount_type?: Database["ec"]["Enums"]["discount_type"]
+          discount_value?: number | null
           id?: number
           name?: string
           price?: number
-          sale_price?: number | null
-          sale_rate?: number | null
           status?: Database["ec"]["Enums"]["product_status"] | null
           stock?: number | null
         }
         Relationships: []
+      }
+      profile_memos: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          id: number
+          is_deleted: boolean
+          memo: string
+          profile_id: string
+          updated_at: string | null
+          visibility: Database["ec"]["Enums"]["memo_visibility"]
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: number
+          is_deleted?: boolean
+          memo: string
+          profile_id: string
+          updated_at?: string | null
+          visibility?: Database["ec"]["Enums"]["memo_visibility"]
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: number
+          is_deleted?: boolean
+          memo?: string
+          profile_id?: string
+          updated_at?: string | null
+          visibility?: Database["ec"]["Enums"]["memo_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_memos_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_memos_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -846,6 +948,7 @@ export type Database = {
       apply_mode: "exclude" | "include" | "all"
       coupon_kind: "general" | "code"
       discount_type: "rate" | "fixed" | "none"
+      memo_visibility: "public" | "private"
       order_status:
         | "pending"
         | "paid"
@@ -991,6 +1094,7 @@ export const Constants = {
       apply_mode: ["exclude", "include", "all"],
       coupon_kind: ["general", "code"],
       discount_type: ["rate", "fixed", "none"],
+      memo_visibility: ["public", "private"],
       order_status: [
         "pending",
         "paid",

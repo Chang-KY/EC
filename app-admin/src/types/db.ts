@@ -35,7 +35,11 @@ export type PRODUCT_TAGS_TABLE = EC['Tables']['product_tags']
 
 export type PRODUCTS_TABLE = EC['Tables']['products']
 
-export type PROFILES_TABLE = EC['Tables']['profiles']
+export type USERS_TABLE = EC['Tables']['profiles']
+
+export type USERS_MEMO_TABLE = EC['Tables']['profile_memos']
+
+export type AUDIT_LOGS_TABLE = EC['Tables']['audit_logs']
 
 export type TAGS_TABLE = EC['Tables']['tags']
 

@@ -3,7 +3,6 @@
 import ServerForm from '@/components/form/ServerForm'
 import type { FormState } from '@/types/FormState'
 import React from 'react'
-import { ProductUpdateUpdateFormValue } from '@/features/(authenticated)/commerce/products/update/schema'
 import { DiscountType } from '@/types/enum'
 import { productUpdateAction } from '@/features/(authenticated)/commerce/products/update/action'
 import FormInput from '@/components/form/FormInput'
@@ -12,22 +11,20 @@ import { DISCOUNT_TYPE_META } from '@/features/(authenticated)/commerce/products
 import Button from '@/components/ui/Button'
 import { useSetAtom } from 'jotai'
 import { articleButtonAtom } from '@/store/articleEditAtoms'
+import { ProductUpdateFormValue } from '@/features/(authenticated)/commerce/products/update/schema'
 
 const initialProductState = ({
   price,
-  sale_rate,
-  sale_price,
+  discount_value,
   discount_type,
 }: {
   price?: number
-  sale_rate?: number
-  sale_price?: number
+  discount_value?: number
   discount_type?: DiscountType
-}): FormState<ProductUpdateUpdateFormValue> => ({
+}): FormState<ProductUpdateFormValue> => ({
   values: {
     price,
-    sale_rate,
-    sale_price,
+    discount_value,
     discount_type,
   },
   fieldErrors: {},
@@ -36,26 +33,19 @@ const initialProductState = ({
 
 export default function ProductEditPriceForm({
   price,
-  sale_rate,
-  sale_price,
+  discount_value,
   discount_type,
   id,
 }: {
   price?: number
-  sale_rate?: number
-  sale_price?: number
+  discount_value?: number
   discount_type?: DiscountType
   id: number
 }) {
   const setId = useSetAtom(articleButtonAtom)
-
   const [discountType, setDiscountType] = React.useState<DiscountType>(
     (discount_type as DiscountType) ?? 'none',
   )
-
-  const showSalePrice = discountType === 'fixed'
-  const showSaleRate = discountType === 'rate'
-
   const close = React.useCallback(() => setId(''), [setId])
 
   return (
@@ -65,26 +55,21 @@ export default function ProductEditPriceForm({
         <p className="text-[10px] text-indigo-500">표시용 정가( {price?.toLocaleString()} 원 )</p>
       </h3>
 
-      <ServerForm<FormState<ProductUpdateUpdateFormValue>>
+      <ServerForm<FormState<ProductUpdateFormValue>>
         action={productUpdateAction.bind(null, id)}
         className="size-full p-3"
         initialState={initialProductState({
           price,
-          sale_price,
-          sale_rate,
+          discount_value,
           discount_type,
         })}
       >
         {({ state, isPending }) => (
           <ProductUpdateBody
             price={price}
-            sale_rate={sale_rate}
-            sale_price={sale_price}
-            discount_type={discount_type}
+            discountValue={discount_value}
             discountType={discountType}
             setDiscountType={setDiscountType}
-            showSalePrice={showSalePrice}
-            showSaleRate={showSaleRate}
             state={state}
             isPending={isPending}
             onClose={close}
@@ -97,30 +82,21 @@ export default function ProductEditPriceForm({
 
 function ProductUpdateBody({
   price,
-  sale_rate,
-  sale_price,
-  discount_type,
+  discountValue,
   discountType,
   setDiscountType,
-  showSalePrice,
-  showSaleRate,
   state,
   isPending,
   onClose,
 }: {
   price?: number
-  sale_rate?: number
-  sale_price?: number
-  discount_type?: DiscountType
+  discountValue?: number
   discountType: DiscountType
   setDiscountType: React.Dispatch<React.SetStateAction<DiscountType>>
-  showSalePrice: boolean
-  showSaleRate: boolean
-  state: FormState<ProductUpdateUpdateFormValue>
+  state: FormState<ProductUpdateFormValue>
   isPending: boolean
   onClose: () => void
 }) {
-  // ✅ 성공 후 자동 닫기 (한 번만)
   const closedRef = React.useRef(false)
 
   React.useEffect(() => {
@@ -134,7 +110,6 @@ function ProductUpdateBody({
 
   return (
     <div className="flex size-full flex-col justify-between pt-[23px]">
-      {/* ✅ 서버액션으로 price도 같이 보내고 싶으면 hidden으로 */}
       <input type="hidden" name="products.price" defaultValue={price ?? 0} />
 
       {/* 폼 바디 */}
@@ -158,34 +133,20 @@ function ProductUpdateBody({
             <p className="text-[11px] text-gray-500">할인 정책을 선택합니다</p>
           </div>
 
-          {/* 조건부 영역 */}
-          {showSalePrice && (
+          {discountType !== 'none' && (
             <FormInput
-              label="할인가 (원)"
-              name="products.sale_price"
+              label={`할인${discountType === 'rate' ? '율 ( % )' : '가 ( ₩ )'}`}
+              name="products.discount_value"
               required
               type="number"
               className="h-7"
-              placeholder="예: 19,900"
-              defaultValue={state.values?.sale_price ?? sale_price}
-              errorMessage={state.fieldErrors?.['products.sale_price']?.[0]}
+              placeholder={`예) ${discountType === 'rate' ? '30 %' : '19,900 ₩'}`}
+              defaultValue={state.values?.discount_value ?? discountValue}
+              errorMessage={state.fieldErrors?.['products.discount_value']?.[0]}
             />
           )}
 
-          {showSaleRate && (
-            <FormInput
-              label="할인율 (%)"
-              name="products.sale_rate"
-              required
-              type="number"
-              className="h-7"
-              placeholder="0~100"
-              defaultValue={state.values?.sale_rate ?? sale_rate}
-              errorMessage={state.fieldErrors?.['products.sale_rate']?.[0]}
-            />
-          )}
-
-          {!showSalePrice && !showSaleRate && (
+          {discountType === 'none' && (
             <div className="pt-5">
               <p className="flex h-7 items-center rounded border border-dashed border-gray-200 bg-white px-2 text-xs text-gray-600">
                 할인 없음 타입입니다.

@@ -19,3 +19,5 @@ export type ProductImageRole = EC['Enums']['product_image_role']
 export type ProductStatus = EC['Enums']['product_status']
 
 export type UserRole = EC['Enums']['user_role']
+
+export type MemoVisibility = EC['Enums']['memo_visibility']

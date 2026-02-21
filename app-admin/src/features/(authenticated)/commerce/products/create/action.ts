@@ -24,8 +24,7 @@ export async function productCreateAction(
     description: formData.get('products.description') ?? '',
     price: formData.get('products.price') ?? 0,
     discount_type: formData.get('products.discount_type') ?? 'none',
-    sale_price: formData.get('products.sale_price') ?? undefined,
-    sale_rate: formData.get('products.sale_rate') ?? undefined,
+    discount_value: formData.get('products.discount_value') ?? undefined,
     stock: formData.get('products.stock') ?? 0,
     status: formData.get('products.status') ?? 'hidden',
   }
@@ -90,8 +89,7 @@ export async function productCreateAction(
         description: productsParsed.data.description || null,
         price: productsParsed.data.price,
         discount_type: productsParsed.data.discount_type,
-        sale_price: productsParsed.data.sale_price ?? null,
-        sale_rate: productsParsed.data.sale_rate ?? null,
+        discount_value: productsParsed.data.discount_value ?? null,
         stock: productsParsed.data.stock ?? null,
         status: productsParsed.data.status,
       })

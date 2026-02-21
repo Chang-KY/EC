@@ -20,7 +20,7 @@ export default function DropdownMenu({
       <DropdownMenuTrigger className="flex items-center justify-center">
         {triggerButton}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align}>
+      <DropdownMenuContent className='z-[9999]' align={align}>
         {label && (
           <>
             <DropdownMenuLabel className="flex gap-1">

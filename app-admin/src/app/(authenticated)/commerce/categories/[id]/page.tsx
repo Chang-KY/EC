@@ -11,7 +11,7 @@ import InfoRow from '@/components/ui/InfoRow'
 import InfoRowInputUpdate from '@/components/ui/InfoRowInputUpdate'
 import MetaChip from '@/components/ui/MetaChip'
 import InfoRowSelectUpdate from '@/components/ui/InfoRowSelectUpdate'
-import { CheckCircle2, XCircle, Map, ArrowBigRight } from 'lucide-react'
+import { CheckCircle2, XCircle, ArrowBigRight } from 'lucide-react'
 import { makeBreadcrumbSegments } from '@/features/(authenticated)/commerce/categories/makeBreadcrumbSegments'
 import {
   categoryUpdateNameAction,
@@ -23,6 +23,7 @@ import { LevelType } from '@/features/(authenticated)/commerce/categories/types/
 import MapButton from '@/features/(authenticated)/commerce/categories/components/MapButton'
 import CategoryMoveButton from '@/features/(authenticated)/commerce/categories/components/CategoryMoveButton'
 import clsx from 'clsx'
+import { FALSE, TRUE } from '@/constants/booleanColor'
 
 export async function generateMetadata({
   params,
@@ -150,26 +151,12 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
                   <div className="flex min-w-0 flex-wrap items-center gap-1">
                     {makeBreadcrumbSegments(category).map((seg, idx, arr) => (
                       <React.Fragment key={`${seg.id}-${idx}`}>
-                        {idx === makeBreadcrumbSegments(category).length - 1 ? (
-                          <div className="group inline-flex min-w-0 items-center gap-1 rounded-md border border-transparent px-1.5 py-0.5 text-xs font-medium text-gray-700">
-                            <span className="min-w-0 truncate">{seg.name}</span>
-                            <span className="shrink-0 text-[11px] text-gray-400 tabular-nums">
-                              ({seg.id})
-                            </span>
-                          </div>
-                        ) : (
-                          <Link
-                            href={`${ROUTES.CATEGORIES}/${seg.id}`}
-                            className="group inline-flex min-w-0 items-center gap-1 rounded-md border border-transparent px-1.5 py-0.5 text-xs font-medium text-gray-700 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900"
-                            title={`${seg.name} (${seg.id})`}
-                          >
-                            <span className="min-w-0 truncate">{seg.name}</span>
-                            <span className="shrink-0 text-[11px] text-gray-400 tabular-nums group-hover:text-gray-700">
-                              ({seg.id})
-                            </span>
-                          </Link>
-                        )}
-
+                        <div className="group inline-flex min-w-0 items-center gap-1 rounded-md border border-transparent px-1.5 py-0.5 text-xs font-medium text-gray-700">
+                          <span className="min-w-0 truncate">{seg.name}</span>
+                          <span className="shrink-0 text-[11px] text-gray-400 tabular-nums">
+                            ({seg.id})
+                          </span>
+                        </div>
                         {idx < arr.length - 1 && (
                           <span className="shrink-0 text-[11px] text-gray-300">{'>'}</span>
                         )}
@@ -192,7 +179,7 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
                 {segments.length === 2 && (
                   <>
                     <ArrowBigRight size={28} className="opacity-0" />
-                    <div className="flex h-28 w-1/4 min-w-0 flex-col overflow-hidden rounded border opacity-0"></div>
+                    <div className="flex h-28 w-1/4 min-w-0 flex-col overflow-hidden rounded border opacity-0" />
                   </>
                 )}
               </div>
@@ -208,11 +195,7 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
               value={
                 <MetaChip
                   label={category.selectable ? '가능' : '불가'}
-                  className={clsx(
-                    category.selectable
-                      ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                      : 'border-rose-200 bg-rose-50 text-rose-700',
-                  )}
+                  className={clsx(category.selectable ? TRUE : FALSE)}
                   icon={category.selectable ? CheckCircle2 : XCircle}
                   menuElement={[
                     {

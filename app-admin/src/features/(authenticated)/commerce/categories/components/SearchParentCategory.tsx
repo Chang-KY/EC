@@ -54,28 +54,7 @@ export default function SearchParentCategory({
   )
 
   return (
-    <div className="min-w-140 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      {/* Header */}
-      <header className="flex items-center justify-between">
-        <div className="flex flex-col">
-          <h2 className="text-sm font-semibold text-gray-900">
-            {depth === 1 ? '1 계층' : '2 계층'} 카테고리를 선택해주세요
-          </h2>
-          <p className="mt-0.5 text-xs text-gray-500">
-            클릭하면 선택됩니다. 아래에서 “선택 완료”를 누르세요.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-full p-1 hover:bg-gray-100"
-          aria-label="close"
-        >
-          <X size={18} className="text-gray-600" />
-        </button>
-      </header>
-
+    <>
       {/* Search */}
       <div className="mt-3 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
         <Search size={16} className="text-gray-400" />
@@ -152,7 +131,7 @@ export default function SearchParentCategory({
         )}
       </main>
 
-      <div className="mt-4 flex items-center justify-end gap-2">
+      <footer className="flex items-center justify-end gap-2 border-t border-gray-100 pt-4">
         <Button variant="cancel" type="button" onClick={onClose}>
           취소
         </Button>
@@ -169,7 +148,7 @@ export default function SearchParentCategory({
         >
           선택 완료
         </Button>
-      </div>
-    </div>
+      </footer>
+    </>
   )
 }

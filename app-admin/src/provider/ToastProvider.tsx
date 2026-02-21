@@ -14,7 +14,7 @@ const ToastProvider = () => {
       draggable
       pauseOnHover
       transition={Slide}
-      toastClassName="!rounded-none"
+      toastClassName="!rounded-md !p-3 !bg-gray-900/95 !text-gray-100 !shadow-lg !border !border-gray-800 !text-sm !leading-5"
       theme="dark"
     />
   )

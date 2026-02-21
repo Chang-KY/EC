@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { supabase } from '@/utils/supabase/supabase'
+import { getAdminUser } from '@/lib/getAdminUser'
 
 const PUBLIC_PATHS = ['/login'] // 여기만 비로그인 허용
 const AFTER_LOGIN = '/'
@@ -20,16 +21,12 @@ export async function proxy(request: NextRequest) {
 
   const response = NextResponse.next()
 
-  const sb = await supabase()
-  const {
-    data: { user },
-    error,
-  } = await sb.auth.getUser()
+  const { user: adminUser, error } = await getAdminUser()
 
   const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))
 
   // 1) 비로그인: public 아니면 전부 /login으로
-  if (!user && !isPublic) {
+  if (!adminUser && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('next', pathname + search) // 원래 가려던 곳
@@ -37,7 +34,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // 2) 로그인: /login 들어오면 홈/대시보드로
-  if (user && isPublic) {
+  if (adminUser && isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = AFTER_LOGIN
     url.search = ''

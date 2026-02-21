@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: '상품 카테고리 구조를 생성·편집하고 노출 순서와 계층 구조를 관리하는 페이지입니다.',
 }
 
-export default async function Page({ searchParams }: { searchParams: SearchParams }) {
+export default async function CategoryListPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams
   const page = Number(sp.page ?? '1')
   const size = Number(sp.size ?? String(pageSizeList[0]))

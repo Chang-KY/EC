@@ -32,6 +32,7 @@ import ArticleButton from '@/components/layout/article/ArticleButton'
 import ProductEditPriceForm from '@/features/(authenticated)/commerce/products/components/ProductEditPriceForm'
 import { getDiscountEffectText } from '@/features/(authenticated)/commerce/products/getDiscountEffectText'
 import ProductLikeUserConfirm from '@/features/(authenticated)/commerce/products/components/ProductLikeUserConfirm'
+import { dateTimeFormat } from '@/utils/DateTimeFormat'
 
 export async function generateMetadata({
   params,
@@ -95,6 +96,18 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const galleryCount = images?.filter((i) => i.role === 'gallery').length ?? 0
   const descriptionCount = images?.filter((i) => i.role === 'description').length ?? 0
 
+  const isRate = product.discount_type === 'rate'
+  const isFixed = product.discount_type === 'fixed'
+  const dv = product.discount_value
+
+  const discountText =
+    dv == null
+      ? '-'
+      : isRate
+        ? `${Number(dv).toLocaleString()}%`
+        : isFixed
+          ? `${Number(dv).toLocaleString()}원`
+          : '-'
   return (
     <Section pathTitle={`${ROUTES.PRODUCTS}/${id}`}>
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
@@ -144,8 +157,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 boardContent: (
                   <ProductEditPriceForm
                     price={product.price}
-                    sale_price={product.sale_price ?? undefined}
-                    sale_rate={product.sale_rate ?? undefined}
+                    discount_value={product.discount_value ?? undefined}
                     discount_type={product.discount_type}
                     id={Number(id)}
                   />
@@ -179,38 +191,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 }
               />
 
-              {discountTypeKey === 'fixed' && (
+              {discountTypeKey !== 'none' && (
                 <>
-                  <InfoRow
-                    label="할인가"
-                    value={
-                      product.sale_price != null ? `${product.sale_price.toLocaleString()}원` : '-'
-                    }
-                  />
+                  <InfoRow label={discountLabel} value={discountText} />
                   <InfoRow
                     label="할인 효과"
                     value={getDiscountEffectText({
                       price: product.price,
                       discountTypeKey,
-                      sale_price: product.sale_price,
-                      sale_rate: product.sale_rate,
-                    })}
-                  />
-                </>
-              )}
-              {discountTypeKey === 'rate' && (
-                <>
-                  <InfoRow
-                    label="할인율"
-                    value={product.sale_rate != null ? `${product.sale_rate}%` : '-'}
-                  />
-                  <InfoRow
-                    label="할인 효과"
-                    value={getDiscountEffectText({
-                      price: product.price,
-                      discountTypeKey,
-                      sale_price: product.sale_price,
-                      sale_rate: product.sale_rate,
+                      discountValue: product.discount_value,
                     })}
                   />
                 </>
@@ -338,9 +327,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               />
               <InfoRow
                 label="생성일"
-                value={
-                  product.created_at ? new Date(product.created_at).toLocaleString('ko-KR') : '-'
-                }
+                value={product.created_at ? dateTimeFormat(product.created_at, 'datetime') : '-'}
               />
             </div>
           </Article>

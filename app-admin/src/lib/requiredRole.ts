@@ -1,12 +1,10 @@
 import { redirect } from 'next/navigation'
 import { supabase } from '@/utils/supabase/supabase'
+import { getAdminUser } from '@/lib/getAdminUser'
 
 export async function requireRole(roles: Array<'admin' | 'super_admin'>) {
   const sb = await supabase()
-  const {
-    data: { user },
-  } = await sb.auth.getUser()
-  if (!user) redirect('/signin')
+  const { user: adminUser, error: authError } = await getAdminUser()
 
   const { data } = await sb
     .schema('ec')

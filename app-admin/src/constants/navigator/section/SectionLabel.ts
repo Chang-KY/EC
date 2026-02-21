@@ -11,7 +11,7 @@ export const SECTION_LABEL = {
   CATEGORIES: '카테고리',
   COUPONS: '쿠폰',
   REVIEWS: '리뷰 관리',
-  USERS: '사용자 관리',
+  USERS: '회원 관리',
   SHIPPING: '배송 관리',
   SETTLEMENTS: '정산 / 환불',
   MEMBERSHIP: '포인트 / 등급',

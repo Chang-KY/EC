@@ -1,7 +1,7 @@
 'use server'
 
 import { supabase } from '@/utils/supabase/supabase'
-import { DiscountType } from '@/types/enum'
+import { PRODUCT_IMAGES_TABLE, PRODUCTS_TABLE } from '@/types/db'
 
 export async function getProductDetail(id: number) {
   const sb = await supabase()
@@ -12,30 +12,8 @@ export async function getProductDetail(id: number) {
   if (!data) return null
 
   return data as {
-    product: {
-      id: number
-      name: string
-      description: string | null
-      price: number
-      sale_price: number | null
-      sale_rate: number | null
-      stock: number | null
-      created_at: string | null
-      status: string | null
-      discount_type: DiscountType
-    }
-    images: Array<{
-      id: number
-      product_id: number
-      role: string
-      storage_path: string
-      sort_order: number
-      alt: string | null
-      width: number | null
-      height: number | null
-      mime_type: string | null
-      created_at: string
-    }>
+    product: PRODUCTS_TABLE['Row']
+    images: Array<PRODUCT_IMAGES_TABLE['Row']>
     like_count: number
   }
 }

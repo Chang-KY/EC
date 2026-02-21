@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { ROUTES } from '@/constants/routes'
 import { makeBreadcrumbSegments } from '@/features/(authenticated)/commerce/categories/makeBreadcrumbSegments'
+import { FALSE, TRUE } from '@/constants/booleanColor'
 
 export const categoryColumns = [
   {
@@ -43,10 +44,8 @@ export const categoryColumns = [
       return (
         <span
           className={clsx(
-            'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
-            v
-              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
-              : 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-300',
+            'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium',
+            v ? TRUE : FALSE,
           )}
         >
           {v ? '가능' : '불가'}
@@ -108,4 +107,3 @@ export const categoryColumns = [
     },
   } as ColumnDef<CATEGORIES_TABLE_VIEW, unknown>,
 ] satisfies ColumnDef<CATEGORIES_TABLE_VIEW, unknown>[]
-

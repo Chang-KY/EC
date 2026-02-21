@@ -35,15 +35,9 @@ export const productObjectSchema = z.object({
   description: z.string().trim().optional(),
 
   price: z.coerce.number().int().nonnegative('0 이상이어야 합니다.'),
-  discount_type: discountTypeSchema,
 
-  sale_price: z.coerce.number().int().nonnegative().optional(),
-  sale_rate: z.coerce
-    .number()
-    .int()
-    .min(0, '0%보다 커야합니다.')
-    .max(100, '100% 보다 작아야합니다.')
-    .optional(),
+  discount_type: discountTypeSchema,
+  discount_value: z.coerce.number().int().optional(),
 
   stock: z.coerce.number().int().nonnegative().optional().default(0),
   status: productStatusSchema,

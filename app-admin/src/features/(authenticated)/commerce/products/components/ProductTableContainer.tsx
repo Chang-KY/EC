@@ -34,7 +34,15 @@ export default function ProductTableContainer({
   const { sorting, setSorting, order, orderBy } = useOrderSort<PRODUCTS_TABLE['Row']>({
     defaultId: initialOrderBy ?? 'id',
     defaultDesc: initialOrder === 'desc',
-    allowedKeys: ['id', 'name', 'status', 'price', 'sale_rate', 'sale_price', 'stock'],
+    allowedKeys: [
+      'id',
+      'name',
+      'status',
+      'price',
+      'discount_type',
+      'discount_value',
+      'stock',
+    ],
   })
   const { size, setSize, sizeList } = usePageSize(initialSize)
   const { setQuery } = useSetQuery()
