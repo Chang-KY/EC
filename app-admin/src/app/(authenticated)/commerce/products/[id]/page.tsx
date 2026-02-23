@@ -6,9 +6,8 @@ import Section from '@/components/layout/Section'
 import Article from '@/components/layout/article/Article'
 import Link from 'next/link'
 import { ROUTES } from '@/constants/routes'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import {
-  DISCOUNT_TYPE_META,
   PRODUCT_STATUS_META,
 } from '@/features/(authenticated)/commerce/products/productsSchema'
 import { DiscountType, ProductStatus } from '@/types/enum'
@@ -21,8 +20,6 @@ import {
   productUpdateDescriptionAction,
   productUpdateNameAction,
   productUpdatePriceAction,
-  productUpdateSalePriceAction,
-  productUpdateSaleRateAction,
   productUpdateStatusAction,
   productUpdateStockAction,
 } from '@/features/(authenticated)/commerce/products/update/basicInfoActions'
@@ -33,6 +30,7 @@ import ProductEditPriceForm from '@/features/(authenticated)/commerce/products/c
 import { getDiscountEffectText } from '@/features/(authenticated)/commerce/products/getDiscountEffectText'
 import ProductLikeUserConfirm from '@/features/(authenticated)/commerce/products/components/ProductLikeUserConfirm'
 import { dateTimeFormat } from '@/utils/DateTimeFormat'
+import { DISCOUNT_TYPE_META } from '@/schema/DiscountTypeMeta'
 
 export async function generateMetadata({
   params,
@@ -70,9 +68,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <p className="text-sm text-gray-500">존재하지 않는 상품입니다.</p>
           <div className="flex items-center justify-end">
             <Link href={ROUTES.PRODUCTS}>
-              <Button type="button" variant="cancel">
+              <AppButton type="button" variant="cancel">
                 돌아가기
-              </Button>
+              </AppButton>
             </Link>
           </div>
         </Article>
@@ -207,24 +205,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             </div>
           </Article>
 
-          {/* 재고 */}
-          <Article title="재고" subtitle="판매 가능 수량">
-            <InfoRow
-              label="재고"
-              value={product.stock != null ? product.stock.toLocaleString() : '-'}
-              action={
-                <InfoRowInputUpdate<number>
-                  inputTypeNumber={true}
-                  targetId="basic-info-stock"
-                  id={numericId}
-                  initialValue={product.stock ?? ''}
-                  field="stock"
-                  action={productUpdateStockAction}
-                />
-              }
-            />
-          </Article>
-
           {/* 이미지 */}
           <Article title="상품 이미지" subtitle="thumbnail / gallery / description">
             <div className="space-y-3">
@@ -310,6 +290,24 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             />
           </Article>
 
+          {/* 재고 */}
+          <Article title="재고" subtitle="판매 가능 수량">
+            <InfoRow
+              label="재고"
+              value={product.stock != null ? product.stock.toLocaleString() : '-'}
+              action={
+                <InfoRowInputUpdate<number>
+                  inputTypeNumber={true}
+                  targetId="basic-info-stock"
+                  id={numericId}
+                  initialValue={product.stock ?? ''}
+                  field="stock"
+                  action={productUpdateStockAction}
+                />
+              }
+            />
+          </Article>
+
           {/* 활동/통계 */}
           <Article title="활동" subtitle="반응 및 생성 정보">
             <div className="grid grid-cols-1 gap-3">
@@ -336,13 +334,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <Article>
             <div className="flex items-center justify-end gap-2.5">
               <Link href={ROUTES.PRODUCTS}>
-                <Button variant="cancel" type="button">
+                <AppButton variant="cancel" type="button">
                   목록으로
-                </Button>
+                </AppButton>
               </Link>
-              <Button variant="delete" type="button">
+              <AppButton variant="delete" type="button">
                 상품 삭제
-              </Button>
+              </AppButton>
             </div>
           </Article>
         </aside>

@@ -8,7 +8,7 @@ import { FormState } from '@/types/FormState'
 import Article from '@/components/layout/article/Article'
 import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import FormPasswordInput from '@/components/form/FormPasswordInput'
 import {
   ADMIN_STATUS_META,
@@ -132,17 +132,17 @@ export default function AdminCreateForm() {
 
             <Article>
               <div className="flex items-center justify-end gap-2.5">
-                <Button
+                <AppButton
                   variant="cancel"
                   type="button"
                   onClick={() => router.back()}
                   disabled={isPending}
                 >
                   취소
-                </Button>
-                <Button variant="add" type="submit" disabled={isPending}>
+                </AppButton>
+                <AppButton variant="add" type="submit" disabled={isPending}>
                   {isPending ? '추가 중…' : '관리자 생성'}
-                </Button>
+                </AppButton>
               </div>
             </Article>
           </aside>

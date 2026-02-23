@@ -7,11 +7,12 @@ import { DiscountType } from '@/types/enum'
 import { productUpdateAction } from '@/features/(authenticated)/commerce/products/update/action'
 import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
-import { DISCOUNT_TYPE_META } from '@/features/(authenticated)/commerce/products/productsSchema'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import { useSetAtom } from 'jotai'
 import { articleButtonAtom } from '@/store/articleEditAtoms'
 import { ProductUpdateFormValue } from '@/features/(authenticated)/commerce/products/update/schema'
+import { DISCOUNT_TYPE_META } from '@/schema/DiscountTypeMeta'
+import { MoveRight } from 'lucide-react'
 
 const initialProductState = ({
   price,
@@ -50,9 +51,13 @@ export default function ProductEditPriceForm({
 
   return (
     <div className="relative flex size-full flex-col gap-1 rounded bg-white">
-      <h3 className="absolute top-0 right-0 flex items-center gap-3 rounded-bl border-b border-l border-gray-300 bg-gray-300 px-2 py-0.5 text-xs">
-        <p>상품 가격 변경</p>
-        <p className="text-[10px] text-indigo-500">표시용 정가( {price?.toLocaleString()} 원 )</p>
+      <h3 className="absolute top-0 left-0 flex items-center gap-3 rounded-br border-r border-b border-gray-300 bg-gray-300 px-2 py-0.5 text-xs">
+        <p className="flex items-center gap-3">
+          상품 가격 변경 <MoveRight size={14} />{' '}
+        </p>
+        <p className="text-sm font-bold text-red-500">
+          표시용 정가( {price?.toLocaleString()} 원 )
+        </p>
       </h3>
 
       <ServerForm<FormState<ProductUpdateFormValue>>
@@ -165,12 +170,12 @@ function ProductUpdateBody({
 
       {/* 하단 액션 */}
       <div className="flex items-center justify-end gap-2.5">
-        <Button type="button" variant="cancel" disabled={isPending} onClick={onClose}>
+        <AppButton type="button" variant="cancel" disabled={isPending} onClick={onClose}>
           취소
-        </Button>
-        <Button type="submit" variant="update" disabled={isPending}>
+        </AppButton>
+        <AppButton type="submit" variant="update" disabled={isPending}>
           {isPending ? '변경 중…' : '변경'}
-        </Button>
+        </AppButton>
       </div>
     </div>
   )

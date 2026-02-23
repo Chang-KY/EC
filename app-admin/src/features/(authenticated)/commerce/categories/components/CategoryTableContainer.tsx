@@ -7,7 +7,7 @@ import { CATEGORIES_TABLE_VIEW } from '@/types/db'
 import { useKeywordSetParam } from '@/hooks/params/useKeywordSetParam'
 import Input from '@/components/ui/Input'
 import { CirclePlus, Search, Loader2 } from 'lucide-react'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import Link from 'next/link'
 import type { paginationOptions } from '@/types/PaginationOptions'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
@@ -94,7 +94,7 @@ export default function CategoryTableContainer({
           placeholder="카테고리 검색..."
         />
         <Link href="/commerce/categories/create">
-          <Button icon={<CirclePlus size={14} className="text-gray-700" />}>카테고리 추가</Button>
+          <AppButton icon={<CirclePlus size={14} className="text-gray-700" />}>카테고리 추가</AppButton>
         </Link>
       </div>
 

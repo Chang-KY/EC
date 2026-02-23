@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import { useSetAtom } from 'jotai'
 import { articleButtonAtom } from '@/store/articleEditAtoms'
 
@@ -23,12 +23,12 @@ export default function ArticleUpdate({
       </h2>
       <div>{children}</div>
       <div className="flex items-center justify-end gap-2.5">
-        <Button variant="cancel" onClick={() => setId('')}>
+        <AppButton variant="cancel" onClick={() => setId('')}>
           Cancel
-        </Button>
-        <Button type="submit" form={formId} variant="update">
+        </AppButton>
+        <AppButton type="submit" form={formId} variant="update">
           Update
-        </Button>
+        </AppButton>
       </div>
     </div>
   )

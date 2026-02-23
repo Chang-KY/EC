@@ -6,7 +6,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { getDepthCategories } from '@/features/(authenticated)/commerce/categories/list/getDepthCategories'
 import { CATEGORIES_TABLE } from '@/types/db'
 import Loading from '@/components/loading/Loading'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import clsx from 'clsx'
 
 export default function SearchParentCategory({
@@ -132,11 +132,11 @@ export default function SearchParentCategory({
       </main>
 
       <footer className="flex items-center justify-end gap-2 border-t border-gray-100 pt-4">
-        <Button variant="cancel" type="button" onClick={onClose}>
+        <AppButton variant="cancel" type="button" onClick={onClose}>
           취소
-        </Button>
+        </AppButton>
 
-        <Button
+        <AppButton
           variant="update"
           type="button"
           disabled={!selected}
@@ -147,7 +147,7 @@ export default function SearchParentCategory({
           }}
         >
           선택 완료
-        </Button>
+        </AppButton>
       </footer>
     </>
   )

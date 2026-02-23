@@ -4,7 +4,7 @@ import { useUserMemo } from '@/features/(authenticated)/commerce/users/hooks/use
 import clsx from 'clsx'
 import Modal from '@/components/modal/Modal'
 import { dateTimeFormat } from '@/utils/DateTimeFormat'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import React, { useState } from 'react'
 import { useDeleteUserMemo } from '@/features/(authenticated)/commerce/users/hooks/useDeleteUserMemo'
 import { toast } from 'react-toastify'
@@ -174,7 +174,7 @@ export default function UserMemoModal({
         )}
       </main>
       <footer className="mt-4 flex items-center justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
-        <Button
+        <AppButton
           variant="cancel"
           type="button"
           onClick={() => {
@@ -183,8 +183,8 @@ export default function UserMemoModal({
           }}
         >
           취소
-        </Button>
-        <Button
+        </AppButton>
+        <AppButton
           variant="delete"
           type="button"
           disabled={!memo || deleteIsPending}
@@ -202,7 +202,7 @@ export default function UserMemoModal({
           }}
         >
           {deleteIsPending ? '삭제 중…' : '삭제'}
-        </Button>
+        </AppButton>
       </footer>
     </Modal>
   )

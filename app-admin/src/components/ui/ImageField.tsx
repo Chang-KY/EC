@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import { Dialog } from '@/components/ui/dialog/Dialog'
 import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import Image from 'next/image'
 import clsx from 'clsx'
 import ErrorMessage from '@/components/ui/ErrorMessage'
@@ -181,7 +181,7 @@ export default function ImageField({
                         setDraftAlt((prev) => ({ ...prev, [idx]: '' }))
                       }}
                       action={({ close }) => (
-                        <Button
+                        <AppButton
                           variant="add"
                           type="button"
                           onClick={() => {
@@ -190,7 +190,7 @@ export default function ImageField({
                           }}
                         >
                           Save
-                        </Button>
+                        </AppButton>
                       )}
                     >
                       <button

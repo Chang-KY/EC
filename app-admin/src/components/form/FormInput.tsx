@@ -13,6 +13,7 @@ type FormInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   inputClassName?: string
   outerClassName?: string
   information?: string
+  icon?: React.ReactNode
 }
 
 const FormInput = (props: FormInputProps) => {
@@ -25,6 +26,7 @@ const FormInput = (props: FormInputProps) => {
     inputClassName,
     outerClassName,
     information,
+    icon,
     ...rest
   } = props
 
@@ -47,6 +49,7 @@ const FormInput = (props: FormInputProps) => {
         />
       ) : (
         <Input
+          icon={icon}
           information={information}
           required={required}
           name={name}

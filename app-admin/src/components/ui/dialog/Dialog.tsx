@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog/dialogElements'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 
 export function Dialog({
   title,
@@ -70,9 +70,9 @@ export function Dialog({
           <div className="flex w-full items-center justify-end gap-2">
             {/* cancelMention이 있으면 취소 버튼 */}
             {cancelMention ? (
-              <Button type="button" variant="cancel" onClick={handleCancel}>
+              <AppButton type="button" variant="cancel" onClick={handleCancel}>
                 {cancelMention}
-              </Button>
+              </AppButton>
             ) : null}
 
             {action?.({ close })}

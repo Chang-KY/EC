@@ -8,7 +8,7 @@ import { ADMINS_TABLE } from '@/types/db'
 import { useKeywordSetParam } from '@/hooks/params/useKeywordSetParam'
 import Input from '@/components/ui/Input'
 import { CirclePlus, Search, Loader2 } from 'lucide-react'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import Link from 'next/link'
 import type { paginationOptions } from '@/types/PaginationOptions'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
@@ -94,7 +94,7 @@ export default function AdminTableContainer({
           placeholder="관리자 검색..."
         />
         <Link href="/system/admins/create">
-          <Button icon={<CirclePlus size={14} className="text-gray-700" />}>관리자 추가</Button>
+          <AppButton icon={<CirclePlus size={14} className="text-gray-700" />}>관리자 추가</AppButton>
         </Link>
       </div>
 

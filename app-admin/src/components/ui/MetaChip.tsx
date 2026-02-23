@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import { Ellipsis, LucideIcon, Settings } from 'lucide-react'
-import DropdownMenu from '@/components/ui/DropdownMenu/DropdownMenu'
+import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu'
 
 export default function MetaChip({
   label,

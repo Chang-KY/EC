@@ -1,6 +1,6 @@
 import React from 'react'
 import PageTitle from '@/components/layout/PageTitle'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ const NotificationCreatePage = () => {
   return (
     <section>
       <PageTitle pathName="/admins">
-        <Button>sdf</Button>
+        <AppButton>sdf</AppButton>
       </PageTitle>
     </section>
   )

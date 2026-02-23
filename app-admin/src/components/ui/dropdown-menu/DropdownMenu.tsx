@@ -6,7 +6,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu/DropdownElement'
+} from '@/components/ui/dropdown-menu/DropdownElement'
 import { Info } from 'lucide-react'
 
 export default function DropdownMenu({

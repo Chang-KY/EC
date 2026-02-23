@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import { Ellipsis } from 'lucide-react'
-import DropdownMenu from '@/components/ui/DropdownMenu/DropdownMenu'
+import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu'
 import ArticleBoard from '@/components/layout/article/ArticleBoard'
 
 type ArticleProps = {
@@ -21,7 +21,7 @@ export default function Article(props: ArticleProps) {
 
   return (
     <article
-      id={`${id}-article`}
+      id={id ? `${id}-article` : undefined}
       {...rest}
       className={clsx(
         'relative rounded border border-gray-300 bg-white p-5 dark:border-gray-800 dark:bg-black',

@@ -6,7 +6,7 @@ import clsx from 'clsx'
 import { FolderTree, Hash, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { ROUTES } from '@/constants/routes'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 
 export default function CategoryMoveButton({
   children,
@@ -66,10 +66,10 @@ export default function CategoryMoveButton({
         </main>
 
         <footer className="flex items-center justify-end gap-2 border-t border-gray-100 pt-4">
-          <Button variant="cancel" type="button" onClick={() => setIsOpen(false)}>
+          <AppButton variant="cancel" type="button" onClick={() => setIsOpen(false)}>
             취소
-          </Button>
-          <Button
+          </AppButton>
+          <AppButton
             variant="confirm"
             type="button"
             onClick={() => {
@@ -78,7 +78,7 @@ export default function CategoryMoveButton({
             }}
           >
             이동
-          </Button>
+          </AppButton>
         </footer>
       </Modal>
     </>

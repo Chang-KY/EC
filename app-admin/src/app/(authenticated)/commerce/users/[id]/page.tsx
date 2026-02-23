@@ -5,7 +5,7 @@ import Section from '@/components/layout/Section'
 import Article from '@/components/layout/article/Article'
 import Link from 'next/link'
 import { ROUTES } from '@/constants/routes'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import { getUserDetail } from '@/features/(authenticated)/commerce/users/detail/getUsers'
 import InfoRow from '@/components/ui/InfoRow'
 import InfoRowInputUpdate from '@/components/ui/InfoRowInputUpdate'
@@ -60,9 +60,9 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           <p className="text-sm text-gray-500">존재하지 않는 회원입니다.</p>
           <div className="flex items-center justify-end">
             <Link href={ROUTES.USERS}>
-              <Button type="button" variant="cancel">
+              <AppButton type="button" variant="cancel">
                 돌아가기
-              </Button>
+              </AppButton>
             </Link>
           </div>
         </Article>
@@ -166,9 +166,9 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           <Article>
             <div className="flex items-center justify-end gap-2.5">
               <Link href={ROUTES.USERS}>
-                <Button variant="cancel" type="button">
+                <AppButton variant="cancel" type="button">
                   목록으로
-                </Button>
+                </AppButton>
               </Link>
             </div>
           </Article>

@@ -8,10 +8,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu/DropdownElement'
+} from '@/components/ui/dropdown-menu/DropdownElement'
 import { Avatar } from '@/components/ui/Avatar'
 import { logoutAction } from '@/features/layout/auth/logout/actions'
-import DropdownMenu from '@/components/ui/DropdownMenu/DropdownMenu'
+import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu'
 import DropdownButton from '@/components/ui/DropdownButton'
 
 const ProfileButton = () => {

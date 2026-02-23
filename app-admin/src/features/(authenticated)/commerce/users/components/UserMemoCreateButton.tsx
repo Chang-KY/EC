@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react'
 import { AlertCircle, Plus } from 'lucide-react'
 import Modal from '@/components/modal/Modal'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import clsx from 'clsx'
 import { useCreateUserMemo } from '@/features/(authenticated)/commerce/users/hooks/useCraeteUserMemo'
 import Checkbox from '@/components/ui/Checkbox'
@@ -94,10 +94,10 @@ export default function UserMemoCreateButton({
         </main>
 
         <footer className="mt-4 flex items-center justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
-          <Button variant="cancel" type="button" onClick={() => setIsOpen(false)}>
+          <AppButton variant="cancel" type="button" onClick={() => setIsOpen(false)}>
             취소
-          </Button>
-          <Button
+          </AppButton>
+          <AppButton
             variant="add"
             type="button"
             disabled={!isValid || isPending}
@@ -121,7 +121,7 @@ export default function UserMemoCreateButton({
             }}
           >
             {isPending ? '작성 중…' : '작성'}
-          </Button>
+          </AppButton>
         </footer>
       </Modal>
     </>

@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
 import { getAdminDetail } from '@/features/(authenticated)/system/admins/detail/getAdminDetail'
 import Article from '@/components/layout/article/Article'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import Link from 'next/link'
 import Section from '@/components/layout/Section'
 import {
@@ -59,9 +59,9 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
           <p className="text-sm text-gray-500">존재하지 않는 관리자입니다.</p>
           <div className="flex items-center justify-end">
             <Link href={ROUTES.ADMINS}>
-              <Button type="button" variant="cancel">
+              <AppButton type="button" variant="cancel">
                 돌아가기
-              </Button>
+              </AppButton>
             </Link>
           </div>
         </Article>
@@ -220,13 +220,13 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
           <Article>
             <div className="flex items-center justify-end gap-2.5">
               <Link href={ROUTES.ADMINS}>
-                <Button variant="cancel" type="button">
+                <AppButton variant="cancel" type="button">
                   목록으로
-                </Button>
+                </AppButton>
               </Link>
-              <Button variant="delete" type="button">
+              <AppButton variant="delete" type="button">
                 관리자 삭제
-              </Button>
+              </AppButton>
             </div>
           </Article>
         </aside>

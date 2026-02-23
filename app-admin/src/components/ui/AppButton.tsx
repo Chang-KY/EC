@@ -38,7 +38,7 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
     icon?: React.ReactNode
   }
 
-const Button = ({ className, variant, icon, children, ...rest }: ButtonProps) => {
+const AppButton = ({ className, variant, icon, children, ...rest }: ButtonProps) => {
   return (
     <button {...rest} className={cn(buttonVariants({ variant }), className)}>
       {icon && <div>{icon}</div>}
@@ -47,4 +47,4 @@ const Button = ({ className, variant, icon, children, ...rest }: ButtonProps) =>
   )
 }
 
-export default Button
+export default AppButton

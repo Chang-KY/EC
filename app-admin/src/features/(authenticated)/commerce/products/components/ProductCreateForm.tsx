@@ -6,12 +6,10 @@ import ServerForm from '@/components/form/ServerForm'
 import Article from '@/components/layout/article/Article'
 import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import type { FormState } from '@/types/FormState'
 import { ProductCreateFormValues } from '@/features/(authenticated)/commerce/products/create/schema'
 import {
-  DISCOUNT_TYPE_META,
-  DiscountType,
   PRODUCT_STATUS_META,
   ProductStatus,
 } from '@/features/(authenticated)/commerce/products/productsSchema'
@@ -19,6 +17,8 @@ import { productCreateAction } from '@/features/(authenticated)/commerce/product
 import ImageField from '@/components/ui/ImageField'
 import { Dialog } from '@/components/ui/dialog/Dialog'
 import { LoadingDialog } from '@/components/ui/dialog/LoadingDialog'
+import { DISCOUNT_TYPE_META } from '@/schema/DiscountTypeMeta'
+import { DiscountType } from '@/types/enum'
 
 const initialProductState: FormState<ProductCreateFormValues> = {
   values: {},
@@ -233,17 +233,17 @@ function ProductCreateBody({
 
         <Article>
           <div className="flex items-center justify-end gap-2.5">
-            <Button
+            <AppButton
               variant="cancel"
               type="button"
               onClick={() => router.back()}
               disabled={isPending}
             >
               취소
-            </Button>
-            <Button variant="add" type="submit" disabled={isPending}>
+            </AppButton>
+            <AppButton variant="add" type="submit" disabled={isPending}>
               {isPending ? '생성 중…' : '상품 생성'}
-            </Button>
+            </AppButton>
           </div>
         </Article>
       </aside>

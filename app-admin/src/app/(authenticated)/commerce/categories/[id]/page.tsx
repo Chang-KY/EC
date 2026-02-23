@@ -5,7 +5,7 @@ import Section from '@/components/layout/Section'
 import Article from '@/components/layout/article/Article'
 import Link from 'next/link'
 import { ROUTES } from '@/constants/routes'
-import Button from '@/components/ui/Button'
+import AppButton from '@/components/ui/AppButton'
 import { getCategoryDetail } from '@/features/(authenticated)/commerce/categories/detail/getCategories'
 import InfoRow from '@/components/ui/InfoRow'
 import InfoRowInputUpdate from '@/components/ui/InfoRowInputUpdate'
@@ -61,9 +61,9 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
           <p className="text-sm text-gray-500">존재하지 않는 카테고리입니다.</p>
           <div className="flex items-center justify-end">
             <Link href={ROUTES.CATEGORIES}>
-              <Button type="button" variant="cancel">
+              <AppButton type="button" variant="cancel">
                 돌아가기
-              </Button>
+              </AppButton>
             </Link>
           </div>
         </Article>
@@ -239,13 +239,13 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
           <Article>
             <div className="flex items-center justify-end gap-2.5">
               <Link href={ROUTES.CATEGORIES}>
-                <Button variant="cancel" type="button">
+                <AppButton variant="cancel" type="button">
                   목록으로
-                </Button>
+                </AppButton>
               </Link>
-              <Button variant="delete" type="button">
+              <AppButton variant="delete" type="button">
                 카테고리 삭제
-              </Button>
+              </AppButton>
             </div>
           </Article>
         </aside>
