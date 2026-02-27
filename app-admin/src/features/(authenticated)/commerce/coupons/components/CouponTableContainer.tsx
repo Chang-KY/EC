@@ -103,7 +103,7 @@ export default function CouponTableContainer({
         page={page}
         pageSize={size ?? sizeList[0]}
         sorting={sorting}
-        emptyText={`${debouncedSearchTerm ? `[${debouncedSearchTerm}]` : ''} Coupons Data가 없습니다.`}
+        emptyText={`${debouncedSearchTerm ? `[${debouncedSearchTerm}] ` : ''}Coupons Data가 없습니다.`}
         onChange={handleTableChange}
         loading={isFetching}
         rowKey={(r) => String(r.id)}

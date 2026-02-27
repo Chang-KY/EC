@@ -21,10 +21,14 @@ import {
   APPLY_MODE_META,
   ApplyMode,
 } from '@/features/(authenticated)/commerce/coupons/applyModeSchema'
-import { CalendarClock, Dices } from 'lucide-react'
+import { Dices } from 'lucide-react'
 import { generateCouponCode } from '@/features/(authenticated)/commerce/coupons/utils/generateCouponCode'
 import clsx from 'clsx'
 import { DatePickerWithRange } from '@/components/ui/date-picker/DatePickerWithRange'
+import { dateTimeFormat } from '@/utils/DateTimeFormat'
+import Modal from '@/components/modal/Modal'
+import SearchCategory from '@/features/(authenticated)/commerce/coupons/components/SearchCategory'
+import SearchProduct from '@/features/(authenticated)/commerce/coupons/components/SearchProduct'
 
 const initialCouponState: FormState<CouponCreateFormValues> = {
   values: {},
@@ -55,6 +59,13 @@ function CouponCreateBody({
   isPending: boolean
 }) {
   const router = useRouter()
+  const [openModal, setOpenModal] = useState<'product' | 'category' | undefined>(undefined)
+  const [appliesCategory, setAppliesCategory] = useState<ApplyMode>(
+    state.values.coupons?.category_mode ?? 'all',
+  )
+  const [appliesProduct, setAppliesProduct] = useState<ApplyMode>(
+    state.values.coupons?.product_mode ?? 'all',
+  )
   const [couponCode, setCouponCode] = React.useState(state.values.coupons?.coupon_code ?? '')
   const [discountType, setDiscountType] = React.useState<DiscountType>(
     (state.values.coupons?.discount_type as DiscountType) ?? 'rate',
@@ -96,7 +107,6 @@ function CouponCreateBody({
               <FormSelect
                 label="쿠폰 종류"
                 required
-                className="h-10"
                 name="coupons.coupon_kind"
                 options={Object.entries(COUPON_KIND_META).map(([value, meta]) => ({
                   value: value as CouponKind,
@@ -150,7 +160,6 @@ function CouponCreateBody({
             <FormSelect
               label="할인 타입"
               required
-              className="h-10"
               name="coupons.discount_type"
               options={Object.entries(DISCOUNT_TYPE_META)
                 .filter(([value]) => value !== 'none')
@@ -189,40 +198,64 @@ function CouponCreateBody({
 
         <Article title="유효 기간" subtitle="선택하지 않으면 무기한으로 처리돼요.">
           <DatePickerWithRange
-            required
             name="coupons.expiration_date"
-            // defaultValue={state.values.coupons?.expiration_date ?? ''}
-            errorMessage={state.fieldErrors?.['coupons.expiration_date']?.[0]}
             label="시작 일시 ~ 종료 일시"
+            required
+            errorMessage={state.fieldErrors?.['coupons.expiration_date']?.[0]}
+            serialize={(range) => {
+              const from = range.from ? dateTimeFormat(range.from, 'date') : ''
+              const to = range.to ? dateTimeFormat(range.to, 'date') : ''
+              if (!from) return ''
+              return to ? `${from} ~ ${to}` : `${from} ~`
+            }}
           />
         </Article>
 
         <Article title="적용 범위">
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className={clsx(appliesProduct === 'all' ? '' : 'grid gap-3 md:grid-cols-2')}>
             <FormSelect
-              label="상품 적용 모드"
+              label={
+                appliesProduct === 'all'
+                  ? '모든 상품'
+                  : appliesProduct === 'exclude'
+                    ? '상품 제외 모드'
+                    : '상품 적용 모드'
+              }
               required
-              className="h-10"
               name="coupons.product_mode"
               options={Object.entries(APPLY_MODE_META).map(([value, meta]) => ({
                 value: value as ApplyMode,
                 label: meta.label,
                 icon: meta.icon,
               }))}
-              defaultValue={(state.values.coupons?.product_mode as ApplyMode) ?? 'all'}
+              onChange={(e) => {
+                const next = e.currentTarget.value as ApplyMode
+                setAppliesProduct(next)
+              }}
+              defaultValue={appliesProduct}
               errorMessage={state.fieldErrors?.['coupons.product_mode']?.[0]}
             />
-
+          </div>
+          <div className={clsx(appliesCategory === 'all' ? '' : 'grid gap-3 md:grid-cols-2')}>
             <FormSelect
-              label="카테고리 적용 모드"
-              className="h-10"
+              label={
+                appliesCategory === 'all'
+                  ? '모든 카테고리'
+                  : appliesCategory === 'exclude'
+                    ? '카테고리 제외 모드'
+                    : '카테고리 적용 모드'
+              }
               name="coupons.category_mode"
               options={Object.entries(APPLY_MODE_META).map(([value, meta]) => ({
                 value: value as ApplyMode,
                 label: meta.label,
                 icon: meta.icon,
               }))}
-              defaultValue={(state.values.coupons?.category_mode as ApplyMode) ?? 'all'}
+              onChange={(e) => {
+                const next = e.currentTarget.value as ApplyMode
+                setAppliesCategory(next)
+              }}
+              defaultValue={appliesCategory}
               errorMessage={state.fieldErrors?.['coupons.category_mode']?.[0]}
             />
           </div>
@@ -287,7 +320,6 @@ function CouponCreateBody({
           <FormSelect
             label="중복 적용"
             required
-            className="h-10"
             name="coupons.stackable"
             options={[
               { value: 'false', label: '불가' },
@@ -315,6 +347,23 @@ function CouponCreateBody({
         </Article>
       </aside>
 
+      <Modal
+        isOpen={openModal === 'product'}
+        onClose={() => setOpenModal(undefined)}
+        headerTitle={`${appliesCategory === 'exclude' ? '제외' : '포함'} ${openModal === 'product' && '상품'} 선택`}
+        subHeaderTitle="검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요."
+      >
+        {openModal === 'product' && <SearchProduct onClose={() => setOpenModal(undefined)} />}
+      </Modal>
+
+      <Modal
+        isOpen={openModal === 'category'}
+        onClose={() => setOpenModal(undefined)}
+        headerTitle={`${appliesProduct === 'exclude' ? '제외' : '포함'} ${openModal === 'category' && '카테고리'} 선택`}
+        subHeaderTitle="검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요."
+      >
+        {openModal === 'category' && <SearchCategory onClose={() => setOpenModal(undefined)} />}
+      </Modal>
       <Dialog
         title="에러가 발생했습니다."
         subTitle={state.fieldErrors?._form?.[0] ?? ''}
@@ -324,3 +373,4 @@ function CouponCreateBody({
     </>
   )
 }
+

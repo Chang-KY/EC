@@ -9,6 +9,7 @@ import {
   CouponCreateFormValues,
   CouponsCreateSchema,
 } from '@/features/(authenticated)/commerce/coupons/create/createSchema'
+import { parseExpirationRangeText } from '@/components/ui/date-picker/formatDate'
 
 export async function couponCreateAction(
   prev: FormState<CouponCreateFormValues>,
@@ -23,6 +24,12 @@ export async function couponCreateAction(
       : rawCouponCode && String(rawCouponCode).trim()
         ? String(rawCouponCode).trim()
         : null
+
+  const expirationDate = formData.get('coupons.expiration_date')
+  let se
+  if (expirationDate) {
+    se = parseExpirationRangeText(formData.get('coupons.expiration_date') as string)
+  }
 
   const couponsDraft = {
     name: formData.get('coupons.name') ?? '',
@@ -41,8 +48,9 @@ export async function couponCreateAction(
     min_order_amount: formData.get('coupons.min_order_amount') ?? null,
 
     is_active: formData.get('coupons.is_active') ?? true,
-    starts_at: formData.get('coupons.starts_at') ?? null,
-    ends_at: formData.get('coupons.ends_at') ?? null,
+
+    starts_at: se?.starts_at ?? null,
+    ends_at: se?.ends_at ?? null,
 
     stackable: formData.get('coupons.stackable') ?? false,
     max_issue: formData.get('coupons.max_issue') ?? null,

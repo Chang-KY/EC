@@ -75,7 +75,7 @@ export const CouponCreateSchema = z
     min_order_amount: z.number().int().min(1).nullable(), // null or >= 0
 
     is_active: z.boolean().default(true),
-
+    expiration_date: z.string().nullable().optional(),
     starts_at: timestampNullable,
     ends_at: timestampNullable,
 
