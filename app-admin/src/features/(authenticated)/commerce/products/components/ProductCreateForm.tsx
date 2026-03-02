@@ -144,7 +144,6 @@ function ProductCreateBody({
 
             <FormSelect
               label="할인 타입"
-              className="h-10"
               name="products.discount_type"
               options={Object.entries(DISCOUNT_TYPE_META).map(([value, meta]) => ({
                 value: value as DiscountType,
@@ -207,7 +206,6 @@ function ProductCreateBody({
           <FormSelect
             label="상태"
             required
-            className="h-10"
             name="products.status"
             options={Object.entries(PRODUCT_STATUS_META).map(([value, meta]) => ({
               value: value as ProductStatus,

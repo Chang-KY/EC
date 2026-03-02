@@ -143,7 +143,6 @@ function CategoryCreateBody({
         <Article title="구조 설정">
           <FormSelect
             label="상품 연결 가능"
-            className="h-10"
             name="selectable"
             options={selectableOptions}
             defaultValue={String(state.values.selectable ?? true)}

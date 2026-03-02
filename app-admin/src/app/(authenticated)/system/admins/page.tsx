@@ -7,7 +7,7 @@ import { SearchParams } from '@/types/SearchParams'
 import { ADMINS_TABLE } from '@/types/db'
 import { getAdmins } from '@/features/(authenticated)/system/admins/list/getAdmins'
 import { getQueryClient } from '@/lib/query/getQueryClient'
-import { pageSizeList } from '@/constants/page/pageSizeList'
+import { PAGE_SIZE_LIST } from '@/constants/page/PAGE_SIZE_LIST'
 import Section from '@/components/layout/Section'
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function AdminsPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams
   const page = Number(sp.page ?? '1')
-  const size = Number(sp.size ?? String(pageSizeList[0]))
+  const size = Number(sp.size ?? String(PAGE_SIZE_LIST[0]))
   const orderBy = (sp.orderBy ?? 'id') as keyof ADMINS_TABLE['Row']
   const order = (sp.order ?? 'asc') as 'asc' | 'desc'
   const keyword = sp.keyword ?? ''

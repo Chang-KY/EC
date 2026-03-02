@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
 import Section from '@/components/layout/Section'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { pageSizeList } from '@/constants/page/pageSizeList'
+import { PAGE_SIZE_LIST } from '@/constants/page/PAGE_SIZE_LIST'
 import { CATEGORIES_TABLE_VIEW } from '@/types/db'
 import { getQueryClient } from '@/lib/query/getQueryClient'
 import { SearchParams } from '@/types/SearchParams'
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function CategoryListPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams
   const page = Number(sp.page ?? '1')
-  const size = Number(sp.size ?? String(pageSizeList[0]))
+  const size = Number(sp.size ?? String(PAGE_SIZE_LIST[0]))
   const orderBy = (sp.orderBy ?? 'id') as keyof CATEGORIES_TABLE_VIEW
   const order = (sp.order ?? 'asc') as 'asc' | 'desc'
   const keyword = sp.keyword ?? ''

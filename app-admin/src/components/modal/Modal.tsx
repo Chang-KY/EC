@@ -63,7 +63,7 @@ export default function Modal({
         {custom ? (
           children
         ) : (
-          <div className="w-[min(520px,90vw)] rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
+          <div className="w-[min(560px,90vw)] rounded border border-gray-300 bg-white p-4 shadow">
             <header className="flex items-center justify-between gap-3 pb-2">
               <div className="min-w-0">
                 <h2 className="text-sm font-semibold text-gray-900">{headerTitle}</h2>

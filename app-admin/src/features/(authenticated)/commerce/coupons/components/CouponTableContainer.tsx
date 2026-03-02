@@ -16,7 +16,7 @@ import { useSetQuery } from '@/hooks/useSetQuery'
 import { usePageSize } from '@/hooks/usePageSize'
 import SearchBar from '@/components/ui/SearchBar'
 import { getCoupons } from '@/features/(authenticated)/commerce/coupons/list/getCoupons'
-import { couponColumns } from '@/features/(authenticated)/commerce/coupons/list/couponColumns'
+import { couponColumns } from '@/features/(authenticated)/commerce/coupons/couponColumns'
 
 export default function CouponTableContainer({
   page: initialPage,

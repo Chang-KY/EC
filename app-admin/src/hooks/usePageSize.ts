@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
-import { pageSizeList } from '@/constants/page/pageSizeList'
+import { PAGE_SIZE_LIST } from '@/constants/page/PAGE_SIZE_LIST'
 
 function nearestAllowedSize(value: number, allowed: readonly number[]) {
   if (!Number.isFinite(value)) return allowed[0]
@@ -15,7 +15,7 @@ function nearestAllowedSize(value: number, allowed: readonly number[]) {
 }
 
 export function usePageSize(initialSize?: number) {
-  const sizeList = useMemo(() => pageSizeList, [])
+  const sizeList = useMemo(() => PAGE_SIZE_LIST, [])
   const [size, _setSize] = useState(() => {
     return nearestAllowedSize(initialSize ?? sizeList[0], sizeList)
   })

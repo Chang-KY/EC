@@ -2,7 +2,7 @@ import React from 'react'
 import { Metadata } from 'next'
 import { ROUTES } from '@/constants/routes'
 import Section from '@/components/layout/Section'
-import { pageSizeList } from '@/constants/page/pageSizeList'
+import { PAGE_SIZE_LIST } from '@/constants/page/PAGE_SIZE_LIST'
 import { PRODUCTS_TABLE } from '@/types/db'
 import { getQueryClient } from '@/lib/query/getQueryClient'
 import { SearchParams } from '@/types/SearchParams'
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default async function ProductsPage({ searchParams }: { searchParams: SearchParams }) {
   const sp = await searchParams
   const page = Number(sp.page ?? '1')
-  const size = Number(sp.size ?? String(pageSizeList[0]))
+  const size = Number(sp.size ?? String(PAGE_SIZE_LIST[0]))
   const orderBy = (sp.orderBy ?? 'id') as keyof PRODUCTS_TABLE['Row']
   const order = (sp.order ?? 'asc') as 'asc' | 'desc'
   const keyword = sp.keyword ?? ''

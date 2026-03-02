@@ -18,4 +18,13 @@ export const couponKeys = {
 
   details: () => [...couponKeys.all, 'detail'] as const,
   detail: (couponId: string | number) => [...couponKeys.details(), couponId] as const,
+
+  couponProducts: () => [...couponKeys.all, 'coupon-products'] as const,
+  couponProduct: (keyword: string) => [...couponKeys.couponProducts(), keyword] as const,
+
+  couponCategories: () => [...couponKeys.all, 'coupon-categories'] as const,
+  categoryRoots: (keyword = '') => [...couponKeys.couponCategories(), 'root', keyword] as const,
+
+  categoryChildren: (parentId: number | string, keyword = '') =>
+    [...couponKeys.couponCategories(), 'children', parentId, keyword] as const,
 } as const

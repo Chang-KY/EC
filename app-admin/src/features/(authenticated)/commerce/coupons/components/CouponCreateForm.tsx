@@ -21,7 +21,15 @@ import {
   APPLY_MODE_META,
   ApplyMode,
 } from '@/features/(authenticated)/commerce/coupons/applyModeSchema'
-import { Dices } from 'lucide-react'
+import {
+  ArrowBigDown,
+  ChevronDown,
+  ChevronRight,
+  Dices,
+  FolderTree,
+  Package,
+  X,
+} from 'lucide-react'
 import { generateCouponCode } from '@/features/(authenticated)/commerce/coupons/utils/generateCouponCode'
 import clsx from 'clsx'
 import { DatePickerWithRange } from '@/components/ui/date-picker/DatePickerWithRange'
@@ -29,6 +37,10 @@ import { dateTimeFormat } from '@/utils/DateTimeFormat'
 import Modal from '@/components/modal/Modal'
 import SearchCategory from '@/features/(authenticated)/commerce/coupons/components/SearchCategory'
 import SearchProduct from '@/features/(authenticated)/commerce/coupons/components/SearchProduct'
+import { CATEGORIES_TABLE, PRODUCTS_TABLE } from '@/types/db'
+import { SelectedProductRow } from '@/features/(authenticated)/commerce/coupons/components/CouponProductsRow'
+import { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoryRootForCoupon'
+import CouponCategoriesRow from '@/features/(authenticated)/commerce/coupons/components/CouponCategoriesRow'
 
 const initialCouponState: FormState<CouponCreateFormValues> = {
   values: {},
@@ -63,9 +75,12 @@ function CouponCreateBody({
   const [appliesCategory, setAppliesCategory] = useState<ApplyMode>(
     state.values.coupons?.category_mode ?? 'all',
   )
+  const [appliesCategoryList, setAppliesCategoryList] = useState<CategoryListItem[]>([])
   const [appliesProduct, setAppliesProduct] = useState<ApplyMode>(
     state.values.coupons?.product_mode ?? 'all',
   )
+  const [appliesProductList, setAppliesProductList] = useState<PRODUCTS_TABLE['Row'][]>([])
+  const [openSelectedGroups, setOpenSelectedGroups] = useState<Record<number, boolean>>({})
   const [couponCode, setCouponCode] = React.useState(state.values.coupons?.coupon_code ?? '')
   const [discountType, setDiscountType] = React.useState<DiscountType>(
     (state.values.coupons?.discount_type as DiscountType) ?? 'rate',
@@ -79,6 +94,85 @@ function CouponCreateBody({
     const code = generateCouponCode(16)
     setCouponCode(code)
   }
+
+  const groupedSelectedCategories = React.useMemo(() => {
+    const selectedSorted = [...appliesCategoryList].sort((a, b) =>
+      String(a.path).localeCompare(String(b.path)),
+    )
+
+    const roots = selectedSorted.filter((item) => {
+      return !selectedSorted.some(
+        (maybeParent) =>
+          maybeParent.id !== item.id &&
+          String(item.path).startsWith(`${String(maybeParent.path)}.`),
+      )
+    })
+
+    return roots.map((root) => {
+      const selectedDescendants = selectedSorted.filter(
+        (item) => item.id !== root.id && String(item.path).startsWith(`${String(root.path)}.`),
+      )
+
+      const totalDescendants = allCategories.filter(
+        (item) => item.id !== root.id && String(item.path).startsWith(`${String(root.path)}.`),
+      )
+
+      const selectionState: 'all' | 'partial' =
+        selectedDescendants.length === totalDescendants.length ? 'all' : 'partial'
+
+      return {
+        root,
+        descendants: selectedDescendants,
+        totalDescendantsCount: totalDescendants.length,
+        selectedDescendantsCount: selectedDescendants.length,
+        selectionState,
+      }
+    })
+  }, [appliesCategoryList, allCategories])
+
+  const modalMap = {
+    product: {
+      title: `${appliesProduct === 'exclude' ? '제외' : '포함'} 상품 선택`,
+      subTitle: '검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요.',
+      body: (
+        <SearchProduct
+          selectedProducts={appliesProductList}
+          onSelectProduct={(product) => {
+            setAppliesProductList((prev) => {
+              const exists = prev.some((item) => item.id === product.id)
+
+              if (exists) {
+                return prev.filter((item) => item.id !== product.id)
+              }
+
+              return [...prev, product]
+            })
+          }}
+        />
+      ),
+    },
+    category: {
+      title: `${appliesCategory === 'exclude' ? '제외' : '포함'} 카테고리 선택`,
+      subTitle: '검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요.',
+      body: (
+        <SearchCategory
+          selectedCategories={appliesCategoryList}
+          onSelectCategories={(category) => {
+            setAppliesCategoryList((prev) => {
+              const exists = prev.some((item) => item.id === category.id)
+
+              if (exists) {
+                return prev.filter((item) => item.id !== category.id)
+              }
+
+              return [...prev, category]
+            })
+          }}
+        />
+      ),
+    },
+  } as const
+  const modalConfig = openModal ? modalMap[openModal] : null
 
   return (
     <>
@@ -210,8 +304,7 @@ function CouponCreateBody({
             }}
           />
         </Article>
-
-        <Article title="적용 범위">
+        <Article title="적용 범위 - [  상품  ]">
           <div className={clsx(appliesProduct === 'all' ? '' : 'grid gap-3 md:grid-cols-2')}>
             <FormSelect
               label={
@@ -235,7 +328,90 @@ function CouponCreateBody({
               defaultValue={appliesProduct}
               errorMessage={state.fieldErrors?.['coupons.product_mode']?.[0]}
             />
+            {appliesProduct !== 'all' && (
+              <div className="flex h-full w-full items-end">
+                <button
+                  type="button"
+                  className={clsx(
+                    'flex h-8.5 w-full items-center justify-center gap-2 rounded border px-2 py-1 text-xs font-medium transition-colors',
+                    'bg-indigo-100/30 hover:bg-indigo-100',
+                    'focus:ring focus:ring-indigo-300 focus:outline-none',
+                  )}
+                  onClick={() => setOpenModal('product')}
+                >
+                  <Package className="h-4 w-4 shrink-0" />
+                  <span>상품 선택</span>
+                </button>
+              </div>
+            )}
           </div>
+          {appliesProduct !== 'all' && (
+            <div className="relative flex w-full flex-col items-center justify-center gap-3">
+              <ArrowBigDown className="text-gray-700" />
+              <div
+                className={clsx(
+                  'flex h-full min-h-30 w-full items-center justify-center border',
+                  appliesProduct === 'exclude' ? 'border-red-200' : 'border-green-200',
+                  'relative overflow-y-auto rounded',
+                )}
+              >
+                <div className="w-full self-start">
+                  <div
+                    className={clsx(
+                      'grid grid-cols-[56px_minmax(0,1fr)_120px_100px_88px] items-center',
+                      'gap-2 border-b px-3 py-2 text-[11px] font-medium text-gray-500',
+                      '',
+                      appliesProduct === 'exclude'
+                        ? 'border-red-200 bg-red-50/50'
+                        : 'border-green-200 bg-green-50/50',
+                      appliesProductList.length > 3 ? 'pr-5.5' : '',
+                    )}
+                  >
+                    <div className="text-center">이미지</div>
+                    <div className="text-center">상품 정보</div>
+                    <div className="text-center">가격</div>
+                    <div className="text-center">재고</div>
+                    <div className="text-center">해제</div>
+                  </div>
+
+                  {appliesProductList.length === 0 ? (
+                    <div className="flex min-h-24 items-center justify-center px-3 py-4">
+                      <p className="text-xs text-gray-500">
+                        {appliesProduct === 'exclude'
+                          ? '제외할 상품을 선택해주세요.'
+                          : '적용할 상품을 선택해주세요.'}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="max-h-56 min-h-24 divide-y divide-gray-100 overflow-y-auto">
+                      {appliesProductList.map((product) => (
+                        <SelectedProductRow
+                          key={product.id}
+                          product={product}
+                          clickButton={
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAppliesProductList((prev) =>
+                                  prev.filter((item) => item.id !== product.id),
+                                )
+                              }}
+                              className="inline-flex h-7 items-center justify-center gap-1 rounded border border-gray-300 px-2.5 text-[11px] text-gray-700 hover:bg-gray-50"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          }
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </Article>
+
+        <Article title="적용 범위 - [  카테고리  ]">
           <div className={clsx(appliesCategory === 'all' ? '' : 'grid gap-3 md:grid-cols-2')}>
             <FormSelect
               label={
@@ -258,7 +434,80 @@ function CouponCreateBody({
               defaultValue={appliesCategory}
               errorMessage={state.fieldErrors?.['coupons.category_mode']?.[0]}
             />
+            {appliesCategory !== 'all' && (
+              <div className="flex h-full w-full items-end">
+                <button
+                  type="button"
+                  className={clsx(
+                    'flex h-8.5 w-full items-center justify-center gap-2 rounded border px-2 py-1 text-xs font-medium transition-colors',
+                    'bg-indigo-100/30 hover:bg-indigo-100',
+                    'focus:ring focus:ring-indigo-300 focus:outline-none',
+                  )}
+                  onClick={() => setOpenModal('category')}
+                >
+                  <FolderTree className="h-4 w-4 shrink-0" />
+                  <span>카테고리 선택</span>
+                </button>
+              </div>
+            )}
           </div>
+          {appliesCategory !== 'all' && (
+            <div className="relative flex w-full flex-col items-center justify-center gap-3">
+              <ArrowBigDown className="text-gray-700" />
+              <div
+                className={clsx(
+                  'flex h-full min-h-30 w-full items-center justify-center border',
+                  appliesCategory === 'exclude' ? 'border-red-200' : 'border-green-200',
+                  'relative overflow-y-auto rounded',
+                )}
+              >
+                <div className="w-full self-start">
+                  <div
+                    className={clsx(
+                      'grid grid-cols-[56px_minmax(0,1fr)_80px_140px_88px] items-center gap-2 border-b px-3 py-2 text-[11px] font-medium text-gray-500',
+                      appliesCategory === 'exclude'
+                        ? 'border-red-200 bg-red-50/50'
+                        : 'border-green-200 bg-green-50/50',
+                      appliesCategoryList.length > 4 ? 'pr-5.5' : '',
+                    )}
+                  >
+                    <div />
+                    <div>카테고리 정보</div>
+                    <div className="text-center">깊이(Depth)</div>
+                    <div>경로(Slug)</div>
+                    <div className="text-center">해제</div>
+                  </div>
+
+                  {appliesCategoryList.length === 0 ? (
+                    <div className="flex min-h-24 items-center justify-center px-3 py-4">
+                      <p className="text-xs text-gray-500">
+                        {appliesCategory === 'exclude'
+                          ? '제외할 카테고리를 선택해주세요.'
+                          : '적용할 카테고리를 선택해주세요.'}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="max-h-56 min-h-24 divide-y divide-gray-100 overflow-y-auto">
+                      {groupedSelectedCategories.map(({ root, descendants }) => {
+                        const isOpen = openSelectedGroups[root.id] ?? true
+
+                        return (
+                          <CouponCategoriesRow
+                            key={root.id}
+                            root={root}
+                            descendants={descendants}
+                            isOpen={isOpen}
+                            setOpenSelectedGroups={setOpenSelectedGroups}
+                            setAppliesCategoryList={setAppliesCategoryList}
+                          />
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </Article>
       </div>
 
@@ -267,7 +516,6 @@ function CouponCreateBody({
           <FormSelect
             label="활성화"
             required
-            className="h-10"
             name="coupons.is_active"
             options={[
               { value: 'true', label: '활성' },
@@ -348,22 +596,14 @@ function CouponCreateBody({
       </aside>
 
       <Modal
-        isOpen={openModal === 'product'}
+        isOpen={openModal === 'product' || openModal === 'category'}
         onClose={() => setOpenModal(undefined)}
-        headerTitle={`${appliesCategory === 'exclude' ? '제외' : '포함'} ${openModal === 'product' && '상품'} 선택`}
-        subHeaderTitle="검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요."
+        headerTitle={modalConfig?.title ?? ''}
+        subHeaderTitle={modalConfig?.subTitle ?? ''}
       >
-        {openModal === 'product' && <SearchProduct onClose={() => setOpenModal(undefined)} />}
+        {modalConfig?.body}
       </Modal>
 
-      <Modal
-        isOpen={openModal === 'category'}
-        onClose={() => setOpenModal(undefined)}
-        headerTitle={`${appliesProduct === 'exclude' ? '제외' : '포함'} ${openModal === 'category' && '카테고리'} 선택`}
-        subHeaderTitle="검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요."
-      >
-        {openModal === 'category' && <SearchCategory onClose={() => setOpenModal(undefined)} />}
-      </Modal>
       <Dialog
         title="에러가 발생했습니다."
         subTitle={state.fieldErrors?._form?.[0] ?? ''}
@@ -373,4 +613,3 @@ function CouponCreateBody({
     </>
   )
 }
-
