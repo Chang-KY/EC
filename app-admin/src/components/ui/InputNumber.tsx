@@ -80,10 +80,9 @@ export default function InputNumber(props: CommaNumberInputProps) {
           nextCaretRef.current = caretPosByDigits(nextView, digitLeft)
         }}
         className={clsx(
-          'h-8.5 w-full rounded border py-2 pr-3 text-sm ring-0 outline-none',
+          'h-8.5 w-full rounded border px-3 py-2 text-sm ring-0 outline-none',
           'dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:focus:border-gray-500',
           'border-gray-300 bg-white text-gray-700 focus:border-indigo-200 focus:ring-1 focus:ring-indigo-200',
-          'pl-3',
           className,
         )}
       />

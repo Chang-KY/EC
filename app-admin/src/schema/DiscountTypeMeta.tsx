@@ -8,6 +8,6 @@ export type DiscountType = z.infer<typeof discountTypeSchema>
 
 export const DISCOUNT_TYPE_META = {
   none: { label: '할인 없음', icon: X },
-  fixed: { label: '가격 할인', icon: Tag },
+  fixed: { label: '할인가 ', icon: Tag },
   rate: { label: '할인율', icon: BadgePercent },
 } as const satisfies Record<DiscountType, { label: string; icon: LucideIcon }>

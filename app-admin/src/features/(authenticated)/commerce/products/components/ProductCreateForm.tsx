@@ -8,12 +8,12 @@ import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
 import AppButton from '@/components/ui/AppButton'
 import type { FormState } from '@/types/FormState'
-import { ProductCreateFormValues } from '@/features/(authenticated)/commerce/products/create/schema'
+import { ProductCreateFormValues } from '@/features/(authenticated)/commerce/products/create/createSchema'
 import {
   PRODUCT_STATUS_META,
   ProductStatus,
 } from '@/features/(authenticated)/commerce/products/productsSchema'
-import { productCreateAction } from '@/features/(authenticated)/commerce/products/create/action'
+import { productCreateAction } from '@/features/(authenticated)/commerce/products/create/createAction'
 import ImageField from '@/components/ui/ImageField'
 import { Dialog } from '@/components/ui/dialog/Dialog'
 import { LoadingDialog } from '@/components/ui/dialog/LoadingDialog'

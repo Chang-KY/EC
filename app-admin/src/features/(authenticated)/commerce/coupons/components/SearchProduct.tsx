@@ -100,6 +100,7 @@ export default function SearchProduct({ selectedProducts, onSelectProduct }: Sea
               {items.map((product) => (
                 <SelectedProductRow
                   key={product.id}
+                  keyword={keyword}
                   product={product}
                   clickButton={
                     <button

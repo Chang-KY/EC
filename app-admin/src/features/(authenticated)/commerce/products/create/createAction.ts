@@ -8,33 +8,32 @@ import { z } from 'zod'
 import {
   ProductCreateFormValues,
   productsCreateSchema,
-} from '@/features/(authenticated)/commerce/products/create/schema'
+} from '@/features/(authenticated)/commerce/products/create/createSchema'
 import { isFile } from '@/utils/isFile'
 import { uploadFile } from '@/utils/uploadFile'
 import { uploadRetry } from '@/utils/uploadRetry'
-import { ProductImageRole } from '@/types/enum'
+import { DiscountType, ProductImageRole, ProductStatus } from '@/types/enum'
 import { productImagesCreateSchema } from '@/features/(authenticated)/commerce/products/productImageSchema'
+import { getNullableNumber, getNullableString, getNumber, getString } from '@/utils/formdataType'
+import { toFieldErrors } from '@/utils/toFieldErrors'
 
 export async function productCreateAction(
   prev: FormState<ProductCreateFormValues>,
   formData: FormData,
 ): Promise<FormState<ProductCreateFormValues>> {
   const productsDraft = {
-    name: formData.get('products.name') ?? '',
-    description: formData.get('products.description') ?? '',
-    price: formData.get('products.price') ?? 0,
-    discount_type: formData.get('products.discount_type') ?? 'none',
-    discount_value: formData.get('products.discount_value') ?? undefined,
-    stock: formData.get('products.stock') ?? 0,
-    status: formData.get('products.status') ?? 'hidden',
+    name: getString(formData, 'products.name'),
+    description: getNullableString(formData, 'products.description'),
+    price: getNumber(formData, 'products.price', 0),
+    discount_type: getString(formData, 'products.discount_type', 'none') as DiscountType,
+    discount_value: getNullableNumber(formData, 'products.discount_value'),
+    stock: getNullableNumber(formData, 'products.stock'),
+    status: getString(formData, 'products.status', 'hidden') as ProductStatus,
   }
 
   const productsParsed = productsCreateSchema.safeParse(productsDraft)
   if (!productsParsed.success) {
-    const { fieldErrors, formErrors } = z.flattenError(productsParsed.error)
-    const prefixed = Object.fromEntries(
-      Object.entries(fieldErrors).map(([k, v]) => [`products.${k}`, v]),
-    )
+    const fieldErrors = toFieldErrors(productsParsed.error)
 
     return {
       ...prev,
@@ -42,7 +41,7 @@ export async function productCreateAction(
         ...prev.values,
         products: productsDraft,
       } as Partial<ProductCreateFormValues>,
-      fieldErrors: { ...prefixed, _form: formErrors },
+      fieldErrors,
       success: false,
     }
   }
@@ -84,15 +83,7 @@ export async function productCreateAction(
     const { data: productRow, error: productErr } = await sb
       .schema('ec')
       .from('products')
-      .insert({
-        name: productsParsed.data.name,
-        description: productsParsed.data.description || null,
-        price: productsParsed.data.price,
-        discount_type: productsParsed.data.discount_type,
-        discount_value: productsParsed.data.discount_value ?? null,
-        stock: productsParsed.data.stock ?? null,
-        status: productsParsed.data.status,
-      })
+      .insert(productsParsed.data)
       .select('id')
       .single()
 

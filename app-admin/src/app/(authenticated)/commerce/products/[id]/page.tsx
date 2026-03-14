@@ -7,9 +7,7 @@ import Article from '@/components/layout/article/Article'
 import Link from 'next/link'
 import { ROUTES } from '@/constants/routes'
 import AppButton from '@/components/ui/AppButton'
-import {
-  PRODUCT_STATUS_META,
-} from '@/features/(authenticated)/commerce/products/productsSchema'
+import { PRODUCT_STATUS_META } from '@/features/(authenticated)/commerce/products/productsSchema'
 import { DiscountType, ProductStatus } from '@/types/enum'
 import InfoRow from '@/components/ui/InfoRow'
 import Image from 'next/image'
@@ -31,6 +29,7 @@ import { getDiscountEffectText } from '@/features/(authenticated)/commerce/produ
 import ProductLikeUserConfirm from '@/features/(authenticated)/commerce/products/components/ProductLikeUserConfirm'
 import { dateTimeFormat } from '@/utils/DateTimeFormat'
 import { DISCOUNT_TYPE_META } from '@/schema/DiscountTypeMeta'
+import DetailNothing from '@/components/layout/DetailNothing'
 
 export async function generateMetadata({
   params,
@@ -63,18 +62,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   if (!p) {
     return (
-      <Section pathTitle="not-found">
-        <Article title="상품 상세">
-          <p className="text-sm text-gray-500">존재하지 않는 상품입니다.</p>
-          <div className="flex items-center justify-end">
-            <Link href={ROUTES.PRODUCTS}>
-              <AppButton type="button" variant="cancel">
-                돌아가기
-              </AppButton>
-            </Link>
-          </div>
-        </Article>
-      </Section>
+      <DetailNothing
+        title="상품 상세"
+        description="존재하지 않는 상품입니다."
+        href={ROUTES.PRODUCTS}
+      />
     )
   }
 
@@ -172,14 +164,14 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     inputTypeNumber={true}
                     targetId="basic-info-price"
                     id={numericId}
-                    initialValue={product.price ?? ''}
+                    initialValue={product.price ?? 0}
                     field="price"
                     action={productUpdatePriceAction}
                   />
                 }
               />
               <InfoRow
-                label="할인 타입"
+                label="할인 방식"
                 value={
                   discountMeta ? (
                     <MetaChip label={discountMeta.label} icon={discountMeta.icon} />

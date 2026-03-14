@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode, useEffect } from 'react'
+import React from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
@@ -13,21 +13,23 @@ export default function Modal({
   closeOnEsc = true,
   closeOnOutsideClick = true,
   custom = false,
+  footerButton,
 }: {
-  headerTitle: string
-  subHeaderTitle: string
+  headerTitle?: string
+  subHeaderTitle?: string
   closeOnOutsideClick?: boolean
-  children: ReactNode
+  children: React.ReactNode
   isOpen: boolean
   closeOnEsc?: boolean
-  onClose: () => void
+  onClose?: () => void
   custom?: boolean
+  footerButton?: readonly React.ReactNode[]
 }) {
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isOpen || !closeOnEsc) return
 
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') onClose?.()
     }
 
     window.addEventListener('keydown', handler)
@@ -49,7 +51,7 @@ export default function Modal({
       onMouseDown={(e) => {
         if (!closeOnOutsideClick) return
         // overlay 클릭만 닫기
-        if (e.target === e.currentTarget) onClose()
+        if (e.target === e.currentTarget) onClose?.()
       }}
     >
       <div
@@ -70,16 +72,23 @@ export default function Modal({
                 <p className="mt-1 text-xs text-gray-500">{subHeaderTitle}</p>
               </div>
 
-              <button
-                type="button"
-                onClick={onClose}
-                className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                aria-label="닫기"
-              >
-                <X className="size-4" />
-              </button>
+              {onClose && (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  aria-label="닫기"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
             </header>
             {children}
+            {footerButton && (
+              <footer className="mt-3 flex items-center justify-end gap-3">
+                {footerButton.map((item) => item)}
+              </footer>
+            )}
           </div>
         )}
       </div>

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Map } from 'lucide-react'
 import Modal from '@/components/modal/Modal'
 import CategoryPyramidD3 from '@/features/(authenticated)/commerce/categories/components/tree/CategoryPyramid'
+import { iconButtonClassName } from '@/constants/iconButtonClassName'
 
 export default function MapButton({
   categoryId,
@@ -15,12 +16,10 @@ export default function MapButton({
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
-      <Map
-        size={16}
-        className="cursor-pointer hover:opacity-80"
-        role="button"
-        onClick={() => setIsOpen(true)}
-      />
+      <button type="button" className={iconButtonClassName} onClick={() => setIsOpen(true)}>
+        <Map size={14} />
+      </button>
+
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} custom>
         <CategoryPyramidD3
           categoryId={categoryId}

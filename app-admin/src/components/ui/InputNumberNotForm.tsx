@@ -100,7 +100,7 @@ export const InputNumberNotForm = React.forwardRef<HTMLInputElement, InputNumber
           pattern={pattern ?? '[0-9]*'}
           autoComplete={rest.autoComplete ?? 'off'}
           className={clsx(
-            'max-h-10 min-h-7 w-full rounded border py-2 pr-3 text-sm ring-0 outline-none',
+            'max-h-10 min-h-7 w-full rounded border px-3 py-2 text-sm ring-0 outline-none',
             'dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:focus:border-gray-500',
             'border-gray-300 bg-white text-gray-700 focus:border-indigo-200 focus:ring-1 focus:ring-indigo-200',
             // icon ? 'pl-8' : 'pl-3',

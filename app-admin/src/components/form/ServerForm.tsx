@@ -22,7 +22,7 @@ export default function ServerForm<State>(props: ServerFormProps<State>) {
       className={clsx(
         className
           ? className
-          : 'grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]',
+          : 'grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]',
       )}
     >
       {children({ state, isPending })}

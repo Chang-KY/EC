@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import { Ellipsis } from 'lucide-react'
 import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu'
 import ArticleBoard from '@/components/layout/article/ArticleBoard'
+import { iconButtonClassName } from '@/constants/iconButtonClassName'
 
 type ArticleProps = {
   title?: string
@@ -34,7 +35,11 @@ export default function Article(props: ArticleProps) {
         {menu && (
           <DropdownMenu
             align="end"
-            triggerButton={<Ellipsis className="size-6 rounded-full p-1" />}
+            triggerButton={
+              <div role="button" className={iconButtonClassName}>
+                <Ellipsis size={14} />
+              </div>
+            }
             label="Option"
             menuElement={menu}
           />

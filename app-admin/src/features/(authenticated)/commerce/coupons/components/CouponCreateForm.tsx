@@ -8,8 +8,6 @@ import FormInput from '@/components/form/FormInput'
 import FormSelect from '@/components/form/FormSelect'
 import AppButton from '@/components/ui/AppButton'
 import type { FormState } from '@/types/FormState'
-import { Dialog } from '@/components/ui/dialog/Dialog'
-import { LoadingDialog } from '@/components/ui/dialog/LoadingDialog'
 import { CouponCreateFormValues } from '@/features/(authenticated)/commerce/coupons/create/createSchema'
 import { couponCreateAction } from '@/features/(authenticated)/commerce/coupons/create/createAction'
 import { DISCOUNT_TYPE_META, DiscountType } from '@/schema/DiscountTypeMeta'
@@ -21,26 +19,24 @@ import {
   APPLY_MODE_META,
   ApplyMode,
 } from '@/features/(authenticated)/commerce/coupons/applyModeSchema'
-import {
-  ArrowBigDown,
-  ChevronDown,
-  ChevronRight,
-  Dices,
-  FolderTree,
-  Package,
-  X,
-} from 'lucide-react'
+import { ArrowBigDown, Dices, FolderTree, Package, X } from 'lucide-react'
 import { generateCouponCode } from '@/features/(authenticated)/commerce/coupons/utils/generateCouponCode'
 import clsx from 'clsx'
-import { DatePickerWithRange } from '@/components/ui/date-picker/DatePickerWithRange'
-import { dateTimeFormat } from '@/utils/DateTimeFormat'
 import Modal from '@/components/modal/Modal'
 import SearchCategory from '@/features/(authenticated)/commerce/coupons/components/SearchCategory'
 import SearchProduct from '@/features/(authenticated)/commerce/coupons/components/SearchProduct'
-import { CATEGORIES_TABLE, PRODUCTS_TABLE } from '@/types/db'
+import { PRODUCTS_TABLE } from '@/types/db'
 import { SelectedProductRow } from '@/features/(authenticated)/commerce/coupons/components/CouponProductsRow'
 import { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoryRootForCoupon'
 import CouponCategoriesRow from '@/features/(authenticated)/commerce/coupons/components/CouponCategoriesRow'
+import { useGetCategoriesForCoupon } from '@/features/(authenticated)/commerce/coupons/hooks/useGetCategoriesForCoupon'
+import { uniqueById } from '@/features/(authenticated)/commerce/coupons/utils/uniqueById'
+import { getBranchCategories } from '@/features/(authenticated)/commerce/coupons/utils/getBranchCategory'
+import { normalizeSelectedCategories } from '@/features/(authenticated)/commerce/coupons/utils/normalizeSelectedCategories'
+import DateTimePickerField from '@/components/ui/date-picker/DateTimePickerField'
+import Label from '@/components/ui/Label'
+import Loading from '@/components/loading/Loading'
+import ErrorMessage from '@/components/ui/ErrorMessage'
 
 const initialCouponState: FormState<CouponCreateFormValues> = {
   values: {},
@@ -72,6 +68,11 @@ function CouponCreateBody({
 }) {
   const router = useRouter()
   const [openModal, setOpenModal] = useState<'product' | 'category' | undefined>(undefined)
+
+  const [startsAt, setStartsAt] = React.useState<Date | undefined>()
+  const [endsAt, setEndsAt] = React.useState<Date | undefined>()
+  const [includeTime, setIncludeTime] = React.useState(false)
+
   const [appliesCategory, setAppliesCategory] = useState<ApplyMode>(
     state.values.coupons?.category_mode ?? 'all',
   )
@@ -81,6 +82,7 @@ function CouponCreateBody({
   )
   const [appliesProductList, setAppliesProductList] = useState<PRODUCTS_TABLE['Row'][]>([])
   const [openSelectedGroups, setOpenSelectedGroups] = useState<Record<number, boolean>>({})
+
   const [couponCode, setCouponCode] = React.useState(state.values.coupons?.coupon_code ?? '')
   const [discountType, setDiscountType] = React.useState<DiscountType>(
     (state.values.coupons?.discount_type as DiscountType) ?? 'rate',
@@ -88,12 +90,46 @@ function CouponCreateBody({
   const [couponType, setCouponType] = useState<CouponKind>(
     (state.values.coupons?.coupon_kind as CouponKind) ?? 'general',
   )
+  const { items: allCategories = [] } = useGetCategoriesForCoupon({
+    enabled: openModal === 'category',
+  })
+
   const discountLabel = DISCOUNT_TYPE_META[discountType]?.label ?? '할인 없음'
 
   const handleGenerateCode = () => {
     const code = generateCouponCode(16)
     setCouponCode(code)
   }
+
+  const handleSelectCategory = React.useCallback(
+    (category: CategoryListItem) => {
+      setAppliesCategoryList((prev) => {
+        const selectedIdSet = new Set(prev.map((item) => Number(item.id)))
+        const isAlreadySelected = selectedIdSet.has(Number(category.id))
+
+        let next: CategoryListItem[]
+
+        if (isAlreadySelected) {
+          // 자기 자신 + 하위 전체 제거
+          next = prev.filter(
+            (item) =>
+              !(
+                item.path === category.path ||
+                String(item.path).startsWith(`${String(category.path)}.`)
+              ),
+          )
+        } else {
+          // 자기 자신 + 하위 전체 추가
+          const branch = getBranchCategories(category, allCategories)
+          next = uniqueById([...prev, ...branch])
+        }
+
+        // 추가/삭제 후 부모 자동 선택/해제 정리
+        return normalizeSelectedCategories(next, allCategories)
+      })
+    },
+    [allCategories],
+  )
 
   const groupedSelectedCategories = React.useMemo(() => {
     const selectedSorted = [...appliesCategoryList].sort((a, b) =>
@@ -130,6 +166,20 @@ function CouponCreateBody({
     })
   }, [appliesCategoryList, allCategories])
 
+  const handleRemoveCategoryBranch = React.useCallback(
+    (target: CategoryListItem) => {
+      setAppliesCategoryList((prev) => {
+        const filtered = prev.filter(
+          (item) =>
+            !(item.path === target.path || String(item.path).startsWith(`${String(target.path)}.`)),
+        )
+
+        return normalizeSelectedCategories(filtered, allCategories)
+      })
+    },
+    [allCategories],
+  )
+
   const modalMap = {
     product: {
       title: `${appliesProduct === 'exclude' ? '제외' : '포함'} 상품 선택`,
@@ -150,6 +200,14 @@ function CouponCreateBody({
           }}
         />
       ),
+      footer: [
+        <AppButton key="delete-product" variant="delete" onClick={() => setAppliesProductList([])}>
+          모든 상품 제거
+        </AppButton>,
+        <AppButton key="add-product" variant="add" onClick={() => setOpenModal(undefined)}>
+          확인
+        </AppButton>,
+      ],
     },
     category: {
       title: `${appliesCategory === 'exclude' ? '제외' : '포함'} 카테고리 선택`,
@@ -157,19 +215,17 @@ function CouponCreateBody({
       body: (
         <SearchCategory
           selectedCategories={appliesCategoryList}
-          onSelectCategories={(category) => {
-            setAppliesCategoryList((prev) => {
-              const exists = prev.some((item) => item.id === category.id)
-
-              if (exists) {
-                return prev.filter((item) => item.id !== category.id)
-              }
-
-              return [...prev, category]
-            })
-          }}
+          onSelectCategories={(category) => handleSelectCategory(category)}
         />
       ),
+      footer: [
+        <AppButton key="delete-product" variant="delete" onClick={() => setAppliesCategoryList([])}>
+          모든 카테고리 제거
+        </AppButton>,
+        <AppButton key="add-product" variant="add" onClick={() => setOpenModal(undefined)}>
+          확인
+        </AppButton>,
+      ],
     },
   } as const
   const modalConfig = openModal ? modalMap[openModal] : null
@@ -267,42 +323,101 @@ function CouponCreateBody({
               errorMessage={state.fieldErrors?.['coupons.discount_type']?.[0]}
             />
 
-            <FormInput
-              label={`할인${discountType === 'rate' ? '률 ( % )' : '가 ( ₩ )'}`}
-              name="coupons.discount_value"
-              required
-              type="number"
-              placeholder="0"
-              defaultValue={state.values.coupons?.discount_value ?? ''}
-              errorMessage={state.fieldErrors?.['coupons.discount_value']?.[0]}
-            />
+            {discountType === 'fixed' && (
+              <FormInput
+                label="할인가 ( ₩ )"
+                name="coupons.discount_value"
+                required
+                type="number"
+                placeholder="0"
+                defaultValue={state.values.coupons?.discount_value ?? ''}
+                errorMessage={state.fieldErrors?.['coupons.discount_value']?.[0]}
+              />
+            )}
 
             {discountType === 'rate' && (
-              <FormInput
-                label="최대 할인 금액 (₩)"
-                name="coupons.max_discount"
-                type="number"
-                placeholder="5,000"
-                defaultValue={state.values.coupons?.max_discount ?? ''}
-                errorMessage={state.fieldErrors?.['coupons.max_discount']?.[0]}
-              />
+              <>
+                <FormInput
+                  label="할인률 ( % )"
+                  name="coupons.discount_value"
+                  required
+                  type="number"
+                  placeholder="0"
+                  min={0}
+                  max={100}
+                  step={1}
+                  defaultValue={state.values.coupons?.discount_value ?? ''}
+                  errorMessage={state.fieldErrors?.['coupons.discount_value']?.[0]}
+                />
+                <FormInput
+                  label="최대 할인 금액 (₩)"
+                  name="coupons.max_discount"
+                  type="number"
+                  placeholder="5,000"
+                  defaultValue={state.values.coupons?.max_discount ?? ''}
+                  errorMessage={state.fieldErrors?.['coupons.max_discount']?.[0]}
+                />
+              </>
             )}
           </div>
         </Article>
 
         <Article title="유효 기간" subtitle="선택하지 않으면 무기한으로 처리돼요.">
-          <DatePickerWithRange
-            name="coupons.expiration_date"
-            label="시작 일시 ~ 종료 일시"
-            required
-            errorMessage={state.fieldErrors?.['coupons.expiration_date']?.[0]}
-            serialize={(range) => {
-              const from = range.from ? dateTimeFormat(range.from, 'date') : ''
-              const to = range.to ? dateTimeFormat(range.to, 'date') : ''
-              if (!from) return ''
-              return to ? `${from} ~ ${to}` : `${from} ~`
-            }}
-          />
+          <div className="mb-3 flex items-center justify-between">
+            <label className="flex w-28 cursor-pointer items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={includeTime}
+                onChange={(e) => setIncludeTime(e.target.checked)}
+              />
+              시간까지 설정
+            </label>
+
+            <button
+              type="button"
+              onClick={() => {
+                setStartsAt(undefined)
+                setEndsAt(undefined)
+                setIncludeTime(false)
+              }}
+              className="text-xs text-gray-500 underline underline-offset-4 hover:text-gray-700"
+            >
+              초기화
+            </button>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="flex flex-col gap-1">
+              <Label name="coupons.starts_at" label="시작일 선택" />
+              <DateTimePickerField
+                name="coupons.starts_at"
+                value={startsAt}
+                onChange={setStartsAt}
+                includeTime={includeTime}
+                boundary="start"
+                placeholder="클릭해주세요."
+              />
+              {state.fieldErrors?.['coupons.starts_at']?.[0] && (
+                <ErrorMessage errorMessage={state.fieldErrors?.['coupons.starts_at']?.[0]} />
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <Label name="coupons.ends_at" label="종료일 선택" />
+              <DateTimePickerField
+                name="coupons.ends_at"
+                value={endsAt}
+                onChange={setEndsAt}
+                includeTime={includeTime}
+                boundary="end"
+                placeholder="클릭해주세요."
+              />
+
+              {state.fieldErrors?.['coupons.ends_at']?.[0] && (
+                <ErrorMessage errorMessage={state.fieldErrors?.['coupons.ends_at']?.[0]} />
+              )}
+            </div>
+          </div>
         </Article>
         <Article title="적용 범위 - [  상품  ]">
           <div className={clsx(appliesProduct === 'all' ? '' : 'grid gap-3 md:grid-cols-2')}>
@@ -314,7 +429,6 @@ function CouponCreateBody({
                     ? '상품 제외 모드'
                     : '상품 적용 모드'
               }
-              required
               name="coupons.product_mode"
               options={Object.entries(APPLY_MODE_META).map(([value, meta]) => ({
                 value: value as ApplyMode,
@@ -488,20 +602,31 @@ function CouponCreateBody({
                     </div>
                   ) : (
                     <div className="max-h-56 min-h-24 divide-y divide-gray-100 overflow-y-auto">
-                      {groupedSelectedCategories.map(({ root, descendants }) => {
-                        const isOpen = openSelectedGroups[root.id] ?? true
+                      {groupedSelectedCategories.map(
+                        ({
+                          root,
+                          descendants,
+                          selectionState,
+                          totalDescendantsCount,
+                          selectedDescendantsCount,
+                        }) => {
+                          const isOpen = openSelectedGroups[root.id] ?? true
 
-                        return (
-                          <CouponCategoriesRow
-                            key={root.id}
-                            root={root}
-                            descendants={descendants}
-                            isOpen={isOpen}
-                            setOpenSelectedGroups={setOpenSelectedGroups}
-                            setAppliesCategoryList={setAppliesCategoryList}
-                          />
-                        )
-                      })}
+                          return (
+                            <CouponCategoriesRow
+                              key={root.id}
+                              root={root}
+                              descendants={descendants}
+                              isOpen={isOpen}
+                              selectionState={selectionState}
+                              totalDescendantsCount={totalDescendantsCount}
+                              selectedDescendantsCount={selectedDescendantsCount}
+                              setOpenSelectedGroups={setOpenSelectedGroups}
+                              onRemoveBranch={handleRemoveCategoryBranch}
+                            />
+                          )
+                        },
+                      )}
                     </div>
                   )}
                 </div>
@@ -589,27 +714,59 @@ function CouponCreateBody({
               취소
             </AppButton>
             <AppButton variant="add" type="submit" disabled={isPending}>
-              {isPending ? '생성 중…' : '쿠폰 생성'}
+              {isPending ? '생성 중...' : '쿠폰 생성'}
             </AppButton>
           </div>
         </Article>
       </aside>
 
+      {appliesCategory !== 'all' &&
+        appliesCategoryList.map((category) => (
+          <input
+            key={`category-${category.id}`}
+            type="hidden"
+            name="targets.category_ids"
+            value={String(category.id)}
+          />
+        ))}
+
+      {appliesProduct !== 'all' &&
+        appliesProductList.map((product) => (
+          <input
+            key={`product-${product.id}`}
+            type="hidden"
+            name="targets.product_ids"
+            value={String(product.id)}
+          />
+        ))}
+
+      {/* 상품 / 카테고리 찾기 모달 */}
       <Modal
         isOpen={openModal === 'product' || openModal === 'category'}
         onClose={() => setOpenModal(undefined)}
         headerTitle={modalConfig?.title ?? ''}
         subHeaderTitle={modalConfig?.subTitle ?? ''}
+        footerButton={modalConfig?.footer}
       >
         {modalConfig?.body}
       </Modal>
 
-      <Dialog
-        title="에러가 발생했습니다."
-        subTitle={state.fieldErrors?._form?.[0] ?? ''}
-        autoOpenKey={state.fieldErrors?._form?.[0]}
-      />
-      <LoadingDialog title="알림" subTitle="현재 쿠폰을 생성 중 입니다." autoOpenKey={isPending} />
+      {/* 생성 로딩 모달 */}
+      <Modal isOpen={isPending} closeOnEsc={false} custom={true}>
+        <div className="rounded bg-white p-14 shadow-md">
+          <Loading mention="현재 쿠폰을 생성 중 입니다." />
+        </div>
+      </Modal>
+
+      {/* 에러 표지 모달 */}
+      <Modal
+        isOpen={!!state.fieldErrors?._form?.[0]}
+        onClose={() => setOpenModal(undefined)}
+        headerTitle="에러가 발생했습니다."
+        subHeaderTitle={state.fieldErrors?._form?.[0] ?? ''}
+      >
+        <div></div>
+      </Modal>
     </>
   )
 }

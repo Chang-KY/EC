@@ -14,7 +14,7 @@ import { usePagination } from '@/hooks/usePagination'
 import { useOrderSort } from '@/hooks/useOrderSort'
 import { useSetQuery } from '@/hooks/useSetQuery'
 import { usePageSize } from '@/hooks/usePageSize'
-import { productColumns } from '@/features/(authenticated)/commerce/products/list/productColumns'
+import { productColumns } from '@/features/(authenticated)/commerce/products/productColumns'
 import { getProducts } from '@/features/(authenticated)/commerce/products/list/getProducts'
 import SearchBar from '@/components/ui/SearchBar'
 

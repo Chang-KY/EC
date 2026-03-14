@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { KeyRound, Ticket } from 'lucide-react'
 import { Meta } from '@/types/Meta'
 import { applyModeSchema } from '@/features/(authenticated)/commerce/coupons/applyModeSchema'
+import { discountTypeSchema } from '@/schema/DiscountTypeMeta'
+import { DiscountType } from '@/types/enum'
 
 export const couponKindSchema = z
   .enum(['general', 'code'] as const) // 예시
@@ -22,6 +24,33 @@ export const COUPON_KIND_META = {
   },
 } as const satisfies Record<CouponKind, Required<Pick<Meta, 'label' | 'icon' | 'className'>>>
 
+export function validateDiscountRule(
+  val: { discount_type?: DiscountType; discount_value?: number },
+  ctx: z.RefinementCtx,
+) {
+  if (val.discount_type === 'rate') {
+    if (
+      typeof val.discount_value !== 'number' ||
+      !(val.discount_value > 0 && val.discount_value < 100)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['discount_value'],
+        message: '할인률은 0~99 사이여야 합니다.',
+      })
+    }
+  }
+
+  if (val.discount_type === 'fixed') {
+    if (typeof val.discount_value !== 'number' || !(val.discount_value > 0)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['discount_value'],
+        message: '할인가는 0보다 커야 합니다.',
+      })
+    }
+  }
+}
 function toKstIsoOrNull(v: unknown): string | null {
   if (v === '' || v === null || v === undefined) return null
   if (v instanceof Date) return new Date(v.getTime()).toISOString()
@@ -44,7 +73,6 @@ function toKstIsoOrNull(v: unknown): string | null {
   }
 
   const [, y, mo, d, hh, mm, ss] = m
-  // KST(+09:00)를 UTC로 환산해서 ISO(Z) 생성
   const utcMs = Date.UTC(
     Number(y),
     Number(mo) - 1,
@@ -62,17 +90,26 @@ const timestampNullable = z
     message: '날짜 형식이 올바르지 않습니다.',
   })
 
-export const CouponCreateSchema = z
+export const CouponSchema = z
   .object({
     id: z.coerce.number().int().positive().optional(),
     name: z.string().trim().min(1, '쿠폰명은 필수입니다.'),
     description: z.string().nullable().optional(),
 
-    discount_type: z.string().min(1),
-    discount_value: z.number().int().positive(), // check(discount_value > 0)
+    discount_type: discountTypeSchema.default('rate'),
+    discount_value: z.coerce.number().int({ error: '할인값은 정수여야 합니다.' }),
 
-    max_discount: z.number().int().min(1).nullable(), // null or >= 0
-    min_order_amount: z.number().int().min(1).nullable(), // null or >= 0
+    max_discount: z.coerce
+      .number()
+      .int()
+      .gt(1, { error: '최대 할인 금액은 1보다 커야 합니다.' })
+      .nullable(),
+
+    min_order_amount: z.coerce
+      .number()
+      .int()
+      .gt(1, { error: '최소 주문 금액은 1보다 커야 합니다.' })
+      .nullable(),
 
     is_active: z.boolean().default(true),
     expiration_date: z.string().nullable().optional(),
@@ -81,9 +118,13 @@ export const CouponCreateSchema = z
 
     stackable: z.boolean().default(false),
 
-    max_issue: z.number().int().positive().nullable(),
-    max_redemptions: z.number().int().positive().nullable(),
-    max_per_user: z.number().int().min(1).default(1),
+    max_issue: z.coerce.number().int().positive().nullable(),
+    max_redemptions: z.coerce.number().int().positive().nullable(),
+    max_per_user: z.coerce
+      .number()
+      .int()
+      .gt(1, { error: '사용 횟수는 1이상 이어야 합니다.' })
+      .default(1),
 
     created_by: z.uuid().nullable(),
 
@@ -109,6 +150,7 @@ export const CouponCreateSchema = z
     if (val.starts_at && val.ends_at) {
       const s = Date.parse(val.starts_at)
       const e = Date.parse(val.ends_at)
+
       if (!Number.isNaN(s) && !Number.isNaN(e) && s > e) {
         ctx.addIssue({
           code: 'custom',
@@ -118,3 +160,4 @@ export const CouponCreateSchema = z
       }
     }
   })
+  .superRefine(validateDiscountRule)

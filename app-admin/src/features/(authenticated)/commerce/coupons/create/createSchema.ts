@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CouponCreateSchema } from '@/features/(authenticated)/commerce/coupons/couponsSchema'
+import { CouponSchema } from '@/features/(authenticated)/commerce/coupons/couponsSchema'
 import {
   CouponTargetsSchema,
   validateCouponTargets,
@@ -7,7 +7,7 @@ import {
 
 export const CouponsCreateSchema = z
   .object({
-    coupons: CouponCreateSchema,
+    coupons: CouponSchema,
     targets: CouponTargetsSchema,
   })
   .superRefine((data, ctx) => {

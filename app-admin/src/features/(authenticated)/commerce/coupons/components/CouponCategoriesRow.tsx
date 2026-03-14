@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { ChevronDown, ChevronRight, FolderTree, X } from 'lucide-react'
 import { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoryRootForCoupon'
 import clsx from 'clsx'
@@ -7,16 +7,22 @@ type CouponCategoriesRowProps = {
   root: CategoryListItem
   descendants: CategoryListItem[]
   isOpen: boolean
+  selectionState: 'all' | 'partial'
+  totalDescendantsCount: number
+  selectedDescendantsCount: number
   setOpenSelectedGroups: React.Dispatch<React.SetStateAction<Record<number, boolean>>>
-  setAppliesCategoryList: React.Dispatch<React.SetStateAction<CategoryListItem[]>>
+  onRemoveBranch: (target: CategoryListItem) => void
 }
 
 export default function CouponCategoriesRow({
   root,
   descendants,
   isOpen,
+  selectionState,
+  totalDescendantsCount,
+  selectedDescendantsCount,
   setOpenSelectedGroups,
-  setAppliesCategoryList,
+  onRemoveBranch,
 }: CouponCategoriesRowProps) {
   return (
     <div key={root.id} className="divide-y divide-gray-100">
@@ -52,9 +58,19 @@ export default function CouponCategoriesRow({
               직접 선택
             </span>
 
-            {descendants.length > 0 && (
+            {selectionState === 'all' ? (
+              <span className="rounded-full bg-indigo-50 px-1.5 py-0.5 text-[10px] text-indigo-700">
+                전체 선택
+              </span>
+            ) : (
               <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[10px] text-amber-700">
-                하위 {descendants.length}개 자동 포함
+                일부 선택
+              </span>
+            )}
+
+            {totalDescendantsCount > 0 && (
+              <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-600">
+                하위 {selectedDescendantsCount}/{totalDescendantsCount}개 선택
               </span>
             )}
           </div>
@@ -76,19 +92,7 @@ export default function CouponCategoriesRow({
         <div className="flex justify-center">
           <button
             type="button"
-            onClick={() => {
-              setAppliesCategoryList((prev) =>
-                prev.filter((item) => {
-                  const isTargetOrDescendant =
-                    item.path === root.path || String(item.path).startsWith(`${root.path}.`)
-
-                  const isAncestor =
-                    root.path === item.path || String(item.path).startsWith(`${item.path}.`)
-
-                  return !(isTargetOrDescendant || isAncestor)
-                }),
-              )
-            }}
+            onClick={() => onRemoveBranch(root)}
             className="inline-flex h-7 items-center justify-center gap-1 rounded border border-gray-300 px-2.5 text-[11px] text-gray-700 hover:bg-gray-50"
           >
             <X className="h-3.5 w-3.5" />
@@ -134,19 +138,7 @@ export default function CouponCategoriesRow({
               <div className="flex justify-center">
                 <button
                   type="button"
-                  onClick={() => {
-                    setAppliesCategoryList((prev) =>
-                      prev.filter((item) => {
-                        const isTargetOrDescendant =
-                          item.path === child.path || String(item.path).startsWith(`${child.path}.`)
-
-                        const isAncestor =
-                          child.path === item.path || String(item.path).startsWith(`${item.path}.`)
-
-                        return !(isTargetOrDescendant || isAncestor)
-                      }),
-                    )
-                  }}
+                  onClick={() => onRemoveBranch(child)}
                   className="inline-flex h-7 items-center justify-center gap-1 rounded border border-gray-300 px-2.5 text-[11px] text-gray-700 hover:bg-gray-50"
                 >
                   <X className="h-3.5 w-3.5" />

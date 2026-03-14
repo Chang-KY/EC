@@ -2,22 +2,12 @@
 
 import React from 'react'
 import Input from '@/components/ui/Input'
-import {
-  Check,
-  ChevronDown,
-  ChevronRight,
-  FolderTree,
-  Loader2,
-  Plus,
-  Search,
-  Tag,
-} from 'lucide-react'
+import { Loader2, Search, Tag } from 'lucide-react'
 import { useKeywordSetParam } from '@/hooks/params/useKeywordSetParam'
-import { useGetCategoriesRootForCoupon } from '@/features/(authenticated)/commerce/coupons/hooks/useGetCategoriesRootForCoupon'
 import Loading from '@/components/loading/Loading'
-import { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoryRootForCoupon'
-import { useGetCategoryChildren } from '@/features/(authenticated)/commerce/coupons/hooks/useGetCategoryChildren'
 import { CategoryTreeRow } from '@/features/(authenticated)/commerce/coupons/components/CategoryTreeRow'
+import { useGetCategoriesForCoupon } from '@/features/(authenticated)/commerce/coupons/hooks/useGetCategoriesForCoupon'
+import type { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoriesForCoupon'
 
 type SearchCategoryProps = {
   selectedCategories: CategoryListItem[]
@@ -29,34 +19,39 @@ export default function SearchCategory({
   onSelectCategories,
 }: SearchCategoryProps) {
   const { keyword, setKeyword, isDebouncing, flush } = useKeywordSetParam(700, '')
-  const { items, hasNextPage, fetchNextPage, isFetchingNextPage, isPending, isError } =
-    useGetCategoriesRootForCoupon({ keyword })
+
+  const {
+    items: allCategories,
+    isPending,
+    isError,
+  } = useGetCategoriesForCoupon({
+    enabled: true,
+    keyword,
+  })
 
   const isSearching = isDebouncing || isPending
-  const bottomRef = React.useRef<HTMLDivElement | null>(null)
 
   const selectedIds = React.useMemo(() => {
-    return new Set(selectedCategories.map((item) => item.id))
+    return new Set(selectedCategories.map((item) => Number(item.id)))
   }, [selectedCategories])
 
-  React.useEffect(() => {
-    const target = bottomRef.current
-    if (!target) return
+  const childrenByParentId = React.useMemo(() => {
+    const map = new Map<number, CategoryListItem[]>()
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const first = entries[0]
-        if (first?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage().then()
-        }
-      },
-      { rootMargin: '200px' },
-    )
+    for (const item of allCategories) {
+      if (item.parent_id == null) continue
 
-    observer.observe(target)
+      const prev = map.get(Number(item.parent_id)) ?? []
+      prev.push(item)
+      map.set(Number(item.parent_id), prev)
+    }
 
-    return () => observer.disconnect()
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+    return map
+  }, [allCategories])
+
+  const rootCategories = React.useMemo(() => {
+    return allCategories.filter((item) => item.parent_id == null)
+  }, [allCategories])
 
   return (
     <div className="w-full space-y-3">
@@ -81,7 +76,7 @@ export default function SearchCategory({
 
         <div className="inline-flex h-7 min-w-28 items-center justify-center gap-1 rounded border border-indigo-200 bg-indigo-50 px-2.5 text-[11px] font-medium text-indigo-700">
           <Tag className="size-3.5" />
-          <span className="w-3 text-center">{selectedCategories.length}</span>
+          <span className="inline-block min-w-4 text-center">{selectedCategories.length}</span>
           <span>개 선택됨</span>
         </div>
       </div>
@@ -95,11 +90,11 @@ export default function SearchCategory({
           <div className="flex h-100 w-full items-center justify-center">
             <p className="text-xs text-red-500">에러가 발생했습니다.</p>
           </div>
-        ) : items.length === 0 ? (
+        ) : rootCategories.length === 0 ? (
           <div className="flex h-100 items-center justify-center">
             <p className="text-xs">
-              {keyword ? <span className="mr-3 text-red-700">{keyword}</span> : ''}상품이 존재하지
-              않습니다.
+              {keyword ? <span className="mr-1 text-red-700">{keyword}</span> : ''}
+              카테고리가 존재하지 않습니다.
             </p>
           </div>
         ) : (
@@ -109,25 +104,20 @@ export default function SearchCategory({
               <div className="text-center">하위 개수</div>
               <div className="text-center">선택</div>
             </div>
+
             <div className="h-[366.41px] divide-y divide-gray-100 overflow-y-auto">
-              {items.map((category) => (
+              {rootCategories.map((category) => (
                 <CategoryTreeRow
+                  allCategories={allCategories}
                   key={category.id}
                   category={category}
                   selectedIds={selectedIds}
                   onSelectCategories={onSelectCategories}
                   level={1}
                   maxDepth={3}
+                  childrenByParentId={childrenByParentId}
                 />
               ))}
-
-              <div ref={bottomRef} className="h-0 w-full" />
-
-              {isFetchingNextPage && (
-                <div className="absolute inset-0 flex size-full items-center justify-center">
-                  <Loading mention="카테고리를 더 불러오는 중..." />
-                </div>
-              )}
             </div>
           </div>
         )}

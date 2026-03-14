@@ -7,44 +7,21 @@ import type { FormState } from '@/types/FormState'
 import {
   CreateCategorySchema,
   type CategoriesCreateFormValues,
-} from '@/features/(authenticated)/commerce/categories/create/schema'
+} from '@/features/(authenticated)/commerce/categories/create/createSchema'
 import { z } from 'zod'
-
-function toStr(v: FormDataEntryValue | null) {
-  return typeof v === 'string' ? v : ''
-}
-
-function toNullablePositiveInt(v: FormDataEntryValue | null) {
-  const s = typeof v === 'string' ? v.trim() : ''
-  if (!s) return null
-  const n = Number(s)
-  if (!Number.isFinite(n) || n <= 0 || !Number.isInteger(n)) return null
-  return n
-}
-
-function toBool(v: FormDataEntryValue | null) {
-  if (v === 'true') return true
-  if (v === 'false') return false
-
-  if (v === 'on') return true
-  if (typeof v === 'boolean') return v
-
-  return false
-}
+import { getBoolean, getNullableNumber, getString } from '@/utils/formdataType'
 
 export async function categoryCreateAction(
   prev: FormState<CategoriesCreateFormValues>,
   formData: FormData,
 ): Promise<FormState<CategoriesCreateFormValues>> {
-  // 1) FormData → Draft(타입 정리)
   const categoriesDraft = {
-    name: toStr(formData.get('name')),
-    slug: toStr(formData.get('slug')),
-    parent_id: toNullablePositiveInt(formData.get('parent_id')),
-    selectable: toBool(formData.get('selectable')),
+    name: getString(formData, 'name'),
+    slug: getString(formData, 'slug'),
+    parent_id: getNullableNumber(formData, 'parent_id'),
+    selectable: getBoolean(formData, 'selectable'),
   }
 
-  // 2) Zod 검증
   const parsed = CreateCategorySchema.safeParse(categoriesDraft)
   if (!parsed.success) {
     const { fieldErrors, formErrors } = z.flattenError(parsed.error)
@@ -59,20 +36,15 @@ export async function categoryCreateAction(
   const sb = await supabase()
 
   try {
-    const { data, error } = await sb
+    const { error } = await sb
       .schema('ec')
       .from('categories')
-      .insert({
-        name: parsed.data.name,
-        slug: parsed.data.slug, // schema에서 필수니까 null로 만들지 말기
-        parent_id: parsed.data.parent_id ?? null,
-        selectable: parsed.data.selectable ?? false,
-      })
+      .insert(parsed.data)
       .select('id')
       .single()
 
     if (error) {
-      // 3) Supabase/PG 에러 → 필드 에러로 매핑(유니크 충돌 등)
+      // Supabase /PG 에러 → 필드 에러로 매핑(유니크 충돌 등)
       const msg = error.message ?? '카테고리 생성에 실패했습니다.'
 
       // 보통 unique 충돌은 Postgres code 23505
@@ -116,6 +88,7 @@ export async function categoryCreateAction(
       success: false,
     }
   }
+
   revalidatePath('/commerce/categories')
   redirect('/commerce/categories')
 }

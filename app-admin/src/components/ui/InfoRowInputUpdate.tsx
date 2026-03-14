@@ -7,6 +7,10 @@ import { useAtom } from 'jotai'
 import Input from '@/components/ui/Input'
 import { useRouter } from 'next/navigation'
 import { InputNumberNotForm } from '@/components/ui/InputNumberNotForm'
+import clsx from 'clsx'
+import { generateCouponCode } from '@/features/(authenticated)/commerce/coupons/utils/generateCouponCode'
+import Loading from '@/components/loading/Loading'
+import { iconButtonClassName } from '@/constants/iconButtonClassName'
 
 type ActionResult = { ok: true } | { ok: false; message: string }
 
@@ -27,6 +31,10 @@ export default function InfoRowInputUpdate<TId extends string | number>({
   field,
   action,
   inputProps,
+  isViewValueLength,
+  maxLength,
+  icon,
+  onIconClick,
 }: {
   targetId?: string
   id: TId
@@ -35,15 +43,22 @@ export default function InfoRowInputUpdate<TId extends string | number>({
   field: string
   action: UpdateAction<TId>
   inputProps?: Omit<React.ComponentProps<typeof Input>, 'value' | 'onChange' | 'disabled'>
+  isViewValueLength?: boolean
+  maxLength?: number
+  icon?: React.ReactNode
+  onIconClick?: () => void
 }) {
   const [isUpdate, setIsUpdate] = useAtom(infoRowUpdateAtomsButtonAtom)
   const [value, setValue] = useState<string | number>(initialValue ?? '')
   const [pending, startTransition] = useTransition()
+  const [isSaving, setIsSaving] = useState(false)
   const router = useRouter()
 
   const close = () => setIsUpdate(undefined)
 
   const save = () => {
+    setIsSaving(true)
+
     startTransition(async () => {
       const payload = {
         id, // 숫자로 변환 가능하면 number, 아니면 string(uuid 그대로)
@@ -51,21 +66,39 @@ export default function InfoRowInputUpdate<TId extends string | number>({
       }
 
       const res = await action(payload)
-      if (!res.ok) return
-      close()
-      router.refresh()
+      if (!res.ok) {
+        setIsSaving(false)
+        return
+      }
+      setTimeout(() => {
+        close()
+        router.refresh()
+        setIsSaving(false)
+      }, 500)
     })
   }
+
+  const isBusy = pending || isSaving
 
   const cancel = () => {
     setValue(initialValue ?? '')
     close()
   }
 
+  const handleIconClick = React.useCallback(() => {
+    setValue(generateCouponCode(16))
+  }, [icon])
+
   return (
     <>
       {isUpdate === targetId && (
-        <div className="absolute inset-0 w-full bg-white">
+        <>
+          {isBusy && (
+            <div className="absolute inset-x-0 z-10 flex h-[50px] w-[calc(100%+1rem)] items-center justify-center gap-3 rounded-md bg-indigo-100/80">
+              <Loading size={20} />
+              <span className="text-xs">수정중입니다...</span>
+            </div>
+          )}
           <div className="absolute inset-0 flex size-full items-center justify-between gap-3 bg-white">
             {inputTypeNumber ? (
               <InputNumberNotForm
@@ -76,11 +109,28 @@ export default function InfoRowInputUpdate<TId extends string | number>({
               />
             ) : (
               <Input
+                maxLength={maxLength}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 disabled={pending}
                 {...inputProps}
               />
+            )}
+            {isViewValueLength && (
+              <span
+                className={clsx('absolute -bottom-1 text-[10px]', icon ? 'right-27' : 'right-17.5')}
+              >
+                {(value as string).length} / 17
+              </span>
+            )}
+            {icon && (
+              <button
+                type="button"
+                onClick={handleIconClick}
+                className="absolute inset-y-0 right-18 size-6.5"
+              >
+                {icon}
+              </button>
             )}
 
             <div className="flex justify-end gap-1">
@@ -105,12 +155,12 @@ export default function InfoRowInputUpdate<TId extends string | number>({
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       <button
         type="button"
-        className="rounded-full bg-indigo-50/50 p-1 hover:bg-indigo-200"
+        className={iconButtonClassName}
         title="수정"
         onClick={() => setIsUpdate(targetId)}
       >

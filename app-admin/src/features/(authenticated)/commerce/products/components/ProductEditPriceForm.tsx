@@ -153,7 +153,7 @@ function ProductUpdateBody({
 
           {discountType === 'none' && (
             <div className="pt-5">
-              <p className="flex h-7 items-center rounded border border-dashed border-gray-200 bg-white px-2 text-xs text-gray-600">
+              <p className="flex h-8.5 items-center rounded border border-dashed border-gray-200 bg-white px-2 text-xs text-gray-600">
                 할인 없음 타입입니다.
               </p>
             </div>

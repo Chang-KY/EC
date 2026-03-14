@@ -23,6 +23,7 @@ export const couponKeys = {
   couponProduct: (keyword: string) => [...couponKeys.couponProducts(), keyword] as const,
 
   couponCategories: () => [...couponKeys.all, 'coupon-categories'] as const,
+  couponCategory: (keyword: string) => [...couponKeys.couponCategories(), keyword] as const,
   categoryRoots: (keyword = '') => [...couponKeys.couponCategories(), 'root', keyword] as const,
 
   categoryChildren: (parentId: number | string, keyword = '') =>

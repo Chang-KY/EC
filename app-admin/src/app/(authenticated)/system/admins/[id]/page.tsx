@@ -27,6 +27,8 @@ import {
 } from '@/features/(authenticated)/system/admins/update/basicInfoActions'
 import InfoRowSelectUpdate from '@/components/ui/InfoRowSelectUpdate'
 import { dateTimeFormat } from '@/utils/DateTimeFormat'
+import { isUuid } from '@/utils/isUuid'
+import DetailNothing from '@/components/layout/DetailNothing'
 
 export async function generateMetadata({
   params,
@@ -34,6 +36,12 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
+  if (!isUuid(id)) {
+    return {
+      title: '회원을 찾을 수 없음 | Admin',
+      description: '요청하신 회원 프로필 정보를 찾을 수 없습니다.',
+    }
+  }
   const meta = await fetchRowByColumn('admins', 'id', id, ['name', 'email'] as const)
   if (!meta) {
     return {
@@ -54,18 +62,11 @@ export default async function AdminDetailPage({ params }: { params: Promise<{ id
 
   if (!admin) {
     return (
-      <Section pathTitle="not-found">
-        <Article title="관리자 상세">
-          <p className="text-sm text-gray-500">존재하지 않는 관리자입니다.</p>
-          <div className="flex items-center justify-end">
-            <Link href={ROUTES.ADMINS}>
-              <AppButton type="button" variant="cancel">
-                돌아가기
-              </AppButton>
-            </Link>
-          </div>
-        </Article>
-      </Section>
+      <DetailNothing
+        title="관리자 상세"
+        description="존재하지 않는 관리자입니다."
+        href={ROUTES.ADMINS}
+      />
     )
   }
 

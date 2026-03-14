@@ -20,7 +20,10 @@ export default function InfoRow({
       </div>
 
       <div className="relative flex min-w-0 flex-1 items-center justify-end gap-2">
-        <div className="min-w-0 truncate text-sm font-semibold text-gray-900 dark:text-white">
+        <div
+          className="min-w-0 truncate text-sm font-semibold text-gray-900 dark:text-white"
+          title={typeof value === 'string' ? value : undefined}
+        >
           {value}
         </div>
         {action && action}

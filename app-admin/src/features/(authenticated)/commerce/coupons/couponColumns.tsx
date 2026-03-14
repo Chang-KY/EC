@@ -20,12 +20,7 @@ export const couponColumns = [
     meta: { width: '10%' },
     cell: ({ row }) => {
       const meta = getDiscountTypeMeta(row.original.discount_type)
-      return (
-        <span className="inline-flex items-center gap-1">
-          {meta.Icon && <meta.Icon className={clsx('size-3.5', meta.className)} />}
-          <span className={clsx(meta.className)}>{meta.label}</span>
-        </span>
-      )
+      return <span className={clsx(meta.className)}>{meta.label}</span>
     },
   } as ColumnDef<COUPONS_TABLE['Row'], unknown>,
   {

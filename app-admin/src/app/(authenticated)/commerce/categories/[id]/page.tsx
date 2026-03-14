@@ -22,8 +22,8 @@ import { getMeta } from '@/features/(authenticated)/commerce/categories/category
 import { LevelType } from '@/features/(authenticated)/commerce/categories/types/DepthType'
 import MapButton from '@/features/(authenticated)/commerce/categories/components/MapButton'
 import CategoryMoveButton from '@/features/(authenticated)/commerce/categories/components/CategoryMoveButton'
-import clsx from 'clsx'
 import { FALSE, TRUE } from '@/constants/booleanColor'
+import DetailNothing from '@/components/layout/DetailNothing'
 
 export async function generateMetadata({
   params,
@@ -56,18 +56,11 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
 
   if (!category) {
     return (
-      <Section pathTitle="not-found">
-        <Article title="카테고리 상세">
-          <p className="text-sm text-gray-500">존재하지 않는 카테고리입니다.</p>
-          <div className="flex items-center justify-end">
-            <Link href={ROUTES.CATEGORIES}>
-              <AppButton type="button" variant="cancel">
-                돌아가기
-              </AppButton>
-            </Link>
-          </div>
-        </Article>
-      </Section>
+      <DetailNothing
+        title="카테고리 상세"
+        description="존재하지 않는 카테고리입니다."
+        href={ROUTES.CATEGORIES}
+      />
     )
   }
   const segments = makeBreadcrumbSegments(category)
@@ -195,7 +188,7 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
               value={
                 <MetaChip
                   label={category.selectable ? '가능' : '불가'}
-                  className={clsx(category.selectable ? TRUE : FALSE)}
+                  className={category.selectable ? TRUE : FALSE}
                   icon={category.selectable ? CheckCircle2 : XCircle}
                   menuElement={[
                     {

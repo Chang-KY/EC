@@ -6,7 +6,7 @@ import Article from '@/components/layout/article/Article'
 import Link from 'next/link'
 import { ROUTES } from '@/constants/routes'
 import AppButton from '@/components/ui/AppButton'
-import { getUserDetail } from '@/features/(authenticated)/commerce/users/detail/getUsers'
+import { getUserDetail } from '@/features/(authenticated)/commerce/users/detail/getUserDetail'
 import InfoRow from '@/components/ui/InfoRow'
 import InfoRowInputUpdate from '@/components/ui/InfoRowInputUpdate'
 import { dateTimeFormat } from '@/utils/DateTimeFormat'
@@ -21,6 +21,8 @@ import MetaChip from '@/components/ui/MetaChip'
 import { KeyValuePre } from '@/components/ui/KeyValuePre'
 import UserMemo from '@/features/(authenticated)/commerce/users/components/UserMemo'
 import { getAdminUser } from '@/lib/getAdminUser'
+import DetailNothing from '@/components/layout/DetailNothing'
+import { isUuid } from '@/utils/isUuid'
 
 export async function generateMetadata({
   params,
@@ -28,6 +30,13 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
+
+  if (!isUuid(id)) {
+    return {
+      title: '회원을 찾을 수 없음 | Admin',
+      description: '요청하신 회원 프로필 정보를 찾을 수 없습니다.',
+    }
+  }
 
   const meta = await fetchRowByColumn('profiles', 'id', id, ['name', 'email'] as const)
 
@@ -55,18 +64,11 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
   if (!adminUser) return null
   if (!user) {
     return (
-      <Section pathTitle="not-found">
-        <Article title="회원 상세">
-          <p className="text-sm text-gray-500">존재하지 않는 회원입니다.</p>
-          <div className="flex items-center justify-end">
-            <Link href={ROUTES.USERS}>
-              <AppButton type="button" variant="cancel">
-                돌아가기
-              </AppButton>
-            </Link>
-          </div>
-        </Article>
-      </Section>
+      <DetailNothing
+        title="회원 상세"
+        description="존재하지 않는 회원입니다."
+        href={ROUTES.USERS}
+      />
     )
   }
 

@@ -1,6 +1,7 @@
 import { Package } from 'lucide-react'
 import { PRODUCTS_TABLE } from '@/types/db'
 import React from 'react'
+import { HighlightText } from '@/components/ui/HighlightText'
 
 type SelectedProductRowProps = {
   product: PRODUCTS_TABLE['Row'] & {
@@ -10,9 +11,10 @@ type SelectedProductRowProps = {
     } | null
   }
   clickButton: React.ReactNode
+  keyword?: string
 }
 
-export function SelectedProductRow({ product, clickButton,  }: SelectedProductRowProps) {
+export function SelectedProductRow({ product, clickButton, keyword }: SelectedProductRowProps) {
   const priceText = typeof product.price === 'number' ? `${product.price.toLocaleString()}원` : '-'
   const stockText = typeof product.stock === 'number' ? `${product.stock}개` : '-'
 
@@ -34,7 +36,9 @@ export function SelectedProductRow({ product, clickButton,  }: SelectedProductRo
 
       <div className="min-w-0">
         <div className="flex items-center gap-1.5">
-          <p className="truncate text-xs font-medium text-gray-900">{product.name}</p>
+          <p className="truncate text-xs font-medium text-gray-900">
+            <HighlightText text={product.name} keyword={keyword} />
+          </p>
 
           {product.status && (
             <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-500">
