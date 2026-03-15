@@ -11,7 +11,6 @@ export default function ArticleButton({ targetId, label }: { targetId: string; l
     <DropdownButton
       label={label}
       onClick={() => {
-        console.log('ArticleButton clicked, targetId:', targetId)
         setId(targetId)
       }}
     />

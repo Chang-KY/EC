@@ -8,6 +8,7 @@ import { ROUTES } from '@/constants/routes'
 import {
   CouponUpdateFormValues,
   CouponsUpdateSchema,
+  CouponUpdateDiscountTypeSchema,
 } from '@/features/(authenticated)/commerce/coupons/update/updateSchema'
 import { toFieldErrors } from '@/utils/toFieldErrors'
 import { getNullableString } from '@/utils/formdataType'
@@ -40,7 +41,7 @@ export async function updatePeriodAction(
   const patch = couponsParsed.data
 
   const sb = await supabase()
-  const { error } = await sb.schema('ec').from('coupons').update(patch).eq('id', couponId)
+  const { error } = await sb.schema('ec').from('coupons').update(couponsDraft).eq('id', couponId)
   if (error) {
     return {
       ...prev,

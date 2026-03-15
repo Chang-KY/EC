@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import Input from '@/components/ui/Input'
 import { useGetProductsForCoupon } from '@/features/(authenticated)/commerce/coupons/hooks/useGetProductsForCoupon'
@@ -7,13 +9,21 @@ import { Loader2, Package, Search } from 'lucide-react'
 import { PRODUCTS_TABLE } from '@/types/db'
 import { Check, Plus } from 'lucide-react'
 import { SelectedProductRow } from '@/features/(authenticated)/commerce/coupons/components/CouponProductsRow'
+import { ApplyMode } from '@/types/enum'
 
 type SearchProductProps = {
   selectedProducts: PRODUCTS_TABLE['Row'][]
   onSelectProduct: (product: PRODUCTS_TABLE['Row']) => void
+  children?: React.ReactNode
+  mode?: ApplyMode
 }
 
-export default function SearchProduct({ selectedProducts, onSelectProduct }: SearchProductProps) {
+export default function SearchProduct({
+  selectedProducts,
+  onSelectProduct,
+  children,
+  mode,
+}: SearchProductProps) {
   const { keyword, setKeyword, isDebouncing, flush } = useKeywordSetParam(700, '')
   const { items, hasNextPage, fetchNextPage, isFetchingNextPage, isPending, isError } =
     useGetProductsForCoupon({ keyword })
@@ -43,7 +53,7 @@ export default function SearchProduct({ selectedProducts, onSelectProduct }: Sea
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   return (
-    <div className="w-full space-y-3">
+    <div className="relative w-full space-y-3">
       <div className="mt-3 flex w-full items-center justify-between gap-3">
         <div className="flex w-48 items-center gap-2">
           <p className="w-10 shrink-0 text-xs text-gray-600">상품 명</p>
@@ -60,17 +70,28 @@ export default function SearchProduct({ selectedProducts, onSelectProduct }: Sea
             onKeyDown={(e) => {
               if (e.key === 'Enter') flush()
             }}
+            disabled={mode === 'all' ? true : false}
           />
         </div>
 
-        <div className="inline-flex h-7 min-w-28 items-center justify-center gap-1 rounded border border-indigo-200 bg-indigo-50 px-2.5 text-[11px] font-medium text-indigo-700">
-          <Package className="size-3.5" />
-          <span className="w-3 text-center">{selectedProducts.length}</span>
-          <span>개 선택됨</span>
+        <div className="flex items-center gap-2">
+          {children}
+          <div className="inline-flex h-8.5 min-w-28 items-center justify-center gap-1 rounded border border-indigo-200 bg-indigo-50 px-2.5 text-[11px] font-medium text-indigo-700">
+            <Package className="size-3.5" />
+            <span className="w-3 text-center">{selectedProducts.length}</span>
+            <span>개 선택됨</span>
+          </div>
         </div>
       </div>
 
-      <div className="flex max-h-100 min-h-100 w-full items-start justify-center rounded border border-gray-300">
+      <div className="relative flex max-h-100 min-h-100 w-full items-start justify-center rounded border border-gray-300">
+        {mode === 'all' && (
+          <p className="absolute inset-0 flex size-full items-center justify-center bg-white/65">
+            <span className="rounded-full bg-indigo-50 px-3 py-0.5 text-sm">
+              선택된 상품들이 전체 삭제 됩니다.
+            </span>
+          </p>
+        )}
         {isPending ? (
           <div className="flex h-100 items-center justify-center">
             <Loading mention="상품 데이터를 가져오는 중..." />

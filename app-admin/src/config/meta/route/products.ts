@@ -12,7 +12,8 @@ export const productRouteMeta: RouteMetaConfig[] = [
       subtitle: '상품을 조회하고 관리합니다.',
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
-        { label: '상품 관리', href: '/products', ariaCurrent: 'page' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
+        { label: '상품 관리', href: '/commerce/products', ariaCurrent: 'page' },
       ],
     }),
   },
@@ -26,7 +27,8 @@ export const productRouteMeta: RouteMetaConfig[] = [
       subtitle: `상품 ID: ${popLast(p)}`,
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
-        { label: '상품 관리', href: '/products', ariaCurrent: 'false' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
+        { label: '상품 관리', href: '/commerce/products', ariaCurrent: 'false' },
         { label: '상세', href: p, ariaCurrent: 'page' },
       ],
     }),
@@ -40,7 +42,8 @@ export const productRouteMeta: RouteMetaConfig[] = [
       subtitle: '새 상품을 등록합니다.',
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
-        { label: '상품 관리', href: '/products', ariaCurrent: 'false' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
+        { label: '상품 관리', href: '/commerce/products', ariaCurrent: 'false' },
         { label: '신규 등록', href: p, ariaCurrent: 'page' },
       ],
     }),
@@ -54,7 +57,8 @@ export const productRouteMeta: RouteMetaConfig[] = [
       subtitle: '상품 정보를 수정합니다.',
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
-        { label: '상품 관리', href: '/products', ariaCurrent: 'false' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
+        { label: '상품 관리', href: '/commerce/products', ariaCurrent: 'false' },
         { label: '정보 수정', href: p, ariaCurrent: 'page' },
       ],
     }),

@@ -234,7 +234,7 @@ export type Database = {
       }
       coupons: {
         Row: {
-          category_mode: Database["ec"]["Enums"]["apply_mode"] | null
+          category_mode: Database["ec"]["Enums"]["apply_mode"]
           coupon_code: string | null
           coupon_kind: Database["ec"]["Enums"]["coupon_kind"]
           created_at: string
@@ -257,7 +257,7 @@ export type Database = {
           starts_at: string | null
         }
         Insert: {
-          category_mode?: Database["ec"]["Enums"]["apply_mode"] | null
+          category_mode: Database["ec"]["Enums"]["apply_mode"]
           coupon_code?: string | null
           coupon_kind: Database["ec"]["Enums"]["coupon_kind"]
           created_at?: string
@@ -280,7 +280,7 @@ export type Database = {
           starts_at?: string | null
         }
         Update: {
-          category_mode?: Database["ec"]["Enums"]["apply_mode"] | null
+          category_mode?: Database["ec"]["Enums"]["apply_mode"]
           coupon_code?: string | null
           coupon_kind?: Database["ec"]["Enums"]["coupon_kind"]
           created_at?: string

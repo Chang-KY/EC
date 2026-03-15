@@ -1,5 +1,4 @@
 import React from 'react'
-import { Bell } from 'lucide-react'
 import Image from 'next/image'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 import AsideMenuButton from '@/components/layout/header/AsideMenuButton'
@@ -7,7 +6,7 @@ import NotificationButton from '@/components/layout/header/NotificationButton'
 import ProfileButton from '@/components/layout/header/ProfileButton'
 import Link from 'next/link'
 
-const Header = () => {
+export default async function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-40 flex h-10 items-center justify-between border-b border-gray-300 backdrop-blur dark:border-gray-800 dark:bg-black dark:text-white">
       <div className="flex min-w-0 items-center">
@@ -37,5 +36,3 @@ const Header = () => {
     </header>
   )
 }
-
-export default Header

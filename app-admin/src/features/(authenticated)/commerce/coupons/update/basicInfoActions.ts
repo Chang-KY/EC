@@ -31,16 +31,6 @@ export async function couponUpdateDescriptionAction(data: CouponUpdateFormValues
   return updateCoupon(couponId, { description })
 }
 
-export async function couponUpdateDiscountTypeAction(data: CouponUpdateFormValues) {
-  const { id: couponId, discount_type } = CouponsUpdateSchema.parse(data)
-  return updateCoupon(couponId, { discount_type })
-}
-
-export async function couponUpdateDiscountValueAction(data: CouponUpdateFormValues) {
-  const { id: couponId, discount_value } = CouponsUpdateSchema.parse(data)
-  return updateCoupon(couponId, { discount_value })
-}
-
 export async function couponUpdateMaxDiscountAction(data: CouponUpdateFormValues) {
   const { id: couponId, max_discount } = CouponsUpdateSchema.parse(data)
   return updateCoupon(couponId, { max_discount })
@@ -54,16 +44,6 @@ export async function couponUpdateMinOrderAmountAction(data: CouponUpdateFormVal
 export async function couponUpdateIsActiveAction(data: CouponUpdateFormValues) {
   const { id: couponId, is_active } = CouponsUpdateSchema.parse(data)
   return updateCoupon(couponId, { is_active })
-}
-
-export async function couponUpdateStartsAtAction(data: CouponUpdateFormValues) {
-  const { id: couponId, starts_at } = CouponsUpdateSchema.parse(data)
-  return updateCoupon(couponId, { starts_at })
-}
-
-export async function couponUpdateEndsAtAction(data: CouponUpdateFormValues) {
-  const { id: couponId, ends_at } = CouponsUpdateSchema.parse(data)
-  return updateCoupon(couponId, { ends_at })
 }
 
 export async function couponUpdateStackableAction(data: CouponUpdateFormValues) {
@@ -99,14 +79,4 @@ export async function couponUpdateCouponKindAction(data: CouponUpdateFormValues)
 export async function couponUpdateCouponCodeAction(data: CouponUpdateFormValues) {
   const { id: couponId, coupon_code } = CouponsUpdateSchema.parse(data)
   return updateCoupon(couponId, { coupon_code })
-}
-
-export async function couponUpdateProductModeAction(data: CouponUpdateFormValues) {
-  const { id: couponId, product_mode } = CouponsUpdateSchema.parse(data)
-  return updateCoupon(couponId, { product_mode })
-}
-
-export async function couponUpdateCategoryModeAction(data: CouponUpdateFormValues) {
-  const { id: couponId, category_mode } = CouponsUpdateSchema.parse(data)
-  return updateCoupon(couponId, { category_mode })
 }

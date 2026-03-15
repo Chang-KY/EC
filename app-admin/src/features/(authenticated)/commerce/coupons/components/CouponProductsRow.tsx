@@ -2,6 +2,7 @@ import { Package } from 'lucide-react'
 import { PRODUCTS_TABLE } from '@/types/db'
 import React from 'react'
 import { HighlightText } from '@/components/ui/HighlightText'
+import { getFileFullPath } from '@/utils/getFileFullPath'
 
 type SelectedProductRowProps = {
   product: PRODUCTS_TABLE['Row'] & {
@@ -23,7 +24,7 @@ export function SelectedProductRow({ product, clickButton, keyword }: SelectedPr
       <div className="flex items-center justify-center">
         {product.thumbnail?.storage_path ? (
           <img
-            src={product.thumbnail.storage_path}
+            src={getFileFullPath(product.thumbnail.storage_path)}
             alt={product.thumbnail.alt ?? product.name}
             className="h-11 w-11 rounded border border-gray-200 object-cover"
           />

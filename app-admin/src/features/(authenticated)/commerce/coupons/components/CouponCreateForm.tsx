@@ -422,13 +422,7 @@ function CouponCreateBody({
         <Article title="적용 범위 - [  상품  ]">
           <div className={clsx(appliesProduct === 'all' ? '' : 'grid gap-3 md:grid-cols-2')}>
             <FormSelect
-              label={
-                appliesProduct === 'all'
-                  ? '모든 상품'
-                  : appliesProduct === 'exclude'
-                    ? '상품 제외 모드'
-                    : '상품 적용 모드'
-              }
+              label={APPLY_MODE_META[appliesProduct].label}
               name="coupons.product_mode"
               options={Object.entries(APPLY_MODE_META).map(([value, meta]) => ({
                 value: value as ApplyMode,
@@ -528,13 +522,7 @@ function CouponCreateBody({
         <Article title="적용 범위 - [  카테고리  ]">
           <div className={clsx(appliesCategory === 'all' ? '' : 'grid gap-3 md:grid-cols-2')}>
             <FormSelect
-              label={
-                appliesCategory === 'all'
-                  ? '모든 카테고리'
-                  : appliesCategory === 'exclude'
-                    ? '카테고리 제외 모드'
-                    : '카테고리 적용 모드'
-              }
+              label={APPLY_MODE_META[appliesCategory].label}
               name="coupons.category_mode"
               options={Object.entries(APPLY_MODE_META).map(([value, meta]) => ({
                 value: value as ApplyMode,

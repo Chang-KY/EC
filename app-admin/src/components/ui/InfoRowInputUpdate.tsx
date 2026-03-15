@@ -11,6 +11,8 @@ import clsx from 'clsx'
 import { generateCouponCode } from '@/features/(authenticated)/commerce/coupons/utils/generateCouponCode'
 import Loading from '@/components/loading/Loading'
 import { iconButtonClassName } from '@/constants/iconButtonClassName'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toErrorMessages } from '@/utils/toFieldError'
 
 type ActionResult = { ok: true } | { ok: false; message: string }
 
@@ -50,44 +52,49 @@ export default function InfoRowInputUpdate<TId extends string | number>({
 }) {
   const [isUpdate, setIsUpdate] = useAtom(infoRowUpdateAtomsButtonAtom)
   const [value, setValue] = useState<string | number>(initialValue ?? '')
-  const [pending, startTransition] = useTransition()
-  const [isSaving, setIsSaving] = useState(false)
   const router = useRouter()
-
   const close = () => setIsUpdate(undefined)
 
-  const save = () => {
-    setIsSaving(true)
-
-    startTransition(async () => {
+  const mutation = useMutation({
+    mutationFn: async (nextValue: string | number) => {
       const payload = {
-        id, // 숫자로 변환 가능하면 number, 아니면 string(uuid 그대로)
-        [field]: value,
+        id,
+        [field]: nextValue,
       }
-
       const res = await action(payload)
       if (!res.ok) {
-        setIsSaving(false)
-        return
+        throw new Error(res.message)
       }
-      setTimeout(() => {
-        close()
-        router.refresh()
-        setIsSaving(false)
-      }, 500)
-    })
-  }
+      return res
+    },
+    onSuccess: async () => {
+      close()
+      router.refresh()
+    },
+  })
 
-  const isBusy = pending || isSaving
+  const isBusy = mutation.isPending
+
+  const save = () => {
+    mutation.mutate(value)
+  }
 
   const cancel = () => {
     setValue(initialValue ?? '')
+    mutation.reset()
     close()
   }
 
   const handleIconClick = React.useCallback(() => {
+    mutation.reset()
+
+    if (onIconClick) {
+      onIconClick()
+      return
+    }
+
     setValue(generateCouponCode(16))
-  }, [icon])
+  }, [mutation, onIconClick])
 
   return (
     <>
@@ -103,16 +110,22 @@ export default function InfoRowInputUpdate<TId extends string | number>({
             {inputTypeNumber ? (
               <InputNumberNotForm
                 value={value}
-                onValueChange={(raw) => setValue(raw)}
-                disabled={pending}
+                onValueChange={(raw) => {
+                  mutation.reset()
+                  setValue(raw)
+                }}
+                disabled={isBusy}
                 {...inputProps}
               />
             ) : (
               <Input
                 maxLength={maxLength}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
-                disabled={pending}
+                onChange={(e) => {
+                  mutation.reset()
+                  setValue(e.target.value)
+                }}
+                disabled={isBusy}
                 {...inputProps}
               />
             )}
@@ -120,8 +133,17 @@ export default function InfoRowInputUpdate<TId extends string | number>({
               <span
                 className={clsx('absolute -bottom-1 text-[10px]', icon ? 'right-27' : 'right-17.5')}
               >
-                {(value as string).length} / 17
+                {(value as string).length} / {maxLength}
               </span>
+            )}
+            {mutation.isError && (
+              <div className="absolute inset-x-0 top-10 z-10 mb-3 w-[calc(100%+3.5rem)] rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+                <ul className="space-y-1">
+                  {toErrorMessages(mutation.error).map((message, index) => (
+                    <li key={`${message}-${index}`}>{message}</li>
+                  ))}
+                </ul>
+              </div>
             )}
             {icon && (
               <button
@@ -139,7 +161,7 @@ export default function InfoRowInputUpdate<TId extends string | number>({
                 className="inline-flex size-6 items-center justify-center rounded-md border border-emerald-200/60 bg-emerald-50/40 text-emerald-700/70 transition hover:bg-emerald-50/80 hover:text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-200/70 dark:hover:bg-emerald-950/50"
                 aria-label="저장"
                 onClick={save}
-                disabled={pending}
+                disabled={isBusy}
               >
                 <Check className="size-4" />
               </button>
@@ -149,7 +171,7 @@ export default function InfoRowInputUpdate<TId extends string | number>({
                 className="inline-flex size-6 items-center justify-center rounded-md border border-gray-200/80 bg-gray-50/40 text-gray-600/70 transition hover:bg-gray-50/80 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-950/30 dark:text-gray-300/70 dark:hover:bg-gray-950/50"
                 aria-label="취소"
                 onClick={cancel}
-                disabled={pending}
+                disabled={isBusy}
               >
                 <X className="size-4" />
               </button>

@@ -37,7 +37,6 @@ export default function InfoRowSelectUpdate<TId extends string | number>({
 
   const handleSelect = () => {
     if (disabled) return
-
     startTransition(async () => {
       const payload = {
         id: id,
@@ -45,8 +44,12 @@ export default function InfoRowSelectUpdate<TId extends string | number>({
       }
 
       const res = await action(payload)
-      if (!res.ok) return
-      router.refresh()
+      if (!res.ok) {
+        return
+      }
+      setTimeout(() => {
+        router.refresh()
+      }, 500)
     })
   }
 

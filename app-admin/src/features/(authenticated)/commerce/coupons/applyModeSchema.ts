@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { List, ListMinus, ListPlus } from 'lucide-react'
 import { Meta } from '@/types/Meta'
 
-const idArray = z
+export const idArray = z
   .array(z.coerce.number().int().positive())
   .default([])
   .superRefine((arr, ctx) => {

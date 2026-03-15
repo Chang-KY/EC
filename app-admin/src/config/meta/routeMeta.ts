@@ -12,6 +12,11 @@ import { settingsRouteMeta } from '@/config/meta/route/settings'
 import { usersRouteMeta } from '@/config/meta/route/users'
 import { dashboardRouteMeta } from '@/config/meta/route/dashboard'
 import { noDataRouteMeta } from '@/config/meta/route/_noData'
+import { commerceRouteMeta } from '@/config/meta/route/commerce'
+import { rootRouteMeta } from '@/config/meta/route/root'
+import { overViewRouteMeta } from '@/config/meta/route/overview'
+import { systemRouteMeta } from '@/config/meta/route/system'
+import { etcRouteMeta } from '@/config/meta/route/etc'
 
 export const defaultMeta: PageMeta = {
   title: '에러 페이지',
@@ -22,6 +27,11 @@ export const routeMeta: {
   test: (p: string) => boolean
   meta: (p: string) => PageMeta
 }[] = [
+  ...rootRouteMeta,
+  ...etcRouteMeta,
+  ...systemRouteMeta,
+  ...overViewRouteMeta,
+  ...commerceRouteMeta,
   ...dashboardRouteMeta,
   ...adminRouteMeta,
   ...productRouteMeta,

@@ -8,18 +8,23 @@ import Loading from '@/components/loading/Loading'
 import { CategoryTreeRow } from '@/features/(authenticated)/commerce/coupons/components/CategoryTreeRow'
 import { useGetCategoriesForCoupon } from '@/features/(authenticated)/commerce/coupons/hooks/useGetCategoriesForCoupon'
 import type { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoriesForCoupon'
+import { ApplyMode } from '@/types/enum'
+import clsx from 'clsx'
 
 type SearchCategoryProps = {
   selectedCategories: CategoryListItem[]
   onSelectCategories?: (category: CategoryListItem) => void
+  children?: React.ReactNode
+  mode?: ApplyMode
 }
 
 export default function SearchCategory({
   selectedCategories,
   onSelectCategories,
+  children,
+  mode,
 }: SearchCategoryProps) {
   const { keyword, setKeyword, isDebouncing, flush } = useKeywordSetParam(700, '')
-
   const {
     items: allCategories,
     isPending,
@@ -71,17 +76,28 @@ export default function SearchCategory({
             onKeyDown={(e) => {
               if (e.key === 'Enter') flush()
             }}
+            disabled={mode === 'all' ? true : false}
           />
         </div>
 
-        <div className="inline-flex h-7 min-w-28 items-center justify-center gap-1 rounded border border-indigo-200 bg-indigo-50 px-2.5 text-[11px] font-medium text-indigo-700">
-          <Tag className="size-3.5" />
-          <span className="inline-block min-w-4 text-center">{selectedCategories.length}</span>
-          <span>개 선택됨</span>
+        <div className="flex items-center gap-2">
+          {children}
+          <div className="inline-flex h-7 min-w-28 items-center justify-center gap-1 rounded border border-indigo-200 bg-indigo-50 px-2.5 text-[11px] font-medium text-indigo-700">
+            <Tag className="size-3.5" />
+            <span className="inline-block min-w-4 text-center">{selectedCategories.length}</span>
+            <span>개 선택됨</span>
+          </div>
         </div>
       </div>
 
-      <div className="flex max-h-100 min-h-100 w-full items-start justify-center rounded border border-gray-300">
+      <div className="relative flex max-h-100 min-h-100 w-full items-start justify-center rounded border border-gray-300">
+        {mode === 'all' && (
+          <p className="pointer-events-none absolute inset-0 z-10 flex size-full items-center justify-center bg-white/65">
+            <span className="rounded-full bg-indigo-50 px-3 py-0.5 text-sm">
+              선택된 카테고리들이 전체 삭제 됩니다.
+            </span>
+          </p>
+        )}
         {isPending ? (
           <div className="flex h-100 items-center justify-center">
             <Loading mention="카테고리 데이터를 가져오는 중..." />
@@ -105,7 +121,12 @@ export default function SearchCategory({
               <div className="text-center">선택</div>
             </div>
 
-            <div className="h-[366.41px] divide-y divide-gray-100 overflow-y-auto">
+            <div
+              className={clsx(
+                'h-[366.41px] divide-y divide-gray-100 overflow-y-auto',
+                mode === 'all' ? 'pointer-events-none' : '',
+              )}
+            >
               {rootCategories.map((category) => (
                 <CategoryTreeRow
                   allCategories={allCategories}

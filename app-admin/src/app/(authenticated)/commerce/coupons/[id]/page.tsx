@@ -45,6 +45,10 @@ import CouponCreator from '@/features/(authenticated)/commerce/coupons/component
 import CouponEditPeriod from '@/features/(authenticated)/commerce/coupons/components/CouponEditPeriod'
 import { formatPeriod } from '@/features/(authenticated)/commerce/coupons/utils/formatPeriod'
 import DetailNothing from '@/components/layout/DetailNothing'
+import CouponChangeAppliesProduct from '@/features/(authenticated)/commerce/coupons/components/CouponChangeAppliesProduct'
+import CouponChangeAppliesCategory from '@/features/(authenticated)/commerce/coupons/components/CouponChangeAppliesCategory'
+import { getFileFullPath } from '@/utils/getFileFullPath'
+import CouponCategoriesRow from '@/features/(authenticated)/commerce/coupons/components/CouponCategoriesRow'
 
 export async function generateMetadata({
   params,
@@ -80,6 +84,7 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
   const numericId = Number(id)
 
   const coupon = await getCouponDetail(numericId)
+  console.log(coupon)
 
   if (!coupon) {
     return (
@@ -90,9 +95,6 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
       />
     )
   }
-
-  const products = (coupon.coupon_products ?? []).map((row) => row.product).filter(Boolean)
-  const categories = (coupon.coupon_categories ?? []).map((row) => row.category).filter(Boolean)
 
   return (
     <Section pathTitle={`${ROUTES.COUPONS}/${id}`}>
@@ -376,14 +378,26 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
               <InfoRow
                 label="상품 적용 방식"
                 value={
-                  <div className="flex items-center gap-3">
-                    {coupon.product_mode !== 'all' && (
-                      <span className="text-xs text-gray-700">
-                        선택 사항:{'  '}
-                        <span className="font-semibold">{products.length.toLocaleString()}개</span>
-                      </span>
-                    )}
-                    <CouponModeBadge mode={coupon.product_mode} />
+                  <div className="flex items-center gap-2">
+                    <MetaChip
+                      label={APPLY_MODE_META[coupon.product_mode].label}
+                      className={clsx(
+                        coupon.stackable ? TRUE : FALSE,
+                        APPLY_MODE_META[coupon.product_mode].className,
+                        coupon.product_mode === 'include'
+                          ? 'border border-emerald-200 bg-emerald-50'
+                          : '',
+                        coupon.product_mode === 'exclude'
+                          ? 'border border-rose-200 bg-rose-50'
+                          : '',
+                        coupon.product_mode === 'all' ? 'border border-zinc-200 bg-zinc-50' : '',
+                      )}
+                    />
+                    <CouponChangeAppliesProduct
+                      selectedApply={coupon.product_mode}
+                      couponId={numericId}
+                      selectedProducts={coupon.applyProduct}
+                    />
                   </div>
                 }
               />
@@ -391,8 +405,8 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
               {coupon.product_mode !== 'all' && (
                 <div className="overflow-hidden rounded-md border border-gray-200">
                   <div className="divide-y divide-gray-100">
-                    {products.length > 0 ? (
-                      products.map((product) => {
+                    {coupon.applyProduct.length > 0 ? (
+                      coupon.applyProduct.map((product) => {
                         const status = product?.status as ProductStatus
                         const meta = PRODUCT_STATUS_META[status]
                         const Icon = meta.icon
@@ -400,21 +414,39 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
                         return (
                           <div
                             key={product.id}
-                            className="grid grid-cols-[44px_minmax(0,1fr)_120px_90px] items-center gap-3 px-3 py-2.5"
+                            className="grid grid-cols-[44px_minmax(0,1fr)_120px_90px_100px] items-center gap-3 px-3 py-2.5"
                           >
                             <div className="flex justify-center">
-                              <div className="flex size-8 items-center justify-center rounded border border-gray-200 bg-gray-50">
-                                <Package className="size-4 text-gray-500" />
+                              <div className="flex size-8 items-center justify-center rounded-md border border-gray-200 bg-gray-50">
+                                {product.product_images[0]?.storagePath ? (
+                                  <img
+                                    src={getFileFullPath(product.product_images[0].storagePath)}
+                                    alt={product.name}
+                                    className="size-full rounded border border-gray-200 object-cover"
+                                  />
+                                ) : (
+                                  <Package className="text-gray-400" />
+                                )}
                               </div>
                             </div>
 
-                            <div className="min-w-0">
-                              <p className="truncate text-sm font-medium text-gray-900">
-                                {product.name}
-                              </p>
-                              <p className="truncate text-xs text-gray-500">
-                                {product.description || '-'}
-                              </p>
+                            <Link
+                              href={`/commerce/products/${product.id}`}
+                              title={`상품 - ${product.name} 디테일 페이지 이동`}
+                              className="w-fit min-w-28 rounded bg-white p-1 px-2 py-1 transition-colors duration-200 hover:bg-indigo-200"
+                            >
+                              <div>
+                                <p className="truncate text-sm font-medium text-gray-900">
+                                  {product.name}
+                                </p>
+                                <p className="truncate text-xs text-gray-500">
+                                  {product.description || '-'}
+                                </p>
+                              </div>
+                            </Link>
+
+                            <div className="text-sm text-gray-700">
+                              {product.stock === null ? 0 : product.stock?.toLocaleString()}재고
                             </div>
 
                             <div className="text-sm text-gray-700">
@@ -447,16 +479,26 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
               <InfoRow
                 label="카테고리 적용 방식"
                 value={
-                  <div className="flex items-center gap-3">
-                    {coupon.category_mode !== 'all' && (
-                      <span className="text-xs text-gray-700">
-                        선택 사항:{' '}
-                        <span className="font-semibold">
-                          {categories.length.toLocaleString()}개
-                        </span>
-                      </span>
-                    )}
-                    <CouponModeBadge mode={coupon.category_mode ?? 'all'} />
+                  <div className="flex items-center gap-2">
+                    <MetaChip
+                      label={APPLY_MODE_META[coupon.category_mode].label}
+                      className={clsx(
+                        coupon.stackable ? TRUE : FALSE,
+                        APPLY_MODE_META[coupon.category_mode].className,
+                        coupon.category_mode === 'include'
+                          ? 'border border-emerald-200 bg-emerald-50'
+                          : '',
+                        coupon.category_mode === 'exclude'
+                          ? 'border border-rose-200 bg-rose-50'
+                          : '',
+                        coupon.category_mode === 'all' ? 'border border-zinc-200 bg-zinc-50' : '',
+                      )}
+                    />
+                    <CouponChangeAppliesCategory
+                      selectedApply={coupon.category_mode}
+                      couponId={numericId}
+                      selectedCategories={coupon.applyCategory}
+                    />
                   </div>
                 }
               />
@@ -464,47 +506,75 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
               {(coupon.category_mode ?? 'all') !== 'all' && (
                 <div className="overflow-hidden rounded-md border border-gray-200">
                   <div className="divide-y divide-gray-100">
-                    {categories.length > 0 ? (
-                      categories.map((category) => (
-                        <div
-                          key={category.id}
-                          className="grid grid-cols-[44px_minmax(0,1fr)_90px_100px] items-center gap-3 px-3 py-2.5"
-                        >
-                          <div className="flex justify-center">
-                            <div className="flex size-8 items-center justify-center rounded border border-gray-200 bg-gray-50">
-                              <Tag className="size-4 text-gray-500" />
+                    {coupon.applyCategory.length > 0 ? (
+                      coupon.applyCategory.map((category) => {
+                        console.log(category)
+                        return (
+                          <div
+                            key={category.id}
+                            className="grid grid-cols-[44px_minmax(0,1fr)_90px_100px] items-center gap-3 px-3 py-2.5"
+                          >
+                            <div className="flex justify-center">
+                              <div className="flex size-8 items-center justify-center rounded border border-gray-200 bg-gray-50">
+                                <Tag className="size-4 text-gray-500" />
+                              </div>
+                            </div>
+
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-medium text-gray-900">
+                                {category.name}
+                              </p>
+                              <p className="truncate text-xs text-gray-500">{category.slug}</p>
+                            </div>
+
+                            <div className="text-xs text-gray-600">
+                              {category.depth != null ? `depth ${category.depth}` : '-'}
+                            </div>
+
+                            <div>
+                              <span
+                                className={cn(
+                                  'inline-flex rounded-full px-2 py-1 text-xs font-medium',
+                                  category.selectable
+                                    ? 'bg-indigo-50 text-indigo-700'
+                                    : 'bg-gray-100 text-gray-600',
+                                )}
+                              >
+                                {category.selectable ? '선택 가능' : '선택 불가'}
+                              </span>
                             </div>
                           </div>
-
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-medium text-gray-900">
-                              {category.name}
-                            </p>
-                            <p className="truncate text-xs text-gray-500">{category.slug}</p>
-                          </div>
-
-                          <div className="text-xs text-gray-600">
-                            {category.depth != null ? `depth ${category.depth}` : '-'}
-                          </div>
-
-                          <div>
-                            <span
-                              className={cn(
-                                'inline-flex rounded-full px-2 py-1 text-xs font-medium',
-                                category.selectable
-                                  ? 'bg-indigo-50 text-indigo-700'
-                                  : 'bg-gray-100 text-gray-600',
-                              )}
-                            >
-                              {category.selectable ? '선택 가능' : '선택 불가'}
-                            </span>
-                          </div>
-                        </div>
-                      ))
+                        )
+                      })
                     ) : (
                       <div className="px-4 py-8 text-center text-sm text-gray-500">
                         선택된 카테고리가 없어요.
                       </div>
+                    )}
+                    {coupon.applyCategory.map(
+                      ({
+                        root,
+                        descendants,
+                        selectionState,
+                        totalDescendantsCount,
+                        selectedDescendantsCount,
+                      }) => {
+                        const isOpen = openSelectedGroups[root.id] ?? true
+
+                        return (
+                          <CouponCategoriesRow
+                            key={root.id}
+                            root={root}
+                            descendants={descendants}
+                            isOpen={isOpen}
+                            selectionState={selectionState}
+                            totalDescendantsCount={totalDescendantsCount}
+                            selectedDescendantsCount={selectedDescendantsCount}
+                            setOpenSelectedGroups={setOpenSelectedGroups}
+                            onRemoveBranch={handleRemoveCategoryBranch}
+                          />
+                        )
+                      },
                     )}
                   </div>
                 </div>
@@ -578,10 +648,13 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
                 }
               />
               <div className="grid gap-3 md:grid-cols-2">
-                <InfoRow label="상품 적용 수" value={`${products.length.toLocaleString()}개`} />
+                <InfoRow
+                  label="상품 적용 수"
+                  value={`${coupon.applyProduct.length.toLocaleString()}개`}
+                />
                 <InfoRow
                   label="카테고리 적용 수"
-                  value={`${categories.length.toLocaleString()}개`}
+                  value={`${coupon.applyCategory.length.toLocaleString()}개`}
                 />
               </div>
             </div>
@@ -589,7 +662,9 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
 
           <Article title="관리 메모" subtitle="관리용 참고 메모예요.">
             <div className="flex max-h-[226px] min-h-[50px] items-center overflow-y-auto rounded-md border border-gray-200 px-4 py-3 pr-5 text-sm text-gray-700">
-              {coupon.notes || '등록된 메모가 없어요.'}
+              <span className="min-w-0 flex-1 leading-relaxed break-words whitespace-pre-wrap">
+                {coupon.notes || '등록된 메모가 없어요.'}
+              </span>
               <CouponMemoEdit couponId={numericId} initialNotes={coupon.notes} />
             </div>
           </Article>
@@ -610,21 +685,5 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
         </aside>
       </div>
     </Section>
-  )
-}
-
-function CouponModeBadge({ mode }: { mode: 'all' | 'include' | 'exclude' }) {
-  return (
-    <span
-      className={cn(
-        'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium',
-        APPLY_MODE_META[mode].className,
-        mode === 'include' ? 'border border-emerald-200 bg-emerald-50' : '',
-        mode === 'exclude' ? 'border border-rose-200 bg-rose-50' : '',
-        mode === 'all' ? 'border border-zinc-200 bg-zinc-50' : '',
-      )}
-    >
-      {APPLY_MODE_META[mode].label}
-    </span>
   )
 }

@@ -4,7 +4,7 @@ import Main from '@/components/layout/Main'
 import Header from '@/components/layout/header/Header'
 import Footer from '@/components/layout/Footer'
 
-const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
+export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Header />
@@ -14,5 +14,3 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
     </div>
   )
 }
-
-export default AdminLayout

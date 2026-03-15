@@ -4,7 +4,6 @@ import { SCROLL_PAGE } from '@/constants/page/PAGE_SIZE_LIST'
 import { supabase } from '@/utils/supabase/supabase'
 import { PRODUCT_IMAGES_TABLE, PRODUCTS_TABLE } from '@/types/db'
 import { PageParams } from '@/types/ScrollPageParams'
-import { toPublicUrl } from '@/utils/toPublicUrl'
 
 type ProductThumbnail = Partial<PRODUCT_IMAGES_TABLE['Row']>
 type ProductListItem = PRODUCTS_TABLE['Row'] & {
@@ -60,11 +59,7 @@ export async function getProductsPage({
       if (!thumbnailMap.has(image.product_id)) {
         thumbnailMap.set(image.product_id, {
           id: image.id,
-          storage_path:
-            (await toPublicUrl({
-              path: image.storage_path,
-              bucket: process.env.NEXT_PUBLIC_PRODUCT_BUCKET!,
-            })) ?? '',
+          storage_path: image.storage_path,
           alt: image.alt,
           width: image.width,
           height: image.height,

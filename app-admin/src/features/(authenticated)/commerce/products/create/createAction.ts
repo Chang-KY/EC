@@ -97,7 +97,7 @@ export async function productCreateAction(
     }
 
     productId = productRow?.id as number
-    const baseDir = `products/${productId}`
+    const baseDir = `${process.env.NEXT_PUBLIC_PRODUCT_BUCKET}/products/${productId}`
 
     // 2) thumbnail upload
     const thumbRes = await uploadRetry([thumbFile], BUCKET, `${baseDir}/thumbnail`, uploadFile, {

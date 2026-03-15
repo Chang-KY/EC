@@ -12,7 +12,8 @@ export const couponsRouteMeta: RouteMetaConfig[] = [
       subtitle: '프로모션 및 할인 쿠폰을 관리합니다.',
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
-        { label: '쿠폰 관리', href: '/coupons', ariaCurrent: 'page' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
+        { label: '쿠폰 관리', href: '/commerce/coupons/', ariaCurrent: 'page' },
       ],
     }),
   },
@@ -26,7 +27,8 @@ export const couponsRouteMeta: RouteMetaConfig[] = [
       subtitle: `쿠폰 ID: ${popLast(p)}`,
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
-        { label: '쿠폰 관리', href: '/coupons', ariaCurrent: 'false' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
+        { label: '쿠폰 관리', href: '/commerce/coupons/', ariaCurrent: 'false' },
         { label: '상세', href: p, ariaCurrent: 'page' },
       ],
     }),
@@ -40,7 +42,8 @@ export const couponsRouteMeta: RouteMetaConfig[] = [
       subtitle: '새 쿠폰을 생성합니다.',
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
-        { label: '쿠폰 관리', href: '/coupons', ariaCurrent: 'false' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
+        { label: '쿠폰 관리', href: '/commerce/coupons/', ariaCurrent: 'false' },
         { label: '신규 생성', href: p, ariaCurrent: 'page' },
       ],
     }),
@@ -54,6 +57,7 @@ export const couponsRouteMeta: RouteMetaConfig[] = [
       subtitle: '쿠폰 정보를 수정합니다.',
       breadcrumb: [
         { label: '대시보드', href: '/', ariaCurrent: 'false' },
+        { label: '커머스 운영', href: '/commerce', ariaCurrent: 'false' },
         { label: '쿠폰 관리', href: '/coupons', ariaCurrent: 'false' },
         { label: '정보 수정', href: p, ariaCurrent: 'page' },
       ],

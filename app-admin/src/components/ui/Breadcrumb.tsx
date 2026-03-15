@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { getPageMeta } from '@/lib/getPageMeta'
 
-const Breadcrumb = () => {
+export default function Breadcrumb() {
   const pathname = usePathname() || '/'
   const { breadcrumb } = getPageMeta(pathname)
 
@@ -37,5 +37,3 @@ const Breadcrumb = () => {
     </nav>
   )
 }
-
-export default Breadcrumb

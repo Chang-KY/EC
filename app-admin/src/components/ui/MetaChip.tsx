@@ -1,6 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
-import { Ellipsis, LucideIcon, Settings } from 'lucide-react'
+import { LucideIcon, Settings } from 'lucide-react'
 import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu'
 import { iconButtonClassName } from '@/constants/iconButtonClassName'
 

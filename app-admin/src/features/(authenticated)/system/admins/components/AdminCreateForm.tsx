@@ -93,7 +93,6 @@ export default function AdminCreateForm() {
               <div className="grid gap-3">
                 <FormSelect
                   label="역할"
-                  className="h-10"
                   name="role"
                   options={Object.entries(USER_ROLE_META)
                     .filter(([value]) => value !== 'super_admin')
@@ -106,7 +105,6 @@ export default function AdminCreateForm() {
                 />
                 <FormSelect
                   label="상태"
-                  className="h-10"
                   name="status"
                   options={Object.entries(ADMIN_STATUS_META).map(([value, meta]) => ({
                     value: value as AdminStatus,
@@ -118,7 +116,6 @@ export default function AdminCreateForm() {
                 />
                 <FormSelect
                   label="레벨"
-                  className="h-10"
                   name="level"
                   options={Object.entries(LEVEL_META).map(([value, meta]) => ({
                     label: meta.label,

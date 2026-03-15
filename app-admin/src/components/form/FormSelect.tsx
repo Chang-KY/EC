@@ -32,12 +32,10 @@ export default function FormSelect(props: BaseSelectProps) {
 
   return (
     <div className={clsx('flex flex-col gap-1', outerClassName)}>
-      {label && (
-        <div className="flex items-center">
-          <Label name={name} label={label} />
-          {required && <Required />}
-        </div>
-      )}
+      <div className="flex items-center">
+        <Label name={name} label={label} />
+        {required && <Required />}
+      </div>
       <Select
         selectNoValue={selectNoValue}
         required={required}
