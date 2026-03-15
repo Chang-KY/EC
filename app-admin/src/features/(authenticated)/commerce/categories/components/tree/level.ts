@@ -1,6 +1,6 @@
-import { LevelType } from '@/features/(authenticated)/commerce/categories/types/DepthType'
+import { DepthType } from '@/features/(authenticated)/commerce/categories/types/DepthType'
 
-export const levelOfDepth = (depth: number): LevelType => {
+export const levelOfDepth = (depth: number): DepthType => {
   // depth: 0(root)도 1계층 색으로 맞춤
   if (depth <= 1) return 1
   if (depth === 2) return 2

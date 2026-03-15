@@ -18,7 +18,7 @@ type SearchCategoryProps = {
   mode?: ApplyMode
 }
 
-export default function SearchCategory({
+export default function SearchCategoryForCoupon({
   selectedCategories,
   onSelectCategories,
   children,
@@ -115,7 +115,7 @@ export default function SearchCategory({
           </div>
         ) : (
           <div className="relative flex h-full w-full flex-col rounded">
-            <div className="grid grid-cols-[minmax(0,1fr)_90px_90px] items-center rounded-tl rounded-tr border-b border-gray-200 bg-gray-50 px-3 py-2 text-[11px] font-medium text-gray-500">
+            <div className="grid grid-cols-[minmax(0,1fr)_90px_90px] items-center rounded-tl rounded-tr border-b border-gray-200 bg-gray-50 py-2 pr-6 pl-3 text-[11px] font-medium text-gray-500">
               <div className="text-center">카테고리 정보</div>
               <div className="text-center">하위 개수</div>
               <div className="text-center">선택</div>

@@ -1,1 +1,1 @@
-export type LevelType = 1 | 2 | 3
+export type DepthType = 1 | 2 | 3

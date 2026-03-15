@@ -19,7 +19,7 @@ import {
   categoryUpdateStatusAction,
 } from '@/features/(authenticated)/commerce/categories/update/basicInfoActions'
 import { getMeta } from '@/features/(authenticated)/commerce/categories/categoryMeta'
-import { LevelType } from '@/features/(authenticated)/commerce/categories/types/DepthType'
+import { DepthType } from '@/features/(authenticated)/commerce/categories/types/DepthType'
 import MapButton from '@/features/(authenticated)/commerce/categories/components/MapButton'
 import CategoryMoveButton from '@/features/(authenticated)/commerce/categories/components/CategoryMoveButton'
 import { FALSE, TRUE } from '@/constants/booleanColor'
@@ -163,7 +163,7 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
                 {segments.map((v, i) => (
                   <CategorySelectableBox
                     key={v.id}
-                    type={(i + 1) as LevelType}
+                    type={(i + 1) as DepthType}
                     name={v.name}
                     id={Number(v.id)}
                     currentId={numericId}
@@ -253,7 +253,7 @@ function CategorySelectableBox({
   id,
   currentId,
 }: {
-  type: LevelType
+  type: DepthType
   name: string
   id: number
   currentId: number

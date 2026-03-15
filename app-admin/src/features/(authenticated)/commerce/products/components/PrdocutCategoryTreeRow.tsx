@@ -1,10 +1,13 @@
+'use client'
+
 import React from 'react'
-import { Check, ChevronDown, ChevronRight, FolderTree, Minus, Plus } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, Circle, FolderTree, Minus } from 'lucide-react'
 import type { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoriesForCoupon'
-import { getCategorySelectionState } from '@/features/(authenticated)/commerce/coupons/utils/getCategorySelectionState'
 import { HighlightText } from '@/components/ui/HighlightText'
+import { getProductCategorySelectionState } from '@/features/(authenticated)/commerce/products/utils/getProductCategorySelectionState'
 
 type CategoryTreeRowProps = {
+  openFolder: boolean
   category: CategoryListItem
   allCategories?: CategoryListItem[]
   selectedIds: Set<number>
@@ -15,7 +18,8 @@ type CategoryTreeRowProps = {
   keyword?: string
 }
 
-export function CategoryTreeRow({
+export function ProductCategoryTreeRow({
+  openFolder = false,
   keyword,
   category,
   allCategories,
@@ -25,8 +29,8 @@ export function CategoryTreeRow({
   maxDepth = 3,
   childrenByParentId,
 }: CategoryTreeRowProps) {
-  const [isOpen, setIsOpen] = React.useState(false)
-  const selectionState = getCategorySelectionState(category, selectedIds, allCategories)
+  const [isOpen, setIsOpen] = React.useState(openFolder)
+  const selectionState = getProductCategorySelectionState(category, selectedIds, allCategories)
   const children = childrenByParentId.get(Number(category.id)) ?? []
 
   const canExpand = children.length > 0 && level < maxDepth
@@ -86,10 +90,10 @@ export function CategoryTreeRow({
             onClick={() => onSelectCategories?.(category)}
             className={
               selectionState === 'checked'
-                ? 'inline-flex h-7 items-center justify-center gap-1 rounded border border-indigo-200 bg-indigo-50 px-2.5 text-[11px] text-indigo-600'
+                ? 'inline-flex h-7 w-9 items-center justify-center rounded border border-indigo-200 bg-indigo-50 text-indigo-600'
                 : selectionState === 'partial'
-                  ? 'inline-flex h-7 items-center justify-center gap-1 rounded border border-amber-200 bg-amber-50 px-2.5 text-[11px] text-amber-600'
-                  : 'inline-flex h-7 items-center justify-center gap-1 rounded border border-gray-300 px-2.5 text-[11px] text-gray-700 hover:bg-gray-50'
+                  ? 'inline-flex h-7 w-9 items-center justify-center rounded border border-amber-200 bg-amber-50 text-amber-600'
+                  : 'inline-flex h-7 w-9 items-center justify-center rounded border border-gray-300 bg-white text-gray-400 hover:bg-gray-50'
             }
           >
             {selectionState === 'checked' ? (
@@ -97,7 +101,7 @@ export function CategoryTreeRow({
             ) : selectionState === 'partial' ? (
               <Minus className="h-3.5 w-3.5" />
             ) : (
-              <Plus className="h-3.5 w-3.5" />
+              <Circle className="h-3.5 w-3.5" />
             )}
           </button>
         </div>
@@ -106,7 +110,8 @@ export function CategoryTreeRow({
       {isOpen && canExpand && (
         <div className="bg-gray-50/40">
           {children.map((child) => (
-            <CategoryTreeRow
+            <ProductCategoryTreeRow
+              openFolder={isOpen}
               key={child.id}
               category={child}
               allCategories={allCategories}
@@ -115,6 +120,7 @@ export function CategoryTreeRow({
               level={level + 1}
               maxDepth={maxDepth}
               childrenByParentId={childrenByParentId}
+              keyword={keyword}
             />
           ))}
         </div>

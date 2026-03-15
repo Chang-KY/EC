@@ -48,7 +48,7 @@ import DetailNothing from '@/components/layout/DetailNothing'
 import CouponChangeAppliesProduct from '@/features/(authenticated)/commerce/coupons/components/CouponChangeAppliesProduct'
 import CouponChangeAppliesCategory from '@/features/(authenticated)/commerce/coupons/components/CouponChangeAppliesCategory'
 import { getFileFullPath } from '@/utils/getFileFullPath'
-import CouponCategoriesRow from '@/features/(authenticated)/commerce/coupons/components/CouponCategoriesRow'
+import { groupSelectedCategories } from '@/features/(authenticated)/commerce/coupons/utils/groupSelectedCategories'
 
 export async function generateMetadata({
   params,
@@ -95,6 +95,25 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
       />
     )
   }
+
+  function compareCategoryPath(a: { path: unknown }, b: { path: unknown }) {
+    const aPath = String(a.path ?? '')
+    const bPath = String(b.path ?? '')
+
+    const aParts = aPath.split('.').map(Number)
+    const bParts = bPath.split('.').map(Number)
+    const max = Math.max(aParts.length, bParts.length)
+
+    for (let i = 0; i < max; i++) {
+      const av = aParts[i] ?? -1
+      const bv = bParts[i] ?? -1
+      if (av !== bv) return av - bv
+    }
+
+    return 0
+  }
+
+  const sortedCategories = [...coupon.applyCategory].sort(compareCategoryPath)
 
   return (
     <Section pathTitle={`${ROUTES.COUPONS}/${id}`}>
@@ -403,7 +422,7 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
               />
 
               {coupon.product_mode !== 'all' && (
-                <div className="overflow-hidden rounded-md border border-gray-200">
+                <div className="max-h-[228px] min-h-20 overflow-y-auto rounded-md border border-gray-200">
                   <div className="divide-y divide-gray-100">
                     {coupon.applyProduct.length > 0 ? (
                       coupon.applyProduct.map((product) => {
@@ -504,15 +523,16 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
               />
 
               {(coupon.category_mode ?? 'all') !== 'all' && (
-                <div className="overflow-hidden rounded-md border border-gray-200">
+                <div className="max-h-[228px] min-h-20 overflow-y-auto rounded-md border border-gray-200">
                   <div className="divide-y divide-gray-100">
-                    {coupon.applyCategory.length > 0 ? (
-                      coupon.applyCategory.map((category) => {
-                        console.log(category)
+                    {sortedCategories.length > 0 ? (
+                      sortedCategories.map((category) => {
+                        const indent = Math.max((category.depth ?? 1) - 1, 0) * 20
+
                         return (
                           <div
                             key={category.id}
-                            className="grid grid-cols-[44px_minmax(0,1fr)_90px_100px] items-center gap-3 px-3 py-2.5"
+                            className="grid grid-cols-[44px_minmax(0,1fr)_120px_90px_100px] items-center gap-3 px-3 py-2.5"
                           >
                             <div className="flex justify-center">
                               <div className="flex size-8 items-center justify-center rounded border border-gray-200 bg-gray-50">
@@ -520,10 +540,15 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
                               </div>
                             </div>
 
-                            <div className="min-w-0">
-                              <p className="truncate text-sm font-medium text-gray-900">
-                                {category.name}
-                              </p>
+                            <div className="min-w-0" style={{ paddingLeft: `${indent}px` }}>
+                              <div className="flex items-center gap-2">
+                                {(category.depth ?? 1) > 1 && (
+                                  <span className="text-gray-300">└</span>
+                                )}
+                                <p className="truncate text-sm font-medium text-gray-900">
+                                  {category.name}
+                                </p>
+                              </div>
                               <p className="truncate text-xs text-gray-500">{category.slug}</p>
                             </div>
 
@@ -550,31 +575,6 @@ export default async function CouponDetailPage({ params }: { params: Promise<{ i
                       <div className="px-4 py-8 text-center text-sm text-gray-500">
                         선택된 카테고리가 없어요.
                       </div>
-                    )}
-                    {coupon.applyCategory.map(
-                      ({
-                        root,
-                        descendants,
-                        selectionState,
-                        totalDescendantsCount,
-                        selectedDescendantsCount,
-                      }) => {
-                        const isOpen = openSelectedGroups[root.id] ?? true
-
-                        return (
-                          <CouponCategoriesRow
-                            key={root.id}
-                            root={root}
-                            descendants={descendants}
-                            isOpen={isOpen}
-                            selectionState={selectionState}
-                            totalDescendantsCount={totalDescendantsCount}
-                            selectedDescendantsCount={selectedDescendantsCount}
-                            setOpenSelectedGroups={setOpenSelectedGroups}
-                            onRemoveBranch={handleRemoveCategoryBranch}
-                          />
-                        )
-                      },
                     )}
                   </div>
                 </div>

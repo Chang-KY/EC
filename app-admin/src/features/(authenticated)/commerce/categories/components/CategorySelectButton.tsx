@@ -3,7 +3,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import { getMeta } from '@/features/(authenticated)/commerce/categories/categoryMeta'
-import { LevelType } from '@/features/(authenticated)/commerce/categories/types/DepthType'
+import { DepthType } from '@/features/(authenticated)/commerce/categories/types/DepthType'
 
 export default function CategorySelectButton({
   type,
@@ -13,7 +13,7 @@ export default function CategorySelectButton({
   isSelected,
   isSelectedSecond,
 }: {
-  type: LevelType
+  type: DepthType
   openCategoryModal?: () => void
   deleteCategory?: () => void
   description?: string

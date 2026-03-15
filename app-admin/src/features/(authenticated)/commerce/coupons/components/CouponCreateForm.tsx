@@ -23,8 +23,8 @@ import { ArrowBigDown, Dices, FolderTree, Package, X } from 'lucide-react'
 import { generateCouponCode } from '@/features/(authenticated)/commerce/coupons/utils/generateCouponCode'
 import clsx from 'clsx'
 import Modal from '@/components/modal/Modal'
-import SearchCategory from '@/features/(authenticated)/commerce/coupons/components/SearchCategory'
-import SearchProduct from '@/features/(authenticated)/commerce/coupons/components/SearchProduct'
+import SearchCategoryForCoupon from '@/features/(authenticated)/commerce/coupons/components/SearchCategoryForCoupon'
+import SearchProductForCoupon from '@/features/(authenticated)/commerce/coupons/components/SearchProductForCoupon'
 import { PRODUCTS_TABLE } from '@/types/db'
 import { SelectedProductRow } from '@/features/(authenticated)/commerce/coupons/components/CouponProductsRow'
 import { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoryRootForCoupon'
@@ -37,6 +37,7 @@ import DateTimePickerField from '@/components/ui/date-picker/DateTimePickerField
 import Label from '@/components/ui/Label'
 import Loading from '@/components/loading/Loading'
 import ErrorMessage from '@/components/ui/ErrorMessage'
+import { groupSelectedCategories } from '@/features/(authenticated)/commerce/coupons/utils/groupSelectedCategories'
 
 const initialCouponState: FormState<CouponCreateFormValues> = {
   values: {},
@@ -131,40 +132,10 @@ function CouponCreateBody({
     [allCategories],
   )
 
-  const groupedSelectedCategories = React.useMemo(() => {
-    const selectedSorted = [...appliesCategoryList].sort((a, b) =>
-      String(a.path).localeCompare(String(b.path)),
-    )
-
-    const roots = selectedSorted.filter((item) => {
-      return !selectedSorted.some(
-        (maybeParent) =>
-          maybeParent.id !== item.id &&
-          String(item.path).startsWith(`${String(maybeParent.path)}.`),
-      )
-    })
-
-    return roots.map((root) => {
-      const selectedDescendants = selectedSorted.filter(
-        (item) => item.id !== root.id && String(item.path).startsWith(`${String(root.path)}.`),
-      )
-
-      const totalDescendants = allCategories.filter(
-        (item) => item.id !== root.id && String(item.path).startsWith(`${String(root.path)}.`),
-      )
-
-      const selectionState: 'all' | 'partial' =
-        selectedDescendants.length === totalDescendants.length ? 'all' : 'partial'
-
-      return {
-        root,
-        descendants: selectedDescendants,
-        totalDescendantsCount: totalDescendants.length,
-        selectedDescendantsCount: selectedDescendants.length,
-        selectionState,
-      }
-    })
-  }, [appliesCategoryList, allCategories])
+  const groupedSelectedCategories = React.useMemo(
+    () => groupSelectedCategories(appliesCategoryList, allCategories),
+    [appliesCategoryList, allCategories],
+  )
 
   const handleRemoveCategoryBranch = React.useCallback(
     (target: CategoryListItem) => {
@@ -185,7 +156,7 @@ function CouponCreateBody({
       title: `${appliesProduct === 'exclude' ? '제외' : '포함'} 상품 선택`,
       subTitle: '검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요.',
       body: (
-        <SearchProduct
+        <SearchProductForCoupon
           selectedProducts={appliesProductList}
           onSelectProduct={(product) => {
             setAppliesProductList((prev) => {
@@ -213,7 +184,7 @@ function CouponCreateBody({
       title: `${appliesCategory === 'exclude' ? '제외' : '포함'} 카테고리 선택`,
       subTitle: '검색 후 목록에서 선택하고, 선택 항목을 확인한 뒤 저장하세요.',
       body: (
-        <SearchCategory
+        <SearchCategoryForCoupon
           selectedCategories={appliesCategoryList}
           onSelectCategories={(category) => handleSelectCategory(category)}
         />
@@ -229,6 +200,8 @@ function CouponCreateBody({
     },
   } as const
   const modalConfig = openModal ? modalMap[openModal] : null
+
+  const [isOpenError, setIsOpenError] = useState(state.fieldErrors?._form?.[0] ?? '')
 
   return (
     <>
@@ -748,12 +721,12 @@ function CouponCreateBody({
 
       {/* 에러 표지 모달 */}
       <Modal
-        isOpen={!!state.fieldErrors?._form?.[0]}
-        onClose={() => setOpenModal(undefined)}
+        isOpen={!!isOpenError}
+        onClose={() => setIsOpenError('')}
         headerTitle="에러가 발생했습니다."
-        subHeaderTitle={state.fieldErrors?._form?.[0] ?? ''}
+        subHeaderTitle={isOpenError}
       >
-        <div></div>
+        <></>
       </Modal>
     </>
   )

@@ -6,7 +6,7 @@ import { iconButtonClassName } from '@/constants/iconButtonClassName'
 import Modal from '@/components/modal/Modal'
 import AppButton from '@/components/ui/AppButton'
 import { ApplyMode } from '@/types/enum'
-import SearchCategory from '@/features/(authenticated)/commerce/coupons/components/SearchCategory'
+import SearchCategoryForCoupon from '@/features/(authenticated)/commerce/coupons/components/SearchCategoryForCoupon'
 import { CategoryListItem } from '@/features/(authenticated)/commerce/coupons/list/getCategoryRootForCoupon'
 import { APPLY_MODE_META } from '@/features/(authenticated)/commerce/coupons/applyModeSchema'
 import Select from '@/components/ui/Select'
@@ -111,7 +111,7 @@ export default function CouponChangeAppliesCategory(props: CouponChangeAppliesCa
           </AppButton>,
         ]}
       >
-        <SearchCategory
+        <SearchCategoryForCoupon
           mode={applyMode}
           selectedCategories={appliesCategoryList}
           onSelectCategories={(category) => handleSelectCategory(category)}
@@ -131,7 +131,7 @@ export default function CouponChangeAppliesCategory(props: CouponChangeAppliesCa
             }}
             defaultValue={applyMode}
           />
-        </SearchCategory>
+        </SearchCategoryForCoupon>
       </Modal>
     </>
   )

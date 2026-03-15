@@ -4,16 +4,18 @@ import { Ellipsis } from 'lucide-react'
 import DropdownMenu from '@/components/ui/dropdown-menu/DropdownMenu'
 import ArticleBoard from '@/components/layout/article/ArticleBoard'
 import { iconButtonClassName } from '@/constants/iconButtonClassName'
+import Required from '@/components/ui/Required'
 
 type ArticleProps = {
   title?: string
   subtitle?: string
+  required?: boolean
   actions?: React.ReactNode
   menu?: DropdownMenuState[]
 } & React.HTMLAttributes<HTMLElement>
 
 export default function Article(props: ArticleProps) {
-  const { id, title, subtitle, children, className, actions, menu, ...rest } = props
+  const { id, title, subtitle, children, className, required, actions, menu, ...rest } = props
 
   const boardContentMap = (menu ?? []).reduce<Record<string, React.ReactNode>>((acc, item) => {
     if (item.boardContent) acc[item.id] = item.boardContent
@@ -50,8 +52,11 @@ export default function Article(props: ArticleProps) {
           <div>
             <h2 className="text-sm font-semibold tracking-tight text-black dark:text-white">
               {title}
+              {required && <Required />}
             </h2>
-            {subtitle && <p className="mt-1 text-xs text-gray-400">{subtitle}</p>}
+            {subtitle && (
+              <p className="mt-1 text-xs whitespace-pre-line text-gray-400">{subtitle}</p>
+            )}
           </div>
 
           {actions ? <div className="shrink-0">{actions}</div> : null}

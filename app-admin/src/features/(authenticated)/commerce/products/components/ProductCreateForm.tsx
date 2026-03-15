@@ -15,10 +15,15 @@ import {
 } from '@/features/(authenticated)/commerce/products/productsSchema'
 import { productCreateAction } from '@/features/(authenticated)/commerce/products/create/createAction'
 import ImageField from '@/components/ui/ImageField'
-import { Dialog } from '@/components/ui/dialog/Dialog'
-import { LoadingDialog } from '@/components/ui/dialog/LoadingDialog'
 import { DISCOUNT_TYPE_META } from '@/schema/DiscountTypeMeta'
 import { DiscountType } from '@/types/enum'
+import Modal from '@/components/modal/Modal'
+import Loading from '@/components/loading/Loading'
+import clsx from 'clsx'
+import Label from '@/components/ui/Label'
+import Required from '@/components/ui/Required'
+import { Check } from 'lucide-react'
+import ChoiceCategory from '@/features/(authenticated)/commerce/products/components/ChoiceCategory'
 
 const initialProductState: FormState<ProductCreateFormValues> = {
   values: {},
@@ -105,6 +110,7 @@ function ProductCreateBody({
   }, [state.success, setThumbnailItems, setGalleryItems, setDescriptionItems])
 
   const discountLabel = DISCOUNT_TYPE_META[discountType]?.label ?? '할인 없음'
+  const [isOpenError, setIsOpenError] = useState(state.fieldErrors?._form?.[0] ?? '')
 
   return (
     <>
@@ -168,7 +174,7 @@ function ProductCreateBody({
           )}
         </Article>
 
-        <Article title="썸네일" subtitle="상품 리스트에 노출되는 대표 이미지 (1장)">
+        <Article title="썸네일" subtitle="상품 리스트에 노출되는 대표 이미지 (1장)" required>
           <ImageField
             name="images.thumbnail"
             multiple={false}
@@ -229,6 +235,15 @@ function ProductCreateBody({
           />
         </Article>
 
+        <Article
+          title="카테고리"
+          subtitle={`카테고리를 계층 별로 선택해주세요.
+          ( 1계층 -> 2계층 -> 3계층 )`}
+        >
+          <ChoiceCategory roleCode="primary" required />
+          <ChoiceCategory roleCode="secondary" />
+        </Article>
+
         <Article>
           <div className="flex items-center justify-end gap-2.5">
             <AppButton
@@ -246,12 +261,20 @@ function ProductCreateBody({
         </Article>
       </aside>
 
-      <Dialog
-        title="에러가 발생했습니다."
-        subTitle={state.fieldErrors?._form?.[0] ?? ''}
-        autoOpenKey={state.fieldErrors?._form?.[0]}
-      />
-      <LoadingDialog title="알림" subTitle="현재 상품을 생성 중 입니다." autoOpenKey={isPending} />
+      {/* 에러 표지 모달 */}
+      <Modal
+        isOpen={!!isOpenError}
+        onClose={() => setIsOpenError('')}
+        headerTitle="에러가 발생했습니다."
+        subHeaderTitle={isOpenError}
+      >
+        <></>
+      </Modal>
+      <Modal isOpen={isPending} closeOnEsc={false} custom={true}>
+        <div className="rounded bg-white p-14 shadow-md">
+          <Loading mention="현재 쿠폰을 생성 중 입니다." />
+        </div>
+      </Modal>
     </>
   )
 }

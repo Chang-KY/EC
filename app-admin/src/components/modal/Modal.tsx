@@ -3,6 +3,7 @@
 import React from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import { iconButtonClassName } from '@/constants/iconButtonClassName'
 
 export default function Modal({
   headerTitle,
@@ -68,21 +69,22 @@ export default function Modal({
           <div className="w-[min(560px,90vw)] rounded border border-gray-300 bg-white p-4 shadow">
             <header className="flex items-center justify-between gap-3 pb-2">
               <div className="min-w-0">
-                <h2 className="text-sm font-semibold text-gray-900">{headerTitle}</h2>
-                <p className="mt-1 text-xs text-gray-500">{subHeaderTitle}</p>
+                <h2 className="text-base leading-0 font-semibold text-gray-900">{headerTitle}</h2>
               </div>
-
               {onClose && (
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  className={iconButtonClassName}
                   aria-label="닫기"
                 >
-                  <X className="size-4" />
+                  <X size={16} />
                 </button>
-              )}
+              )}{' '}
             </header>
+            <div className="mb-3 rounded border border-gray-200 bg-gray-50 px-3 py-2">
+              <p className="text-xs text-gray-600">{subHeaderTitle}</p>
+            </div>
             {children}
             {footerButton && (
               <footer className="mt-3 flex items-center justify-end gap-3">

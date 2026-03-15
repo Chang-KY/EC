@@ -10,12 +10,10 @@ export const metadata: Metadata = {
     '상품을 그룹화할 카테고리 이름, 슬러그, 상위 카테고리 및 노출 순서를 설정하는 페이지입니다.',
 }
 
-const CategoryCreatePage = () => {
+export default async function CategoryCreatePage() {
   return (
     <Section pathTitle={`${ROUTES.CATEGORIES}/create`}>
       <CategoryCreateForm />
     </Section>
   )
 }
-
-export default CategoryCreatePage

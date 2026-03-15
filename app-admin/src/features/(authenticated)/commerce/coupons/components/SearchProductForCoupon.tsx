@@ -18,7 +18,7 @@ type SearchProductProps = {
   mode?: ApplyMode
 }
 
-export default function SearchProduct({
+export default function SearchProductForCoupon({
   selectedProducts,
   onSelectProduct,
   children,

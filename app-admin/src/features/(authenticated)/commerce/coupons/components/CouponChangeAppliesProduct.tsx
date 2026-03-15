@@ -5,7 +5,7 @@ import { Bolt } from 'lucide-react'
 import { iconButtonClassName } from '@/constants/iconButtonClassName'
 import Modal from '@/components/modal/Modal'
 import AppButton from '@/components/ui/AppButton'
-import SearchProduct from '@/features/(authenticated)/commerce/coupons/components/SearchProduct'
+import SearchProductForCoupon from '@/features/(authenticated)/commerce/coupons/components/SearchProductForCoupon'
 import { PRODUCTS_TABLE } from '@/types/db'
 import { ApplyMode } from '@/types/enum'
 import { APPLY_MODE_META } from '@/features/(authenticated)/commerce/coupons/applyModeSchema'
@@ -69,7 +69,7 @@ export default function CouponChangeAppliesProduct(props: CouponChangeAppliesPro
           </AppButton>,
         ]}
       >
-        <SearchProduct
+        <SearchProductForCoupon
           mode={applyMode}
           selectedProducts={appliesProductList}
           onSelectProduct={(product) => {
@@ -99,7 +99,7 @@ export default function CouponChangeAppliesProduct(props: CouponChangeAppliesPro
             }}
             defaultValue={applyMode}
           />
-        </SearchProduct>
+        </SearchProductForCoupon>
       </Modal>
     </>
   )
